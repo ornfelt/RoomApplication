@@ -4,18 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShowRoomsActivity">
+    tools:context=".activities.ShowReservationsActivity">
 
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="409dp"
-        android:layout_height="640dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginBottom="100dp"
-        android:clipToPadding="false"
-        android:padding="16dip"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/my_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

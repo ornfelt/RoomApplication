@@ -1,4 +1,4 @@
-package com.joor.roomapplication;
+package com.joor.roomapplication.controllers;
 
 import android.app.Application;
 import android.text.TextUtils;
@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.joor.roomapplication.utility.BitmapCache;
 
 /**
  * Class that controls queue in application

@@ -1,10 +1,10 @@
-package com.joor.roomapplication;
+package com.joor.roomapplication.utility;
 
 import android.graphics.Bitmap;
 
 import com.android.volley.toolbox.ImageLoader;
 
-class BitmapCache implements ImageLoader.ImageCache {
+public class BitmapCache implements ImageLoader.ImageCache {
     @Override
     public Bitmap getBitmap(String url) {
         return null;

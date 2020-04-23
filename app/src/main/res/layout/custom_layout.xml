@@ -2,46 +2,25 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/imgItem"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp" />
-
     <TextView
-        android:id="@+id/textItem"
+        android:id="@+id/textId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
-        android:layout_toRightOf="@+id/imgItem"
-        android:text="Item Name" />
+        android:text="Reservation id" />
 
     <Button
-        android:id="@+id/buttonDelete"
+        android:id="@+id/buttonBook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="40dp"
         android:background="#0F0F0F"
-        android:text="Delete"
+        android:text="Boka"
         android:textColor="#DADEE0" />
-
-    <ToggleButton
-        android:id="@+id/favBtn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center|end"
-        android:layout_marginTop="45dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_toLeftOf="@id/buttonDelete"
-        android:background="@android:drawable/star_big_on" />
 
 </RelativeLayout>

@@ -3,59 +3,45 @@ package com.joor.roomapplication.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
-import com.android.volley.toolbox.StringRequest;
 
-import com.joor.roomapplication.AppController;
+import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.R;
-import com.joor.roomapplication.ShowRoomsActivity;
-import com.joor.roomapplication.models.Room;
+import com.joor.roomapplication.activities.ShowReservationsActivity;
+import com.joor.roomapplication.models.Reservation;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class RoomAdapter extends BaseAdapter {
 
     private Activity activity;
     private LayoutInflater inflater;
-    private List<Room> rooms;
+    private List<Reservation> reservations;
     ImageLoader imageLoader = AppController.getmInstance().getmImageLoader();
 
     //constructor
-    public RoomAdapter(Activity activity, List<Room> rooms){
+    public RoomAdapter(Activity activity, List<Reservation> reservations){
         this.activity = activity;
-        this.rooms = rooms;
+        this.reservations = reservations;
     }
 
     @Override
     public int getCount(){
-        return rooms.size();
+        return reservations.size();
     }
 
     @Override
     public Object getItem(int position){
-        return rooms.get(position);
+        return reservations.get(position);
     }
 
     @Override
@@ -77,11 +63,11 @@ public class RoomAdapter extends BaseAdapter {
             //init values
             imageLoader = AppController.getmInstance().getmImageLoader();
             //final NetworkImageView imageView = (NetworkImageView) convertView.findViewById(R.id.imgItem);
-            final TextView itemName = (TextView) convertView.findViewById(R.id.textItem);
-            final Room room = rooms.get(position);
+            final TextView itemName = (TextView) convertView.findViewById(R.id.textId);
+            final Reservation reservation = reservations.get(position);
 
             //imageView.setImageUrl(itemExpired.getPicture(), imageLoader);
-            itemName.setText(room.getId());
+            itemName.setText(reservation.getId());
 
         }else{
         }
@@ -93,7 +79,7 @@ public class RoomAdapter extends BaseAdapter {
     //refreshes item list
     private void refreshList(Context context){
         Intent intent = new Intent(context,
-                ShowRoomsActivity.class);
+                ShowReservationsActivity.class);
         context.startActivity(intent);
     }
 }
