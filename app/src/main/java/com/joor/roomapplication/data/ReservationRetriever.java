@@ -4,6 +4,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.joor.roomapplication.adapters.ReservationAdapter;
 import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.models.Reservation;
 
@@ -16,6 +17,9 @@ import java.util.List;
 public class ReservationRetriever {
 
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
+
+    //no args constructor
+    public ReservationRetriever(){}
 
     public List<Reservation> getAllReservations() {
         final List<Reservation> reservations = new ArrayList<Reservation>();
@@ -51,7 +55,6 @@ public class ReservationRetriever {
                         } catch (Exception e) {
                             System.out.println("something wrong..");
                         }
-                        //adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -104,7 +107,6 @@ public class ReservationRetriever {
                         } catch (Exception e) {
                             System.out.println("something wrong..");
                         }
-                        //adapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
             @Override
