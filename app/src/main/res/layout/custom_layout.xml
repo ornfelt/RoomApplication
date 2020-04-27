@@ -6,31 +6,27 @@
         android:orientation="vertical"
         android:background="@color/colorPrimaryDark">
 
-    <TextView
-        android:id="@+id/textId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="140dp"
-        android:text="Reservation id"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/textTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="hour"
-        android:textSize="12sp"
-        android:elevation="100dp"/>
-
     <Button
         android:id="@+id/buttonBook"
-        android:layout_width="72dp"
-        android:layout_height="22dp"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="1dp"
+        android:background="#0F0F0F"
+        android:text="X:00 - X:30"
+        android:textColor="#DADEE0"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/buttonBook2"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="1dp"
         android:background="#0F0F0F"
+        android:text="X:30 - Y-00"
         android:textColor="#DADEE0"
-        android:textSize="12sp"
-        android:layout_marginBottom="1dp"/>
+        android:textSize="12sp" />
 
 </RelativeLayout>

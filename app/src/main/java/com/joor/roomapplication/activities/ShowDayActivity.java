@@ -54,7 +54,7 @@ public class ShowDayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_day);
-        // Set todays date
+        // Set today's date
         setDate();
 
         bindViews();
@@ -238,7 +238,7 @@ public class ShowDayActivity extends AppCompatActivity {
                             String dateToday = formatter.format(date);
                             System.out.println("dateToday: " + dateToday);
                             //test date (change below)
-                            //dateToday = "2020-04-24";
+                            dateToday = "2020-04-30";
 
                             //loops through all available times during a day to find available times
                             for (int i = 0; i < daySchedule.size(); i++) {
@@ -256,7 +256,7 @@ public class ShowDayActivity extends AppCompatActivity {
                                         //example: if 08:00 is booked
                                         if (daySchedule.get(i).equals(startTime)) {
                                             timeFound = true;
-                                            freeTimesList.add("Time booked");
+                                            freeTimesList.add("startTime");
                                             //get end time for reservation
                                             String endTime = JSONreservation.getString("endTime");
                                             boolean endTimeReached = false;
@@ -289,8 +289,8 @@ public class ShowDayActivity extends AppCompatActivity {
                                     reservations.add(fillerReservation);
                                     //skips ahead by one
                                     i++;
-                                    System.out.println("fillerReservation added: free");
-                                }else {
+                                }
+                                else {
                                     for (int j = 0; j < response.length(); j++) {
                                         JSONObject JSONreservation = response.getJSONObject(j);
                                         //parameters needed: int id, String starttime, String startdate, String endtime, String enddate, String[] columns
@@ -304,6 +304,7 @@ public class ShowDayActivity extends AppCompatActivity {
                                         JSONArray reservationColumns = JSONreservation.getJSONArray("columns");
                                         JSONArray reservationNames = JSONreservation.getJSONArray("name");
 
+                                        //if selected date is the same as reservation date
                                         if(dateToday.equals(startDate)) {
                                             if (daySchedule.get(i).equals(startTime)) {
                                                 //create reservation object and add to reservations (list)
