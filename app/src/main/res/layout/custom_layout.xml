@@ -10,23 +10,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="140dp"
-        android:text="Reservation id" />
+        android:text="Reservation id"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/textTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hour" />
+        android:text="hour"
+        android:textSize="12sp"/>
 
     <Button
         android:id="@+id/buttonBook"
         android:layout_width="72dp"
-        android:layout_height="23dp"
+        android:layout_height="22dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:background="#0F0F0F"
-        android:text="Boka"
         android:textColor="#DADEE0"
-        android:textSize="10sp" />
+        android:textSize="12sp" />
 
 </RelativeLayout>

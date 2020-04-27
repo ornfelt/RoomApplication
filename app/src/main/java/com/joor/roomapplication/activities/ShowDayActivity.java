@@ -58,6 +58,7 @@ public class ShowDayActivity extends AppCompatActivity {
         adapter = new ReservationAdapter(this, reservations);
         recyclerView.setAdapter(adapter);
 
+        //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();
 
         //new request url to get data from specific room
@@ -69,13 +70,15 @@ public class ShowDayActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
+                            //list that will contain all times available for booking
                             ArrayList<String> freeTimesList = new ArrayList<>();
+                            //create today's date
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                             Date date = new Date();
                             String dateToday = formatter.format(date);
                             System.out.println("dateToday: " + dateToday);
-                            //test date
-                            dateToday = "2020-04-24";
+                            //test date (change below)
+                            //dateToday = "2020-04-24";
 
                             //loops through all available times during a day to find available times
                             for (int i = 0; i < daySchedule.size(); i++) {
@@ -130,9 +133,9 @@ public class ShowDayActivity extends AppCompatActivity {
                                 }else {
                                     for (int j = 0; j < response.length(); j++) {
                                         JSONObject JSONreservation = response.getJSONObject(j);
-                                        //int id, String starttime, String startdate, String endtime, String enddate, String[] columns
+                                        //parameters needed: int id, String starttime, String startdate, String endtime, String enddate, String[] columns
 
-                                        //required variables for each reservation object
+                                        //create required variables for each reservation object
                                         int reservationId = Integer.parseInt(JSONreservation.getString("id"));
                                         String startTime = JSONreservation.getString("startTime");
                                         String startDate = JSONreservation.getString("startDate");
@@ -169,7 +172,6 @@ public class ShowDayActivity extends AppCompatActivity {
                                     }
                                 }
                             }
-                            //reservations = makeCompleteDaySchedule();
                         } catch (Exception e) {
                             System.out.println("something wrong..");
                             e.printStackTrace();
@@ -257,75 +259,4 @@ public class ShowDayActivity extends AppCompatActivity {
 
         return availableTimesList;
     }
-
-    private List<Reservation> makeCompleteDaySchedule(){
-        List<Reservation> reservationSchedule = new ArrayList<>();
-
-        //checks every hour between 8-20 and makes sure the new list contains all hours
-        for (int hourCount = 8; hourCount < 21; hourCount++) {
-            boolean hourFound = false;
-
-            for (Reservation r : reservations) {
-                //gets reservation hours
-                String startHour = r.getStartTime().split(":")[0];
-                String endHour = r.getEndTime().split(":")[0];
-
-                //if reservation is at hourCount
-                if(Character.getNumericValue(startHour.charAt(1)) == hourCount || Integer.parseInt(startHour) == hourCount){
-                    //if reservation covers less than one hour
-                    if (startHour.equals(endHour)) {
-                        reservationSchedule.add(r);
-                        hourFound = true;
-                    }else{
-                        //checks if time is 08:00, 09:00 or double values (>= 10:00)
-                        boolean startPastTen = false;
-                        boolean endPastTen = false;
-
-                        if(Character.getNumericValue(Character.getNumericValue(startHour.charAt(0))) == 1){
-                            startPastTen = true;
-                        }
-                        if(Character.getNumericValue(Character.getNumericValue(endHour.charAt(0))) == 1){
-                            endPastTen = true;
-                        }
-                        //if both booleans are true then hourSpan is always 1
-                        int hourSpan = 1;
-
-                        if(startPastTen && endPastTen) {
-                            //clarifying example: 20 - 14 = 6
-                            hourSpan = Integer.parseInt(endHour) - Integer.parseInt(startHour);
-                        }else if(!startPastTen && endPastTen){
-                            //clarifying example: 20 - 08 = 12
-                            hourSpan = Integer.parseInt(endHour) - Character.getNumericValue(startHour.charAt(1));
-                        }
-                        for(int i = 0; i < hourSpan; i++){
-                            if(i == 0){
-                                reservationSchedule.add(r);
-                            }else {
-                                //adds filler reservations for booked time span
-                                Reservation fillerReservation = new Reservation();
-                                fillerReservation.setStartTime("booked");
-                                reservationSchedule.add(fillerReservation);
-                            }
-                            hourCount++;
-                            hourFound = true;
-                        }
-                    }
-                }
-            }
-            //if a specific hour is not found, a filler reservation is added
-            if(!hourFound){
-                Reservation fillerReservation = new Reservation();
-                fillerReservation.setStartTime("free");
-                reservationSchedule.add(fillerReservation);
-            }
-        }
-
-        //sout-test for complete schedule
-        for (Reservation res : reservationSchedule) {
-            System.out.println("reservationSchedule: " + res.getStartTime());
-        }
-        return reservationSchedule;
-    }
-
-
 }

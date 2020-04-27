@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -78,18 +79,54 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             System.out.println("reservation size: " + reservations.size());
 
             if(reservation.getStartTime().equals("booked")){
-                buttonBook.setBackgroundColor(Color.RED);
-                itemName.setText("Time booked");
+                //buttonBook.setBackgroundColor(Color.RED);
+                //itemName.setText("Time booked");
 
             }else if(reservation.getStartTime().equals("free")){
                 buttonBook.setBackgroundColor(Color.GREEN);
+                buttonBook.setText("Book");
                 itemName.setText("Time available");
             }else{
                 itemName.setText(Integer.toString(reservation.getId()));
                 buttonBook.setBackgroundColor(Color.RED);
+
+                //count "time steps" till endTime is reached
+                int timeStepCount = 1;
+                int posCount = 1;
+                boolean endTimeReached = false;
+                while (!endTimeReached){
+                    //if startTime is NOT equals to booked
+                    if(!reservations.get(position+posCount).getStartTime().equals("booked")){
+                        //endTime is reached
+                        endTimeReached = true;
+                    }else{
+                        //otherwise increase time step counter (increased by 2 to only count half hours
+                        timeStepCount += 2;
+                        posCount++;
+                    }
+                }
+                System.out.println("timeStepCount: " + timeStepCount);
+
+                //original height is 22 300
+                ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
+                buttonBookParams.height = 22*timeStepCount;
+                buttonBookParams.width = 300;
+                buttonBook.setLayoutParams(buttonBookParams);
+
+                //original textsize is set to 12, increase by 5 per time step (35)
+                textHour.setTextSize(12 + timeStepCount);
             }
 
-            textHour.setText(getTimeByPosition(position));
+            if(reservation.getStartTime().equals("booked")){
+                ViewGroup layout = (ViewGroup) buttonBook.getParent();
+                layout.removeView(buttonBook);
+                layout.removeView(textHour);
+                layout.removeView(itemName);
+            }else if (reservation.getStartTime().equals("free")) {
+                textHour.setText(getTimeByPosition(position));
+            }else{
+                textHour.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
+            }
         }
     }
 
@@ -109,6 +146,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     //ugh...
     private String getTimeByPosition(int pos){
         String time = "";
+
         if(pos == 0){
             time = "08:00-08:30";
         }else if(pos == 1){
