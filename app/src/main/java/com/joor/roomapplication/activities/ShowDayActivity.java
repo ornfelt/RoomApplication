@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,13 +41,113 @@ public class ShowDayActivity extends AppCompatActivity {
     private List<Reservation> reservations = new ArrayList<Reservation>();
     private ReservationAdapter adapter;
 
+    private TextView roomName;
+    private TextView todaysDate;
+    private ImageView rightClick;
+    private ImageView leftClick;
+    private Date constantDate;
+    private Calendar constantCalendar;
+    private Calendar changableCalendar;
+    private String dateToday;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_day);
+        // Set todays date
+        setDate();
 
-        //init view elements and checks if there's a saved instance
         bindViews();
+        //init view elements and checks if there's a saved instance
+        setViewElements(savedInstanceState);
+        // Set up imagelisteners
+        setImgListeners();
+        // Set up the adapter
+        setAdapter();
+        // Gets the availability for a specific room
+        getAvailability();
+
+    }
+
+    //gets id for view
+    private void bindViews() {
+        recyclerView = findViewById(R.id.my_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    }
+
+    //when user navigates back
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(),
+                MainActivity.class);
+        getApplicationContext().startActivity(intent);
+    }
+
+    public static String[] toStringArray(JSONArray array) {
+        if (array == null)
+            return null;
+
+        String[] arr = new String[array.length()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = array.optString(i);
+        }
+        return arr;
+    }
+
+    //This class shows available times for a specific day and a specific room, hence these values needs to be loaded from intent
+    private void initValuesFromIntent(){
+        Intent intent = getIntent();
+        room_name = intent.getStringExtra(INTENT_MESSAGE_KEY);
+
+        todaysDate = findViewById(R.id.date);
+        roomName = findViewById(R.id.txtRoomName);
+        // Clicklistener for rightClick.
+        rightClick = (ImageView)findViewById(R.id.rightClick);
+        leftClick = (ImageView)findViewById(R.id.leftClick);
+
+        todaysDate.setText(dateToday);
+        roomName.setText(room_name);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        //saves when onDestroyed
+        outState.putString("roomName", room_name);
+    }
+
+    private void initValuesFromSavedState(Bundle savedInstanceState) throws IOException {
+        room_name = savedInstanceState.getString("roomName");
+    }
+
+    private ArrayList<String> timeList (){
+        ArrayList<String> availableTimesList = new ArrayList<>();
+        String hour = "8";
+        String full = "00";
+        String quarter = "15";
+        String half = "30";
+        String threeQuarter = "45";
+
+        for(int i = 0; i < 12; i++){
+            if(Integer.parseInt(hour) < 10){
+                availableTimesList.add("0" + hour + ":" + full);
+                availableTimesList.add("0" + hour + ":" + quarter);
+                availableTimesList.add("0" + hour + ":" + half);
+                availableTimesList.add("0" + hour + ":" + threeQuarter);
+            }else{
+                availableTimesList.add(hour + ":" + full);
+                availableTimesList.add(hour + ":" + quarter);
+                availableTimesList.add(hour + ":" + half);
+                availableTimesList.add(hour + ":" + threeQuarter);
+            }
+            if(i == 11) availableTimesList.add("20:00");
+            hour = Integer.toString(Integer.parseInt(hour)+ 1);
+        }
+
+        return availableTimesList;
+    }
+
+    private void setViewElements(Bundle savedInstanceState){
         if(savedInstanceState == null) {
             initValuesFromIntent();
         }else{
@@ -53,11 +157,67 @@ public class ShowDayActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
 
+
+    private void setDate(){
+        constantCalendar = Calendar.getInstance();
+        changableCalendar = constantCalendar;
+        constantDate = constantCalendar.getTime();
+
+        // Creates datepattern for todays date
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        dateToday = simpleDateFormat.format(constantDate);
+    }
+
+    private void setAdapter(){
         //creates RecycleAdapter and sets it
         adapter = new ReservationAdapter(this, reservations);
         recyclerView.setAdapter(adapter);
+    }
 
+    private void setImgListeners (){
+        rightClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                changableCalendar.add(Calendar.DATE, 1);
+                Date today2 = changableCalendar.getTime();
+
+                // Creates datepattern for todays date
+                String pattern = "yyyy-MM-dd";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                String today = simpleDateFormat.format(today2);
+                todaysDate.setText(today);
+            }
+        });
+
+        leftClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                changableCalendar.add(Calendar.DATE, -1);
+                String pattern = "yyyy-MM-dd";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                Date today2 = changableCalendar.getTime();
+                String today = simpleDateFormat.format(today2);
+
+                if (today2.compareTo(constantDate) == -1){
+                    System.out.println("Can't go further back");
+                    changableCalendar =  Calendar.getInstance();
+                }
+                else{
+                    todaysDate.setText(today);
+                }
+
+
+            }
+        });
+    }
+
+    private void getAvailability()
+    {
         //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();
 
@@ -189,74 +349,4 @@ public class ShowDayActivity extends AppCompatActivity {
         AppController.getmInstance().addToRequestQueue(jsonRequest);
         //queue.add(jsonRequest);
 
-    }
-
-    //gets id for view
-    private void bindViews() {
-        recyclerView = findViewById(R.id.my_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-    }
-
-    //when user navigates back
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(),
-                MainActivity.class);
-        getApplicationContext().startActivity(intent);
-    }
-
-    public static String[] toStringArray(JSONArray array) {
-        if (array == null)
-            return null;
-
-        String[] arr = new String[array.length()];
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = array.optString(i);
-        }
-        return arr;
-    }
-
-    //This class shows available times for a specific day and a specific room, hence these values needs to be loaded from intent
-    private void initValuesFromIntent(){
-        Intent intent = getIntent();
-        room_name = intent.getStringExtra(INTENT_MESSAGE_KEY);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-        //saves when onDestroyed
-        outState.putString("roomName", room_name);
-    }
-
-    private void initValuesFromSavedState(Bundle savedInstanceState) throws IOException {
-        room_name = savedInstanceState.getString("roomName");
-    }
-
-    private ArrayList<String> timeList (){
-        ArrayList<String> availableTimesList = new ArrayList<>();
-        String hour = "8";
-        String full = "00";
-        String quarter = "15";
-        String half = "30";
-        String threeQuarter = "45";
-
-        for(int i = 0; i < 12; i++){
-            if(Integer.parseInt(hour) < 10){
-                availableTimesList.add("0" + hour + ":" + full);
-                availableTimesList.add("0" + hour + ":" + quarter);
-                availableTimesList.add("0" + hour + ":" + half);
-                availableTimesList.add("0" + hour + ":" + threeQuarter);
-            }else{
-                availableTimesList.add(hour + ":" + full);
-                availableTimesList.add(hour + ":" + quarter);
-                availableTimesList.add(hour + ":" + half);
-                availableTimesList.add(hour + ":" + threeQuarter);
-            }
-            if(i == 11) availableTimesList.add("20:00");
-            hour = Integer.toString(Integer.parseInt(hour)+ 1);
-        }
-
-        return availableTimesList;
-    }
-}
+    }}
