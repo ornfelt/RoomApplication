@@ -98,7 +98,15 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
 
                 //loops two times to get two reservation object for a specific hour
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
-                    final Reservation reservation = reservations.get(position + positionCount);
+                    final Reservation reservation;
+
+                    //in case list limit is reached
+                    if(positionCount == 1 && reservations.size() == position+1){
+                        break;
+                    }else if (positionCount == 0 && reservations.size() == position + positionCount+1){
+                        break;
+                    }
+                    reservation = reservations.get(position + positionCount);
 
                     if (reservation.getStartTime().equals("free")) {
                         //set button color to green
@@ -150,12 +158,49 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                     }
                 }
 
+                //set time text
                 if (getTimeByPosition(position).equals("")) {
+                    //removes every other textview
                     ViewGroup layout = (ViewGroup) textHour.getParent();
                     layout.removeView(textHour);
                 } else {
                     textHour.setText(getTimeByPosition(position));
                     textHour.setGravity(Gravity.CENTER_VERTICAL);
+
+                    //if current block is free and next reservation is booked
+                    if(reservations.get(position).getStartTime().equals("free") &&
+                    !reservations.get(position+1).getStartTime().equals("free")){
+                        //then change first hour in time text to half hour
+                        String hourText = getTimeByPosition(position);
+                        //split time into two parts, clarifying example: split into 08:00 and 09:00
+                        String[] timeSplit = hourText.split("-");
+
+                        //split hours, example: split into 08 and 00
+                        String[] firstHourSplit = timeSplit[0].split(":");
+                        //create new hour string with first hour split and "30", example: 08 + "30"
+                        String newHour = firstHourSplit[0] + ":30";
+
+                        //set new text and move up
+                        textHour.setText(timeSplit[0] + "-" + newHour);
+                        textHour.setGravity(20);
+                    }
+                    //else if current block is booked and next is free
+                    else if(!reservations.get(position).getStartTime().equals("free") &&
+                    reservations.get(position+1).getStartTime().equals("free")){
+                        //then change second hour in time text to half hour
+                        String hourText = getTimeByPosition(position);
+                        //split time into two parts, clarifying example: split into 08:00 and 09:00
+                        String[] timeSplit = hourText.split("-");
+
+                        //split hours, example: split into 08 and 00
+                        String[] firstHourSplit = timeSplit[0].split(":");
+                        //create new hour string with first hour split and "30", example: 08 + "30"
+                        String newHour = firstHourSplit[0] + ":30";
+
+                        //set new text and move down
+                        textHour.setText(newHour + "-" + timeSplit[1]);
+                        textHour.setGravity(80);
+                    }
                 }
             }else{
                 ViewGroup layout = (ViewGroup) textHour.getParent();

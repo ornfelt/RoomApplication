@@ -66,7 +66,6 @@ public class RoomAdapter extends BaseAdapter {
             final Reservation reservation = reservations.get(position);
 
             //imageView.setImageUrl(itemExpired.getPicture(), imageLoader);
-            itemName.setText(reservation.getId());
 
         }else{
         }
