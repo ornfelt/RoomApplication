@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.ShowDayActivitySchedule"></activity>
+        <activity android:name=".activities.BookingActivity"></activity>
+        <activity android:name=".activities.ShowDayActivitySchedule" />
         <activity android:name=".activities.ShowDayActivityPerHour" />
         <activity android:name=".activities.ShowDayActivity" />
         <activity android:name=".activities.ShowReservationsActivity" />
