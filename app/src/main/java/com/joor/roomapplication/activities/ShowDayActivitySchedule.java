@@ -22,6 +22,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.joor.roomapplication.R;
 import com.joor.roomapplication.activities.MainActivity;
 import com.joor.roomapplication.adapters.ReservationAdapter;
+import com.joor.roomapplication.adapters.ReservationTestAdapter;
 import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.data.ReservationRetriever;
 import com.joor.roomapplication.models.Reservation;
@@ -43,7 +44,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private RecyclerView recyclerView;
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
     private List<Reservation> reservations = new ArrayList<Reservation>();
-    private ReservationAdapter adapter;
+    private ReservationTestAdapter adapter;
 
     private TextView roomName;
     private TextView todaysDate;
@@ -178,7 +179,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
     private void setAdapter(){
         //creates RecycleAdapter and sets it
-        adapter = new ReservationAdapter(this, reservations);
+        adapter = new ReservationTestAdapter(this, reservations);
         recyclerView.setAdapter(adapter);
     }
 
