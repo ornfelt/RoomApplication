@@ -32,11 +32,44 @@ public class MainActivity extends AppCompatActivity {
         navigateToShowDayActivity(roomName);
     }
 
-    //launches activity ShowDay
+    //when user clicks on show day activity (schedule)
+    public void onClickShowDaySchedule(View view){
+        //gets selected room from user
+        EditText roomNameText = (EditText) findViewById(R.id.editTextRoomName);
+        String roomName = roomNameText.getText().toString();
+        navigateToShowDayActivitySchedule(roomName);
+    }
+
+    //when user clicks on show day activity (per hour)
+    public void onClickShowDayHours(View view){
+        //gets selected room from user
+        EditText roomNameText = (EditText) findViewById(R.id.editTextRoomName);
+        String roomName = roomNameText.getText().toString();
+        navigateToShowDayActivityPerHour(roomName);
+    }
+
+
+    //launches activity ShowDayActivity
     private void navigateToShowDayActivity(String room_name){
         Intent intent = new Intent(getApplicationContext(),
                 ShowDayActivity.class);
         intent.putExtra(ShowDayActivity.INTENT_MESSAGE_KEY, room_name);
+        startActivity(intent);
+    }
+
+    //launches activity ShowDayActivitySchedule
+    private void navigateToShowDayActivitySchedule(String room_name){
+        Intent intent = new Intent(getApplicationContext(),
+                ShowDayActivitySchedule.class);
+        intent.putExtra(ShowDayActivitySchedule.INTENT_MESSAGE_KEY, room_name);
+        startActivity(intent);
+    }
+
+    //launches activity ShowDayActivityPerHour
+    private void navigateToShowDayActivityPerHour(String room_name){
+        Intent intent = new Intent(getApplicationContext(),
+                ShowDayActivityPerHour.class);
+        intent.putExtra(ShowDayActivityPerHour.INTENT_MESSAGE_KEY, room_name);
         startActivity(intent);
     }
 }

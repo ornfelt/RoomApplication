@@ -2,9 +2,13 @@ package com.joor.roomapplication.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,6 +53,7 @@ public class ShowDayActivity extends AppCompatActivity {
     private Calendar constantCalendar;
     private Calendar changableCalendar;
     private String dateToday;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +61,12 @@ public class ShowDayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_day);
         // Set today's date
         setDate();
-
         bindViews();
         //init view elements and checks if there's a saved instance
         setViewElements(savedInstanceState);
         // Set up imagelisteners
         setImgListeners();
+        setDatePicker();
         // Set up the adapter
         setAdapter();
         // Gets the availability for a specific room
@@ -350,4 +355,54 @@ public class ShowDayActivity extends AppCompatActivity {
         AppController.getmInstance().addToRequestQueue(jsonRequest);
         //queue.add(jsonRequest);
 
-    }}
+    }
+
+    private void setDatePicker() {
+        todaysDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        ShowDayActivity.this,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        mDateSetListener,
+                        year,month,day);
+                dialog.getDatePicker().setMinDate(constantDate.getTime());
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
+        });
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                if (month<10 && day<10 ){
+
+                    String date = year + "-0" + month + "-0" + day;
+                    todaysDate.setText(date);
+                }
+                else if (day<10) {
+
+                    String date = year + "-" + month + "-0" + day;
+                    todaysDate.setText(date);
+                }
+                else if (month<10) {
+
+                    String date = year + "-0" + month + "-" + day;
+                    todaysDate.setText(date);
+                }
+
+                else
+                { String date = year + "-" + month + "-" + day;
+                    todaysDate.setText(date);}
+
+            }
+        };
+    }
+
+}
