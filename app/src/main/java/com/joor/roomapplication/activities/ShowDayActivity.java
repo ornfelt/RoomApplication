@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -30,7 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,10 +53,13 @@ public class ShowDayActivity extends AppCompatActivity {
     private ImageView rightClick;
     private ImageView leftClick;
     private Date constantDate;
+    private Date changableDate;
     private Calendar constantCalendar;
     private Calendar changableCalendar;
     private String dateToday;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
+    private boolean datePicked;
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +77,6 @@ public class ShowDayActivity extends AppCompatActivity {
         setAdapter();
         // Gets the availability for a specific room
         getAvailability();
-
     }
 
     //gets id for view
@@ -85,6 +90,7 @@ public class ShowDayActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(),
                 MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
     }
 
@@ -100,22 +106,22 @@ public class ShowDayActivity extends AppCompatActivity {
     }
 
     //This class shows available times for a specific day and a specific room, hence these values needs to be loaded from intent
-    private void initValuesFromIntent(){
+    private void initValuesFromIntent() {
         Intent intent = getIntent();
         room_name = intent.getStringExtra(INTENT_MESSAGE_KEY);
 
         todaysDate = findViewById(R.id.date);
         roomName = findViewById(R.id.txtRoomName);
         // Clicklistener for rightClick.
-        rightClick = (ImageView)findViewById(R.id.rightClick);
-        leftClick = (ImageView)findViewById(R.id.leftClick);
+        rightClick = (ImageView) findViewById(R.id.rightClick);
+        leftClick = (ImageView) findViewById(R.id.leftClick);
 
         todaysDate.setText(dateToday);
         roomName.setText(room_name);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState){
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //saves when onDestroyed
         outState.putString("roomName", room_name);
@@ -125,7 +131,7 @@ public class ShowDayActivity extends AppCompatActivity {
         room_name = savedInstanceState.getString("roomName");
     }
 
-    private ArrayList<String> timeList (){
+    private ArrayList<String> timeList() {
         ArrayList<String> availableTimesList = new ArrayList<>();
         String hour = "8";
         String full = "00";
@@ -133,29 +139,29 @@ public class ShowDayActivity extends AppCompatActivity {
         String half = "30";
         String threeQuarter = "45";
 
-        for(int i = 0; i < 12; i++){
-            if(Integer.parseInt(hour) < 10){
+        for (int i = 0; i < 12; i++) {
+            if (Integer.parseInt(hour) < 10) {
                 availableTimesList.add("0" + hour + ":" + full);
                 availableTimesList.add("0" + hour + ":" + quarter);
                 availableTimesList.add("0" + hour + ":" + half);
                 availableTimesList.add("0" + hour + ":" + threeQuarter);
-            }else{
+            } else {
                 availableTimesList.add(hour + ":" + full);
                 availableTimesList.add(hour + ":" + quarter);
                 availableTimesList.add(hour + ":" + half);
                 availableTimesList.add(hour + ":" + threeQuarter);
             }
-            if(i == 11) availableTimesList.add("20:00");
-            hour = Integer.toString(Integer.parseInt(hour)+ 1);
+            if (i == 11) availableTimesList.add("20:00");
+            hour = Integer.toString(Integer.parseInt(hour) + 1);
         }
 
         return availableTimesList;
     }
 
-    private void setViewElements(Bundle savedInstanceState){
-        if(savedInstanceState == null) {
+    private void setViewElements(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
             initValuesFromIntent();
-        }else{
+        } else {
             try {
                 initValuesFromSavedState(savedInstanceState);
             } catch (IOException e) {
@@ -165,54 +171,70 @@ public class ShowDayActivity extends AppCompatActivity {
     }
 
 
-    private void setDate(){
+    private void setDate() {
         constantCalendar = Calendar.getInstance();
         changableCalendar = constantCalendar;
         constantDate = constantCalendar.getTime();
+        changableDate = changableCalendar.getTime();
 
-        // Creates datepattern for todays date
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        dateToday = simpleDateFormat.format(constantDate);
+
+        dateToday = formatter.format(constantDate);
+
+
+        datePicked = false;
     }
 
-    private void setAdapter(){
+    private void setAdapter() {
         //creates RecycleAdapter and sets it
         adapter = new ReservationAdapter(this, reservations);
         recyclerView.setAdapter(adapter);
     }
 
-    private void setImgListeners (){
+    private void setImgListeners() {
         rightClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Date clickedDate;
+                
+                if (datePicked == true) {
+                    //changableCalendar =  Calendar.getInstance();
+                    changableCalendar.setTime(changableDate);
+                    changableCalendar.add(Calendar.DATE, 1);
+                    clickedDate = changableCalendar.getTime();
+                    //changableDate = changableCalendar.getTime();
+                    datePicked = false;
+                } else {
+                    changableCalendar.add(Calendar.DATE, 1);
+                    clickedDate = changableCalendar.getTime();
+                }
 
-                changableCalendar.add(Calendar.DATE, 1);
-                Date today2 = changableCalendar.getTime();
-
-                // Creates datepattern for todays date
-                String pattern = "yyyy-MM-dd";
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                String today = simpleDateFormat.format(today2);
+                String today = formatter.format(clickedDate);
                 todaysDate.setText(today);
+
             }
         });
 
         leftClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(datePicked == true){
+                    changableCalendar.setTime(changableDate);
+                    datePicked = false;
+                }
 
                 changableCalendar.add(Calendar.DATE, -1);
-                String pattern = "yyyy-MM-dd";
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                Date today2 = changableCalendar.getTime();
-                String today = simpleDateFormat.format(today2);
-
-                if (today2.compareTo(constantDate) == -1){
+                Date clickedDate = changableCalendar.getTime();
+                // Checks if wanted date is before todays date.
+                if (clickedDate.before(constantDate)){
                     System.out.println("Can't go further back");
                     changableCalendar =  Calendar.getInstance();
+                    clickedDate =changableCalendar.getTime();
+                    String today = formatter.format(clickedDate);
+                    todaysDate.setText(today);
                 }
                 else{
+                    // if wanted date is not before today then set's date to
+                    String today = formatter.format(clickedDate);
                     todaysDate.setText(today);
                 }
 
@@ -221,8 +243,7 @@ public class ShowDayActivity extends AppCompatActivity {
         });
     }
 
-    private void getAvailability()
-    {
+    private void getAvailability() {
         //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();
 
@@ -238,7 +259,6 @@ public class ShowDayActivity extends AppCompatActivity {
                             //list that will contain all times available for booking
                             ArrayList<String> freeTimesList = new ArrayList<>();
                             //create today's date
-                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                             Date date = new Date();
                             String dateToday = formatter.format(date);
                             System.out.println("dateToday: " + dateToday);
@@ -250,7 +270,7 @@ public class ShowDayActivity extends AppCompatActivity {
                                 boolean timeFound = false;
 
                                 //loops through response data
-                                for(int j = 0; j < response.length(); j++) {
+                                for (int j = 0; j < response.length(); j++) {
                                     JSONObject JSONreservation = response.getJSONObject(j);
                                     String startDate = JSONreservation.getString("startDate");
                                     //if reservation is for today
@@ -266,36 +286,35 @@ public class ShowDayActivity extends AppCompatActivity {
                                             String endTime = JSONreservation.getString("endTime");
                                             boolean endTimeReached = false;
                                             //loops until end time is found
-                                            while(!endTimeReached){
+                                            while (!endTimeReached) {
                                                 //set i to new time, example: 08:15
                                                 i++;
-                                                if(daySchedule.get(i).equals(endTime)){
+                                                if (daySchedule.get(i).equals(endTime)) {
                                                     endTimeReached = true;
                                                     //change i back
                                                     i--;
-                                                }else{
+                                                } else {
                                                     freeTimesList.add("Time booked");
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                if(!timeFound){
+                                if (!timeFound) {
                                     //time is added to freeTimesList
                                     freeTimesList.add(daySchedule.get(i));
                                 }
                             }
 
                             //size-1 because no need to check 19:45 - 20:00 since it can't be booked
-                            for(int i = 0; i < daySchedule.size()-1; i++) {
-                                if(daySchedule.get(i).equals(freeTimesList.get(i)) && daySchedule.get(i+1).equals(freeTimesList.get(i+1))){
+                            for (int i = 0; i < daySchedule.size() - 1; i++) {
+                                if (daySchedule.get(i).equals(freeTimesList.get(i)) && daySchedule.get(i + 1).equals(freeTimesList.get(i + 1))) {
                                     Reservation fillerReservation = new Reservation();
                                     fillerReservation.setStartTime("free");
                                     reservations.add(fillerReservation);
                                     //skips ahead by one
                                     i++;
-                                }
-                                else {
+                                } else {
                                     for (int j = 0; j < response.length(); j++) {
                                         JSONObject JSONreservation = response.getJSONObject(j);
                                         //parameters needed: int id, String starttime, String startdate, String endtime, String enddate, String[] columns
@@ -310,7 +329,7 @@ public class ShowDayActivity extends AppCompatActivity {
                                         JSONArray reservationNames = JSONreservation.getJSONArray("name");
 
                                         //if selected date is the same as reservation date
-                                        if(dateToday.equals(startDate)) {
+                                        if (dateToday.equals(startDate)) {
                                             if (daySchedule.get(i).equals(startTime)) {
                                                 //create reservation object and add to reservations (list)
                                                 Reservation reservation = new Reservation(reservationId, startTime, startDate, endTime, endDate,
@@ -320,13 +339,13 @@ public class ShowDayActivity extends AppCompatActivity {
 
                                                 boolean resEndTimeReached = false;
                                                 while (!resEndTimeReached) {
-                                                    if (!daySchedule.get(i + 1).equals(endTime) && !daySchedule.get(i+2).equals(endTime)) {
+                                                    if (!daySchedule.get(i + 1).equals(endTime) && !daySchedule.get(i + 2).equals(endTime)) {
                                                         Reservation fillerReservation = new Reservation();
                                                         fillerReservation.setStartTime("booked");
                                                         reservations.add(fillerReservation);
                                                         System.out.println("fillerReservation added: booked");
                                                         i += 2;
-                                                    }else{
+                                                    } else {
                                                         resEndTimeReached = true;
                                                         i--;
                                                     }
@@ -361,16 +380,16 @@ public class ShowDayActivity extends AppCompatActivity {
         todaysDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                int day = cal.get(Calendar.DAY_OF_MONTH);
+                changableCalendar = Calendar.getInstance();
+                int year = changableCalendar.get(Calendar.YEAR);
+                int month = changableCalendar.get(Calendar.MONTH);
+                int day = changableCalendar.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog dialog = new DatePickerDialog(
                         ShowDayActivity.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         mDateSetListener,
-                        year,month,day);
+                        year, month, day);
                 dialog.getDatePicker().setMinDate(constantDate.getTime());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
@@ -381,28 +400,43 @@ public class ShowDayActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
-                if (month<10 && day<10 ){
+                String pickedDate = "";
+                datePicked = true;
 
-                    String date = year + "-0" + month + "-0" + day;
-                    todaysDate.setText(date);
+
+                if (month < 10 && day < 10) {
+
+                    pickedDate = year + "-0" + month + "-0" + day;
+                    System.out.println("Datum : " + pickedDate);
+                    editDate(pickedDate);
+                    todaysDate.setText(pickedDate);
+                } else if (day < 10) {
+                    pickedDate = year + "-" + month + "-0" + day;
+                    editDate(pickedDate);
+                    todaysDate.setText(pickedDate);
+                } else if (month < 10) {
+                    pickedDate = year + "-0" + month + "-" + day;
+                    System.out.println("Datum : " + pickedDate);
+                    editDate(pickedDate);
+                    todaysDate.setText(pickedDate);
+                } else {
+                    pickedDate = year + "-" + month + "-" + day;
+                    System.out.println("Datum : " + pickedDate);
+                    editDate(pickedDate);
+                    todaysDate.setText(pickedDate);
                 }
-                else if (day<10) {
-
-                    String date = year + "-" + month + "-0" + day;
-                    todaysDate.setText(date);
-                }
-                else if (month<10) {
-
-                    String date = year + "-0" + month + "-" + day;
-                    todaysDate.setText(date);
-                }
-
-                else
-                { String date = year + "-" + month + "-" + day;
-                    todaysDate.setText(date);}
-
             }
+
         };
+    }
+
+    private void editDate(String date) {
+        try {
+            changableDate = formatter.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
