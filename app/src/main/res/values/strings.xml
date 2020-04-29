@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">RoomApplication</string>
 
+    <string-array name="grouprooms">
+        <item>C11</item>
+        <item>C13</item>
+        <item>C15</item>
+        <item>Backsippan</item>
+        <item>Flundran</item>
+        <item>Heden</item>
+        <item>Myren</item>
+        <item>Änget</item>
+    </string-array>
+
 </resources>
