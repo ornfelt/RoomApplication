@@ -106,11 +106,10 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                     final Reservation reservation;
 
                     //in case list limit is reached
-                    if(positionCount == 0 && reservations.size() == position+1){
-                        break;
-                    }else if (positionCount == 1 && reservations.size() == position + positionCount+1){
+                    if(positionCount == 1 && reservations.size() == position+positionCount){
                         break;
                     }
+
                     reservation = reservations.get(position + positionCount);
 
                     //if time slot is available
@@ -150,42 +149,56 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                             }
 
                         //need to find middle of reservation and only set the time text there
-                        //count "time steps" till startTime is reached
-                        int timeStepToStart = 1;
+
+
+                        //count "time steps" till endTime is reached
+                        int timeStepToEnd = 1;
                         int posAdd = 1;
-                        if(position > 0) {
-                            boolean startTimeReached = false;
-                            while (!startTimeReached) {
-                                //if startTime is NOT equal to "booked"
-                                if (!reservations.get(position + positionCount - posAdd).getStartTime().equals("booked")) {
-                                    //startTime is reached
-                                    startTimeReached = true;
+                            boolean endTimeReached = false;
+                            while (!endTimeReached) {
+                                //if endTime is NOT equal to "booked"
+                                if (!reservations.get(position + positionCount + posAdd).getStartTime().equals("booked")) {
+                                    //endTime is reached
+                                    endTimeReached = true;
                                 } else {
                                     //otherwise increase time step counter
-                                    timeStepToStart++;
+                                    timeStepToEnd++;
                                     posAdd++;
+                                }
+                            }
+
+                        //count "time steps" till startTime is reached
+                        int timeStepToStart = 1;
+                        posAdd = 1;
+                        if(position > 0) {
+                            boolean startTimeReached = false;
+                            //if current position contains booking
+                            if(!reservations.get(position+positionCount).getStartTime().equals("booked") &&
+                            !reservations.get(position+positionCount).getStartTime().equals("free")){
+                                //then startTime is reached
+                                startTimeReached = true;
+                                timeStepToStart = 0;
+                            }
+                            //else find startTime
+                            else {
+                                while (!startTimeReached) {
+                                    //if startTime is NOT equal to "booked"
+                                    if (!reservations.get(position + positionCount - posAdd).getStartTime().equals("booked")) {
+                                        //startTime is reached
+                                        startTimeReached = true;
+                                    } else {
+                                        //otherwise increase time step counter
+                                        timeStepToStart++;
+                                        posAdd++;
+                                    }
                                 }
                             }
                         }else{
                             timeStepToStart = 0;
                         }
 
-                        //count "time steps" till endTime is reached
-                        int timeStepToEnd = 1;
-                        posAdd = 1;
-                        boolean endTimeReached = false;
-                        while (!endTimeReached) {
-                            //if endTime is NOT equal to "booked"
-                            if (!reservations.get(position + positionCount + posAdd).getStartTime().equals("booked")) {
-                                //endTime is reached
-                                endTimeReached = true;
-                            } else {
-                                //otherwise increase time step counter
-                                timeStepToEnd++;
-                                posAdd++;
-                            }
-                        }
-                        System.out.println("timeStepToEnd: " + timeStepToEnd + ", toStart: " + timeStepToStart);
+                        System.out.println("pos: " + position + ", " + "timeStepToEnd: " + timeStepToEnd + ", toStart: " + timeStepToStart);
+                        System.out.println("startTime: " + reservations.get(position+positionCount-timeStepToStart).getStartTime());
 
                         if (timeStepToEnd <= timeStepToStart && (timeStepToStart - timeStepToEnd) < 2) {
                             int middlePosition = Math.round(timeStepToEnd / timeStepToStart);
@@ -198,7 +211,7 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                                 textHourBooking.setText(reservations.get(position+positionCount-timeStepToStart).getStartTime() +
                                         "-" + reservations.get(position+positionCount-timeStepToStart).getEndTime());
                                 isMiddleReservation = true;
-                                textHourBooking.setGravity(Gravity.CENTER_VERTICAL);
+                                textHourBooking.setGravity(Gravity.TOP);
 
                                 //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
                                 //something like this:
