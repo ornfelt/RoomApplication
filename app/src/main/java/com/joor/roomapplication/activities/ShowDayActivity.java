@@ -194,11 +194,8 @@ public class ShowDayActivity extends AppCompatActivity {
         changableCalendar.setTime(d1);
         changableDate = changableCalendar.getTime();
 
-
         constantCalendar = Calendar.getInstance();
         constantDate = constantCalendar.getTime();
-
-
         datePicked = false;
     }
 
