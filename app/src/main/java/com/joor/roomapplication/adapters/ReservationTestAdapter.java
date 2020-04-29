@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.joor.roomapplication.R;
+import com.joor.roomapplication.activities.BookingActivity;
 import com.joor.roomapplication.activities.ShowDayActivity;
 import com.joor.roomapplication.activities.ShowDayActivitySchedule;
 import com.joor.roomapplication.models.Reservation;
@@ -87,6 +88,8 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                 final Button buttonBook = (Button) convertView.findViewById(R.id.buttonBook);
                 final Button buttonBook2 = (Button) convertView.findViewById(R.id.buttonBook2);
                 final TextView textHour = (TextView) convertView.findViewById(R.id.textHour);
+                //boolean used to find middle time block in reservation
+                boolean isMiddleReservation = false;
 
             if(position % 2 == 0) {
                 //get display width and height
@@ -101,13 +104,14 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                     final Reservation reservation;
 
                     //in case list limit is reached
-                    if(positionCount == 1 && reservations.size() == position+1){
+                    if(positionCount == 0 && reservations.size() == position+1){
                         break;
-                    }else if (positionCount == 0 && reservations.size() == position + positionCount+1){
+                    }else if (positionCount == 1 && reservations.size() == position + positionCount+1){
                         break;
                     }
                     reservation = reservations.get(position + positionCount);
 
+                    //if time slot is available
                     if (reservation.getStartTime().equals("free")) {
                         //set button color to green
                         if (positionCount == 0) {
@@ -116,25 +120,6 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                             buttonBook.setLayoutParams(buttonBookParams);
                         } else {
                             buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
-                            buttonBook2Params.width = displayWidth;
-                            buttonBook2.setLayoutParams(buttonBook2Params);
-                        }
-                    } else if (reservation.getStartTime().equals("booked")) {
-                        if (positionCount == 0) {
-                            buttonBook.setBackgroundColor(Color.parseColor("#fffa7d89"));
-                            buttonBook.setClickable(false);
-                            buttonBookParams.width = displayWidth;
-                            buttonBook.setLayoutParams(buttonBookParams);
-                            //if previous block is NOT free
-                            if(!reservations.get(position + positionCount-1).getStartTime().equals("free")){
-                                //then remove border from red area
-                                ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook.getLayoutParams();
-                                buttonMargin.topMargin = 0;
-                                buttonBook.setLayoutParams(buttonMargin);
-                            }
-                        } else {
-                            buttonBook2.setBackgroundColor(Color.parseColor("#fffa7d89"));
-                            buttonBook2.setClickable(false);
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
                         }
@@ -147,13 +132,70 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                             buttonBook.setClickable(false);
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
-                            //buttonBook.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
-                        } else {
-                            buttonBook2.setBackgroundColor(Color.parseColor("#fffa7d89"));
-                            buttonBook2.setClickable(false);
-                            buttonBook2Params.width = displayWidth;
-                            buttonBook2.setLayoutParams(buttonBook2Params);
-                            //buttonBook2.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
+                            //if previous block is NOT free
+                                if (position > 0 && !reservations.get(position + positionCount - 1).getStartTime().equals("free")) {
+                                    //then remove border from red area
+                                    ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook.getLayoutParams();
+                                    buttonMargin.topMargin = 0;
+                                    buttonBook.setLayoutParams(buttonMargin);
+                                }
+                            } else{
+                                buttonBook2.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                                buttonBook2.setClickable(false);
+                                buttonBook2Params.width = displayWidth;
+                                buttonBook2.setLayoutParams(buttonBook2Params);
+                                //buttonBook2.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
+                            }
+                        //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
+                        //need to find middle of reservation and only set the time text there
+                        //count "time steps" till startTime is reached
+                        int timeStepToStart = 1;
+                        int posAdd = 1;
+                        if(position > 0) {
+                            boolean startTimeReached = false;
+                            while (!startTimeReached) {
+                                //if startTime is NOT equal to "booked"
+                                if (!reservations.get(position + positionCount - posAdd).getStartTime().equals("booked")) {
+                                    //startTime is reached
+                                    startTimeReached = true;
+                                } else {
+                                    //otherwise increase time step counter
+                                    timeStepToStart++;
+                                    posAdd++;
+                                }
+                            }
+                        }else{
+                            timeStepToStart = 0;
+                        }
+
+                        //count "time steps" till endTime is reached
+                        int timeStepToEnd = 1;
+                        posAdd = 1;
+                        boolean endTimeReached = false;
+                        while (!endTimeReached) {
+                            //if endTime is NOT equal to "booked"
+                            if (!reservations.get(position + positionCount + posAdd).getStartTime().equals("booked")) {
+                                //endTime is reached
+                                endTimeReached = true;
+                            } else {
+                                //otherwise increase time step counter
+                                timeStepToEnd++;
+                                posAdd++;
+                            }
+                        }
+                        System.out.println("timeStepToEnd: " + timeStepToEnd + ", toStart: " + timeStepToStart);
+
+                        if (timeStepToEnd <= timeStepToStart && (timeStepToStart - timeStepToEnd) < 2) {
+                            int middlePosition = Math.round(timeStepToEnd / timeStepToStart);
+                            System.out.println("middlePosition: " + middlePosition);
+                            //if current block is the middle of reservation
+                            if (middlePosition < 1 || timeStepToEnd == timeStepToStart) {
+                                System.out.println("middlePos reached: " + positionCount + ", " + reservations.get(position+positionCount-timeStepToStart).getStartTime());
+                                //then set text
+                                textHour.setText(reservations.get(position+positionCount-timeStepToStart).getStartTime() +
+                                        "-" + reservations.get(position+positionCount-timeStepToStart).getEndTime());
+                                isMiddleReservation = true;
+                            }
                         }
                     }
                 }
@@ -163,9 +205,18 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                     //removes every other textview
                     ViewGroup layout = (ViewGroup) textHour.getParent();
                     layout.removeView(textHour);
-                } else {
-                    textHour.setText(getTimeByPosition(position));
-                    textHour.setGravity(Gravity.CENTER_VERTICAL);
+                } else if(reservations.get(position).getStartTime().equals("booked") &&
+                        reservations.get(position+1).getStartTime().equals("booked") && !isMiddleReservation){
+                    //removes every other textview
+                    ViewGroup layout = (ViewGroup) textHour.getParent();
+                    layout.removeView(textHour);
+                }
+                else {
+                    //don't set text if block is a reservation
+                    if(!isMiddleReservation && reservations.get(position).getStartTime().equals("free")) {
+                        textHour.setText(getTimeByPosition(position));
+                        textHour.setGravity(Gravity.CENTER_VERTICAL);
+                    }
 
                     //if current block is free and next reservation is booked
                     if(reservations.get(position).getStartTime().equals("free") &&
@@ -182,7 +233,7 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
 
                         //set new text and move up
                         textHour.setText(timeSplit[0] + "-" + newHour);
-                        textHour.setGravity(20);
+                        textHour.setGravity(15);
                     }
                     //else if current block is booked and next is free
                     else if(!reservations.get(position).getStartTime().equals("free") &&
@@ -207,6 +258,34 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                 layout.removeView(textHour);
                 layout.removeView(buttonBook);
                 layout.removeView(buttonBook2);
+            }
+
+            //add onclicklistener to booking buttons
+            if(buttonBook.isClickable()){
+                buttonBook.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //navigate to booking view
+                        Intent intent = new Intent(activity,
+                                BookingActivity.class);
+                        intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                        activity.startActivity(intent);
+
+                    }
+                });
+            }
+            if(buttonBook2.isClickable()) {
+                buttonBook2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //navigate to booking view
+                        Intent intent = new Intent(activity,
+                                BookingActivity.class);
+                        intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                        activity.startActivity(intent);
+
+                    }
+                });
             }
         }
     }
