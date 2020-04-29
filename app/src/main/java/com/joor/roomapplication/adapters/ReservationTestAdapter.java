@@ -88,6 +88,7 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                 final Button buttonBook = (Button) convertView.findViewById(R.id.buttonBook);
                 final Button buttonBook2 = (Button) convertView.findViewById(R.id.buttonBook2);
                 final TextView textHour = (TextView) convertView.findViewById(R.id.textHour);
+                final TextView textHourBooking = (TextView) convertView.findViewById(R.id.textHourBooking);
                 //boolean used to find middle time block in reservation
                 boolean isMiddleReservation = false;
 
@@ -98,6 +99,7 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                 int displayHeight = displayMetrics.heightPixels;
                 ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
                 ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
+                ViewGroup.LayoutParams textHourBookingParams = textHourBooking.getLayoutParams();
 
                 //loops two times to get two reservation object for a specific hour
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
@@ -146,6 +148,7 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                                 buttonBook2.setLayoutParams(buttonBook2Params);
                                 //buttonBook2.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
                             }
+
                         //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
                         //need to find middle of reservation and only set the time text there
                         //count "time steps" till startTime is reached
@@ -190,19 +193,28 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                             System.out.println("middlePosition: " + middlePosition);
                             //if current block is the middle of reservation
                             if (middlePosition < 1 || timeStepToEnd == timeStepToStart) {
-                                System.out.println("middlePos reached: " + positionCount + ", " + reservations.get(position+positionCount-timeStepToStart).getStartTime());
+                                System.out.println(position + ", middlePos reached: " + positionCount + ", " + reservations.get(position+positionCount-timeStepToStart).getStartTime());
                                 //then set text
-                                textHour.setText(reservations.get(position+positionCount-timeStepToStart).getStartTime() +
+                                textHourBooking.setEnabled(true);
+                                textHourBooking.setText(reservations.get(position+positionCount-timeStepToStart).getStartTime() +
                                         "-" + reservations.get(position+positionCount-timeStepToStart).getEndTime());
                                 isMiddleReservation = true;
+                                textHourBooking.setGravity(Gravity.CENTER_VERTICAL);
+
                             }
                         }
                     }
                 }
+                //remove second textview if time block isn't middle of reservation
+                if(!isMiddleReservation){
+                    ViewGroup layout2 = (ViewGroup) textHourBooking.getParent();
+                    layout2.removeView(textHourBooking);
+                }
 
                 //set time text
-                if (getTimeByPosition(position).equals("")) {
+                if (getTimeByPosition(position).equals("") && !isMiddleReservation) {
                     //removes every other textview
+                    System.out.println(textHour.getText() + ", textHour removed (1) " + isMiddleReservation + ", " + position);
                     ViewGroup layout = (ViewGroup) textHour.getParent();
                     layout.removeView(textHour);
                 } else if(reservations.get(position).getStartTime().equals("booked") &&
@@ -210,6 +222,7 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                     //removes every other textview
                     ViewGroup layout = (ViewGroup) textHour.getParent();
                     layout.removeView(textHour);
+                    System.out.println("textHour removed (2)");
                 }
                 else {
                     //don't set text if block is a reservation
@@ -254,10 +267,13 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                     }
                 }
             }else{
+                //if position is an odd number, remove view elements
                 ViewGroup layout = (ViewGroup) textHour.getParent();
                 layout.removeView(textHour);
                 layout.removeView(buttonBook);
                 layout.removeView(buttonBook2);
+                ViewGroup layout2 = (ViewGroup) textHourBooking.getParent();
+                layout2.removeView(textHourBooking);
             }
 
             //add onclicklistener to booking buttons
