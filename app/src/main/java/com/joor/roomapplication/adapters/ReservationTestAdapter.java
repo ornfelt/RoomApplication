@@ -149,7 +149,6 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                                 //buttonBook2.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
                             }
 
-                        //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
                         //need to find middle of reservation and only set the time text there
                         //count "time steps" till startTime is reached
                         int timeStepToStart = 1;
@@ -200,6 +199,16 @@ public class ReservationTestAdapter extends RecyclerView.Adapter<ReservationTest
                                         "-" + reservations.get(position+positionCount-timeStepToStart).getEndTime());
                                 isMiddleReservation = true;
                                 textHourBooking.setGravity(Gravity.CENTER_VERTICAL);
+
+                                //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
+                                //something like this:
+                                /*
+                                if(positionCount == 0){
+                                    textHourBooking.setGravity(40);
+                                }else{
+                                    textHourBooking.setGravity(60);
+                                }
+                                 */
 
                             }
                         }
