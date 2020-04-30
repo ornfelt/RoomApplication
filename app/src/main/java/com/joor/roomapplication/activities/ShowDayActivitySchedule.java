@@ -7,9 +7,15 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,8 +37,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,7 +54,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private RecyclerView recyclerView;
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
     private List<Reservation> reservations = new ArrayList<Reservation>();
-    private ReservationTestAdapter adapter;
+    private ReservationAdapter adapter;
 
     private TextView roomName;
     private TextView todaysDate;
@@ -61,17 +69,15 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private boolean datePicked;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-
-
+    private DisplayMetrics displayMetrics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_day_schedule);
         // Set today's date
-
         bindViews();
+
         //init view elements and checks if there's a saved instance
         setViewElements(savedInstanceState);
 
@@ -80,7 +86,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         // Set up imagelisteners
         setImgListeners();
         setDatePicker();
@@ -89,6 +94,21 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Gets the availability for a specific room
         getAvailability(changableDate);
 
+        //TODO: fix responsitivity programatically
+        //get display width and height
+        displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+        //set layoutparams for imageviews
+
+        /*
+        ViewGroup.LayoutParams leftClickParams = leftClick.getLayoutParams();
+        ViewGroup.LayoutParams rightClickParams = rightClick.getLayoutParams();
+        leftClickParams.height = displayHeight/10;
+        leftClickParams.width = displayWidth/4;
+        rightClickParams.height = displayHeight/10;
+        rightClickParams.width = displayWidth/4;
+         */
     }
 
     //gets id for view
@@ -118,7 +138,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     }
 
     //This class shows available times for a specific day and a specific room, hence these values needs to be loaded from intent
-    private void initValuesFromIntent(){
+    private void initValuesFromIntent() {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         room_name = extras.getString(ROOMNAME_EXTRA);
@@ -136,17 +156,19 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState){
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //saves when onDestroyed
         outState.putString("roomName", room_name);
+        outState.putString("selectedDate", selectedDate);
     }
 
     private void initValuesFromSavedState(Bundle savedInstanceState) throws IOException {
         room_name = savedInstanceState.getString("roomName");
+        selectedDate = savedInstanceState.getString("selectedDate");
     }
 
-    private ArrayList<String> timeList (){
+    private ArrayList<String> timeList() {
         ArrayList<String> availableTimesList = new ArrayList<>();
         String hour = "8";
         String full = "00";
@@ -154,29 +176,29 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         String half = "30";
         String threeQuarter = "45";
 
-        for(int i = 0; i < 12; i++){
-            if(Integer.parseInt(hour) < 10){
+        for (int i = 0; i < 12; i++) {
+            if (Integer.parseInt(hour) < 10) {
                 availableTimesList.add("0" + hour + ":" + full);
                 availableTimesList.add("0" + hour + ":" + quarter);
                 availableTimesList.add("0" + hour + ":" + half);
                 availableTimesList.add("0" + hour + ":" + threeQuarter);
-            }else{
+            } else {
                 availableTimesList.add(hour + ":" + full);
                 availableTimesList.add(hour + ":" + quarter);
                 availableTimesList.add(hour + ":" + half);
                 availableTimesList.add(hour + ":" + threeQuarter);
             }
-            if(i == 11) availableTimesList.add("20:00");
-            hour = Integer.toString(Integer.parseInt(hour)+ 1);
+            if (i == 11) availableTimesList.add("20:00");
+            hour = Integer.toString(Integer.parseInt(hour) + 1);
         }
 
         return availableTimesList;
     }
 
-    private void setViewElements(Bundle savedInstanceState){
-        if(savedInstanceState == null) {
+    private void setViewElements(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
             initValuesFromIntent();
-        }else{
+        } else {
             try {
                 initValuesFromSavedState(savedInstanceState);
             } catch (IOException e) {
@@ -198,9 +220,9 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         datePicked = false;
     }
 
-    private void setAdapter(){
+    private void setAdapter() {
         //creates RecycleAdapter and sets it
-        adapter = new ReservationTestAdapter(this, reservations);
+        adapter = new ReservationAdapter(this, reservations);
         recyclerView.setAdapter(adapter);
     }
 
@@ -258,8 +280,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         });
     }
 
-    private void getAvailability(final Date date)
-    {
+    private void getAvailability(final Date date) {
         //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();
 
@@ -275,9 +296,10 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                             //list that will contain all times available for booking
                             ArrayList<String> freeTimesList = new ArrayList<>();
                             //create today's date
-
+                            //Date date = new Date();
                             String dateToday = formatter.format(date);
-                            System.out.println("dateToday: " + dateToday);
+                            System.out.println("Selected date is: "+ dateToday);
+                            //System.out.println("dateToday: " + dateToday);
                             //test date (change below)
                             //dateToday = "2020-04-30";
 
@@ -286,7 +308,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                                 boolean timeFound = false;
 
                                 //loops through response data
-                                for(int j = 0; j < response.length(); j++) {
+                                for (int j = 0; j < response.length(); j++) {
                                     JSONObject JSONreservation = response.getJSONObject(j);
                                     String startDate = JSONreservation.getString("startDate");
                                     //if reservation is for today
@@ -302,36 +324,35 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                                             String endTime = JSONreservation.getString("endTime");
                                             boolean endTimeReached = false;
                                             //loops until end time is found
-                                            while(!endTimeReached){
+                                            while (!endTimeReached) {
                                                 //set i to new time, example: 08:15
                                                 i++;
-                                                if(daySchedule.get(i).equals(endTime)){
+                                                if (daySchedule.get(i).equals(endTime)) {
                                                     endTimeReached = true;
                                                     //change i back
                                                     i--;
-                                                }else{
+                                                } else {
                                                     freeTimesList.add("Time booked");
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                if(!timeFound){
+                                if (!timeFound) {
                                     //time is added to freeTimesList
                                     freeTimesList.add(daySchedule.get(i));
                                 }
                             }
 
                             //size-1 because no need to check 19:45 - 20:00 since it can't be booked
-                            for(int i = 0; i < daySchedule.size()-1; i++) {
-                                if(daySchedule.get(i).equals(freeTimesList.get(i)) && daySchedule.get(i+1).equals(freeTimesList.get(i+1))){
+                            for (int i = 0; i < daySchedule.size() - 1; i++) {
+                                if (daySchedule.get(i).equals(freeTimesList.get(i)) && daySchedule.get(i + 1).equals(freeTimesList.get(i + 1))) {
                                     Reservation fillerReservation = new Reservation();
                                     fillerReservation.setStartTime("free");
                                     reservations.add(fillerReservation);
                                     //skips ahead by one
                                     i++;
-                                }
-                                else {
+                                } else {
                                     for (int j = 0; j < response.length(); j++) {
                                         JSONObject JSONreservation = response.getJSONObject(j);
                                         //parameters needed: int id, String starttime, String startdate, String endtime, String enddate, String[] columns
@@ -346,7 +367,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                                         JSONArray reservationNames = JSONreservation.getJSONArray("name");
 
                                         //if selected date is the same as reservation date
-                                        if(dateToday.equals(startDate)) {
+                                        if (dateToday.equals(startDate)) {
                                             if (daySchedule.get(i).equals(startTime)) {
                                                 //create reservation object and add to reservations (list)
                                                 Reservation reservation = new Reservation(reservationId, startTime, startDate, endTime, endDate,
@@ -356,13 +377,13 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
                                                 boolean resEndTimeReached = false;
                                                 while (!resEndTimeReached) {
-                                                    if (!daySchedule.get(i + 1).equals(endTime) && !daySchedule.get(i+2).equals(endTime)) {
+                                                    if (!daySchedule.get(i + 1).equals(endTime) && !daySchedule.get(i + 2).equals(endTime)) {
                                                         Reservation fillerReservation = new Reservation();
                                                         fillerReservation.setStartTime("booked");
                                                         reservations.add(fillerReservation);
                                                         System.out.println("fillerReservation added: booked");
                                                         i += 2;
-                                                    }else{
+                                                    } else {
                                                         resEndTimeReached = true;
                                                         i--;
                                                     }
@@ -452,7 +473,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     }
 
     private void updateView(){
-        Intent i= new Intent(ShowDayActivitySchedule.this,ShowDayActivitySchedule.class);
+        Intent i= new Intent(ShowDayActivitySchedule.this,ShowDayActivity.class);
         Bundle extras = new Bundle();
         System.out.println("UpdateView date is " + selectedDate);
         extras.putString(ROOMNAME_EXTRA, room_name);
@@ -463,4 +484,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         overridePendingTransition( 0, 0);
         overridePendingTransition( 0, 0);
     }
+
+
 }

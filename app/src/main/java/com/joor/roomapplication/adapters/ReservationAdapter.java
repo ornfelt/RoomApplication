@@ -25,7 +25,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.joor.roomapplication.R;
+import com.joor.roomapplication.activities.BookingActivity;
 import com.joor.roomapplication.activities.ShowDayActivity;
+import com.joor.roomapplication.activities.ShowDayActivitySchedule;
 import com.joor.roomapplication.models.Reservation;
 import com.joor.roomapplication.controllers.AppController;
 
@@ -85,116 +87,241 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             imageLoader = AppController.getmInstance().getmImageLoader();
             final Button buttonBook = (Button) convertView.findViewById(R.id.buttonBook);
             final Button buttonBook2 = (Button) convertView.findViewById(R.id.buttonBook2);
-            //test
-            System.out.println("reservation size: " + reservations.size());
+            final TextView textHour = (TextView) convertView.findViewById(R.id.textHour);
+            final TextView textHourBooking = (TextView) convertView.findViewById(R.id.textHourBooking);
+            //boolean used to find middle time block in reservation
+            boolean isMiddleReservation = false;
 
-            //get display width and height
-            displayMetrics = activity.getResources().getDisplayMetrics();
-            int displayWidth = displayMetrics.widthPixels;
-            int displayHeight = displayMetrics.heightPixels;
+            if(position % 2 == 0) {
+                //get display width and height
+                displayMetrics = activity.getResources().getDisplayMetrics();
+                int displayWidth = displayMetrics.widthPixels;
+                int displayHeight = displayMetrics.heightPixels;
+                ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
+                ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
+                ViewGroup.LayoutParams textHourBookingParams = textHourBooking.getLayoutParams();
 
-            if(position % 2 == 0){
-            //loops two times to get two reservation object for a specific hour
-            for (int positionCount = 0; positionCount < 2; positionCount++) {
-                final Reservation reservation = reservations.get(position + positionCount);
+                //loops two times to get two reservation object for a specific hour
+                for (int positionCount = 0; positionCount < 2; positionCount++) {
+                    final Reservation reservation;
 
-                if (reservation.getStartTime().equals("free")) {
-                    //if positionCount is 0 then set values for first button
-                    if (positionCount == 0) {
-                        buttonBook.setBackgroundColor(Color.parseColor("#ff93e6b3"));
-                        ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
-                        buttonBookParams.width = displayWidth/2;
-                        buttonBook.setLayoutParams(buttonBookParams);
-                        //else set values for second button
-                    } else {
-                        buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
-                        ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
-                        //subtract 2 pixels for border
-                        buttonBook2Params.width = (displayWidth/2)-2;
-                        buttonBook2.setLayoutParams(buttonBook2Params);
-                    }
-                } else {
-                    if (positionCount == 0) {
-                        buttonBook.setBackgroundColor(Color.parseColor("#fffa7d89"));
-                    } else {
-                        buttonBook2.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                    //in case list limit is reached
+                    if(positionCount == 1 && reservations.size() == position+positionCount){
+                        break;
                     }
 
-                    //count "time steps" till endTime is reached
-                    int timeStepCount = 1;
-                    int posAdd = 1;
-                    boolean endTimeReached = false;
-                    while (!endTimeReached) {
-                        //if startTime is NOT equals to booked
-                        if (!reservations.get(position + positionCount + posAdd).getStartTime().equals("booked")) {
-                            //endTime is reached
-                            endTimeReached = true;
-                        } else {
-                            //otherwise increase time step counter (increased by 2 to only count half hours
-                            timeStepCount += 2;
-                            posAdd++;
-                        }
-                    }
+                    reservation = reservations.get(position + positionCount);
 
-                    if (positionCount == 0) {
-                        //original height is 22 300
-                        ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
-                        buttonBookParams.height = 20 * timeStepCount;
-                        buttonBookParams.width = displayWidth;
-                        buttonBook.setLayoutParams(buttonBookParams);
-                    } else {
-                        ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
-                        buttonBook2Params.height = 20 * timeStepCount;
-                        buttonBook2Params.width = displayWidth;
-                        buttonBook2.setLayoutParams(buttonBook2Params);
-                        //bring forth the first button
-                        buttonBook.bringToFront();
-                    }
-                }
-
-                if (reservation.getStartTime().equals("booked")) {
-                    if (positionCount == 0) {
-                        if(!reservations.get(position + positionCount + 1).getStartTime().equals("free")) {
-                            ViewGroup layout = (ViewGroup) buttonBook.getParent();
-                            layout.removeView(buttonBook);
-                        }else{
-                            ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
-                            ViewGroup.LayoutParams buttonBookParams2 = buttonBook2.getLayoutParams();
-                            ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook.getLayoutParams();
-                            buttonMargin.topMargin = 0;
-                            buttonBookParams.height = buttonBookParams2.height;
-                            buttonBookParams.width = displayWidth/2;
+                    //if time slot is available
+                    if (reservation.getStartTime().equals("free")) {
+                        //set button color to green
+                        if (positionCount == 0) {
+                            buttonBook.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                            buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
-                            buttonBook.setLayoutParams(buttonMargin);
-                            buttonBook.setText("");
+                        } else {
+                            buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                            buttonBook2Params.width = displayWidth;
+                            buttonBook2.setLayoutParams(buttonBook2Params);
+                        }
+                    }
+                    //else means the reservation is booked
+                    else {
+                        //set button color to red and make nonclickable
+                        if (positionCount == 0) {
+                            buttonBook.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                            buttonBook.setClickable(false);
+                            buttonBookParams.width = displayWidth;
+                            buttonBook.setLayoutParams(buttonBookParams);
+                            //if previous block is NOT free
+                            if (position > 0 && !reservations.get(position + positionCount - 1).getStartTime().equals("free")) {
+                                //then remove border from red area
+                                ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook.getLayoutParams();
+                                buttonMargin.topMargin = 0;
+                                buttonBook.setLayoutParams(buttonMargin);
+                            }
+                        } else{
+                            buttonBook2.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                            buttonBook2.setClickable(false);
+                            buttonBook2Params.width = displayWidth;
+                            buttonBook2.setLayoutParams(buttonBook2Params);
+                            //buttonBook2.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
+                        }
+
+                        //need to find middle of reservation and only set the time text there
+
+
+                        //count "time steps" till endTime is reached
+                        int timeStepToEnd = 1;
+                        int posAdd = 1;
+                        boolean endTimeReached = false;
+                        while (!endTimeReached) {
+                            //if endTime is NOT equal to "booked"
+                            if (!reservations.get(position + positionCount + posAdd).getStartTime().equals("booked")) {
+                                //endTime is reached
+                                endTimeReached = true;
+                            } else {
+                                //otherwise increase time step counter
+                                timeStepToEnd++;
+                                posAdd++;
+                            }
+                        }
+
+                        //count "time steps" till startTime is reached
+                        int timeStepToStart = 1;
+                        posAdd = 1;
+                        if(position > 0) {
+                            boolean startTimeReached = false;
+                            //if current position contains booking
+                            if(!reservations.get(position+positionCount).getStartTime().equals("booked") &&
+                                    !reservations.get(position+positionCount).getStartTime().equals("free")){
+                                //then startTime is reached
+                                startTimeReached = true;
+                                timeStepToStart = 0;
+                            }
+                            //else find startTime
+                            else {
+                                while (!startTimeReached) {
+                                    //if startTime is NOT equal to "booked"
+                                    if (!reservations.get(position + positionCount - posAdd).getStartTime().equals("booked")) {
+                                        //startTime is reached
+                                        startTimeReached = true;
+                                    } else {
+                                        //otherwise increase time step counter
+                                        timeStepToStart++;
+                                        posAdd++;
+                                    }
+                                }
+                            }
+                        }else{
+                            timeStepToStart = 0;
+                        }
+
+                        System.out.println("pos: " + position + ", " + "timeStepToEnd: " + timeStepToEnd + ", toStart: " + timeStepToStart);
+                        System.out.println("startTime: " + reservations.get(position+positionCount-timeStepToStart).getStartTime());
+
+                        //set reservation time at first block
+                        if(timeStepToStart == 0){
+                            System.out.println("reservation text set");
+                                //then set text
+                                textHourBooking.setEnabled(true);
+                                textHourBooking.setText(reservations.get(position+positionCount-timeStepToStart).getStartTime() +
+                                        "-" + reservations.get(position+positionCount-timeStepToStart).getEndTime());
+                                isMiddleReservation = true;
+                                textHourBooking.setGravity(Gravity.BOTTOM);
+
+                                //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
+                                //something like this:
+                                /*
+                                if(positionCount == 0){
+                                    textHourBooking.setGravity(40);
+                                }else{
+                                    textHourBooking.setGravity(60);
+                                }
+                                 */
 
                         }
-                    } else {
-                        ViewGroup layout = (ViewGroup) buttonBook2.getParent();
-                        layout.removeView(buttonBook2);
-                    }
-                } else if (reservation.getStartTime().equals("free")) {
-                    if(positionCount == 0) {
-                        buttonBook.setText(getTimeByPosition(position));
-                    }else {
-                        buttonBook2.setText(getTimeByPosition(position + 1));
-                    }
-
-                } else {
-                    if (positionCount == 0) {
-                        buttonBook.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
-                    } else {
-                        buttonBook2.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
                     }
                 }
+                //remove second textview if time block isn't middle of reservation
+                if(!isMiddleReservation){
+                    ViewGroup layout2 = (ViewGroup) textHourBooking.getParent();
+                    layout2.removeView(textHourBooking);
+                }
+
+                //set time text
+                if (getTimeByPosition(position).equals("") && !isMiddleReservation) {
+                    //removes every other textview
+                    System.out.println(textHour.getText() + ", textHour removed (1) " + isMiddleReservation + ", " + position);
+                    ViewGroup layout = (ViewGroup) textHour.getParent();
+                    layout.removeView(textHour);
+                } else if(reservations.get(position).getStartTime().equals("booked") &&
+                        reservations.get(position+1).getStartTime().equals("booked") && !isMiddleReservation){
+                    //removes every other textview
+                    ViewGroup layout = (ViewGroup) textHour.getParent();
+                    layout.removeView(textHour);
+                    System.out.println("textHour removed (2)");
+                }
+                else {
+                    //don't set text if block is a reservation
+                    if(!isMiddleReservation && reservations.get(position).getStartTime().equals("free")) {
+                        textHour.setText(getTimeByPosition(position));
+                        textHour.setGravity(Gravity.CENTER_VERTICAL);
+                    }
+
+                    //if current block is free and next reservation is booked
+                    if(reservations.get(position).getStartTime().equals("free") &&
+                            !reservations.get(position+1).getStartTime().equals("free")){
+                        //then change first hour in time text to half hour
+                        String hourText = getTimeByPosition(position);
+                        //split time into two parts, clarifying example: split into 08:00 and 09:00
+                        String[] timeSplit = hourText.split("-");
+
+                        //split hours, example: split into 08 and 00
+                        String[] firstHourSplit = timeSplit[0].split(":");
+                        //create new hour string with first hour split and "30", example: 08 + "30"
+                        String newHour = firstHourSplit[0] + ":30";
+
+                        //set new text and move up
+                        textHour.setText(timeSplit[0] + "-" + newHour);
+                        textHour.setGravity(15);
+                    }
+                    //else if current block is booked and next is free
+                    else if(!reservations.get(position).getStartTime().equals("free") &&
+                            reservations.get(position+1).getStartTime().equals("free")){
+                        //then change second hour in time text to half hour
+                        String hourText = getTimeByPosition(position);
+                        //split time into two parts, clarifying example: split into 08:00 and 09:00
+                        String[] timeSplit = hourText.split("-");
+
+                        //split hours, example: split into 08 and 00
+                        String[] firstHourSplit = timeSplit[0].split(":");
+                        //create new hour string with first hour split and "30", example: 08 + "30"
+                        String newHour = firstHourSplit[0] + ":30";
+
+                        //set new text and move down
+                        textHour.setText(newHour + "-" + timeSplit[1]);
+                        textHour.setGravity(80);
+                    }
+                }
+            }else{
+                //if position is an odd number, remove view elements
+                ViewGroup layout = (ViewGroup) textHour.getParent();
+                layout.removeView(textHour);
+                layout.removeView(buttonBook);
+                layout.removeView(buttonBook2);
+                ViewGroup layout2 = (ViewGroup) textHourBooking.getParent();
+                layout2.removeView(textHourBooking);
             }
-        } else if (position % 2 == 1) {
-            ViewGroup layout = (ViewGroup) buttonBook.getParent();
-            layout.removeView(buttonBook);
-            ViewGroup layout2 = (ViewGroup) buttonBook2.getParent();
-            layout2.removeView(buttonBook2);
+
+            //add onclicklistener to booking buttons
+            if(buttonBook.isClickable()){
+                buttonBook.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //navigate to booking view
+                        Intent intent = new Intent(activity,
+                                BookingActivity.class);
+                        intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                        activity.startActivity(intent);
+
+                    }
+                });
+            }
+            if(buttonBook2.isClickable()) {
+                buttonBook2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //navigate to booking view
+                        Intent intent = new Intent(activity,
+                                BookingActivity.class);
+                        intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                        activity.startActivity(intent);
+
+                    }
+                });
+            }
         }
-    }
     }
 
     //getItemCount needs to return the size of the reservations list, otherwise recyclerview never tries to instatiate a view
@@ -206,7 +333,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     //refreshes item list
     private void refreshList(Context context){
         Intent intent = new Intent(context,
-                ShowDayActivity.class);
+                ShowDayActivitySchedule.class);
         context.startActivity(intent);
     }
 
@@ -215,71 +342,29 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         String time = "";
 
         if(pos == 0){
-            time = "08:00-08:30";
-        }else if(pos == 1){
-            time = "08:30-09:00";
+            time = "08:00-09:00";
         }else if(pos == 2){
-            time = "09:00-09:30";
-        }else if(pos == 3){
-            time = "09:30-10:00";
-        }
-        else if(pos == 4){
-            time = "10:00-10:30";
-        }else if(pos == 5){
-            time = "10:30-11:00";
-        }
-        else if(pos == 6){
-            time = "11:00-11:30";
-        }else if(pos == 7){
-            time = "11:30-12:00";
-        }
-        else if(pos == 8){
-            time = "12:00-12:30";
-        }else if(pos == 9){
-            time = "12:30-13:00";
-        }
-        else if(pos == 10){
-            time = "13:00-13:30";
-        }else if(pos == 11){
-            time = "13:30-14:00";
-        }
-        else if(pos == 12){
-            time = "14:00-14:30";
-        }else if(pos == 13){
-            time = "14:30-15:00";
-        }
-        else if(pos == 14){
-            time = "15:00-15:30";
-        }
-        else if(pos == 15){
-            time = "15:30-16:00";
-        }
-        else if(pos == 16){
-            time = "16:00-16:30";
-        }
-        else if(pos == 17){
-            time = "16:30-17:00";
-        }
-        else if(pos == 18){
-            time = "17:00-17:30";
-        }
-        else if(pos == 19){
-            time = "17:30-18:00";
-        }
-        else if(pos == 20){
-            time = "18:00-18:30";
-        }
-        else if(pos == 21){
-            time = "18:30-19:00";
-        }
-        else if(pos == 22){
-            time = "19:00-19:30";
-        }
-        else if(pos == 23){
-            time = "19:30-20:00";
-        }
-        else{
-            time = "xx:xx-xx:xx";
+            time = "09:00-10:00";
+        }else if(pos == 4){
+            time = "10:00-11:00";
+        }else if(pos == 6){
+            time = "11:00-12:00";
+        }else if(pos == 8){
+            time = "12:00-13:00";
+        }else if(pos == 10){
+            time = "13:00-14:00";
+        }else if(pos == 12){
+            time = "14:00-15:00";
+        }else if(pos == 14){
+            time = "15:00-16:00";
+        }else if(pos == 16){
+            time = "16:00-17:00";
+        }else if(pos == 18){
+            time = "17:00-18:00";
+        }else if(pos == 20){
+            time = "18:00-19:00";
+        }else if(pos == 22){
+            time = "19:00-20:00";
         }
         return time;
     }
