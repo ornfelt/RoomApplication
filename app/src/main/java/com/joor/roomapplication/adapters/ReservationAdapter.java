@@ -201,7 +201,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         System.out.println("startTime: " + reservations.get(position+positionCount-timeStepToStart).getStartTime());
 
                         //set reservation time at first block
-                        if(timeStepToStart == 0){
+                        if(timeStepToStart == 0 && reservations.get(position+positionCount-timeStepToStart).getEndTime() != null){
                             System.out.println("reservation text set");
                                 //then set text
                                 textHourBooking.setEnabled(true);
