@@ -7,15 +7,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,21 +21,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.joor.roomapplication.R;
-import com.joor.roomapplication.activities.MainActivity;
 import com.joor.roomapplication.adapters.ReservationAdapter;
-import com.joor.roomapplication.adapters.ReservationTestAdapter;
 import com.joor.roomapplication.controllers.AppController;
-import com.joor.roomapplication.data.ReservationRetriever;
 import com.joor.roomapplication.models.Reservation;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -138,21 +128,18 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     }
 
     //This class shows available times for a specific day and a specific room, hence these values needs to be loaded from intent
-    private void initValuesFromIntent() {
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        room_name = extras.getString(ROOMNAME_EXTRA);
-        selectedDate = extras.getString(DATE_EXTRA);
-        System.out.println("After intent "+ selectedDate);
-
+    private void initValues() {
+        // Getting Room name and Date From Intent.
+        getIntents();
+        // Date and Room
         todaysDate = findViewById(R.id.date);
         roomName = findViewById(R.id.txtRoomName);
-        // Clicklistener for rightClick.
+        // Clicklisteners
         rightClick = (ImageView) findViewById(R.id.rightClick);
         leftClick = (ImageView) findViewById(R.id.leftClick);
 
-        todaysDate.setText(selectedDate);
         roomName.setText(room_name);
+        setDateTextView();
     }
 
     @Override
@@ -197,7 +184,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
     private void setViewElements(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            initValuesFromIntent();
+            initValues();
         } else {
             try {
                 initValuesFromSavedState(savedInstanceState);
@@ -244,7 +231,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 }
 
                 selectedDate= formatter.format(clickedDate);
-                todaysDate.setText(selectedDate);
                 updateView();
 
             }
@@ -266,12 +252,10 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                     changableCalendar = Calendar.getInstance();
                     clickedDate = changableCalendar.getTime();
                     selectedDate = formatter.format(clickedDate);
-                    todaysDate.setText(selectedDate);
                     updateView();
                 } else {
                     // if wanted date is not before today then set's date to
                     selectedDate= formatter.format(clickedDate);
-                    todaysDate.setText(selectedDate);
                     updateView();
                 }
 
@@ -470,6 +454,27 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    private void setDateTextView(){
+        Calendar dateChecker = Calendar.getInstance();
+        dateToday = formatter.format(dateChecker.getTime());
+        dateChecker.add(Calendar.DATE, 1);
+        String dateTomorrow = formatter.format(dateChecker.getTime());
+
+        if (dateToday.equals(selectedDate)) {
+            todaysDate.setText("Today");
+        } else if (selectedDate.equals(dateTomorrow)) {
+            todaysDate.setText("Tomorrow");
+        } else
+            todaysDate.setText(selectedDate);
+    }
+
+    private void getIntents(){
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        room_name = extras.getString(ROOMNAME_EXTRA);
+        selectedDate = extras.getString(DATE_EXTRA);
     }
 
     private void updateView(){
