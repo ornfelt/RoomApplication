@@ -473,7 +473,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     }
 
     private void updateView(){
-        Intent i= new Intent(ShowDayActivitySchedule.this,ShowDayActivity.class);
+        Intent i= new Intent(ShowDayActivitySchedule.this,ShowDayActivitySchedule.class);
         Bundle extras = new Bundle();
         System.out.println("UpdateView date is " + selectedDate);
         extras.putString(ROOMNAME_EXTRA, room_name);

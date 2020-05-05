@@ -209,6 +209,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                                         "-" + reservations.get(position+positionCount-timeStepToStart).getEndTime());
                                 isMiddleReservation = true;
                                 textHourBooking.setGravity(Gravity.BOTTOM);
+                                textHourBooking.bringToFront();
 
                                 //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
                                 //something like this:
@@ -247,6 +248,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                     if(!isMiddleReservation && reservations.get(position).getStartTime().equals("free")) {
                         textHour.setText(getTimeByPosition(position));
                         textHour.setGravity(Gravity.CENTER_VERTICAL);
+                        textHour.bringToFront();
                     }
 
                     //if current block is free and next reservation is booked
@@ -265,6 +267,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         //set new text and move up
                         textHour.setText(timeSplit[0] + "-" + newHour);
                         textHour.setGravity(15);
+                        textHour.bringToFront();
                     }
                     //else if current block is booked and next is free
                     else if(!reservations.get(position).getStartTime().equals("free") &&
@@ -282,6 +285,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         //set new text and move down
                         textHour.setText(newHour + "-" + timeSplit[1]);
                         textHour.setGravity(80);
+                        textHour.bringToFront();
                     }
                 }
             }else{
