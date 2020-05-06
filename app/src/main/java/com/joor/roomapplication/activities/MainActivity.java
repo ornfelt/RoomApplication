@@ -21,7 +21,6 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -81,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
         navigateToShowDayActivitySchedule(roomName);
     }
 
-    //when user clicks on show day activity (per hour)
-    public void onClickShowDayHours(View view) {
+    //when user clicks on first available
+    public void onClickShowFirstAvailable(View view) {
         String roomName = roomNameText.getSelectedItem().toString();
 
-        navigateToShowDayActivityPerHour(roomName);
+        navigateToShowFirstAvailableActivity(roomName);
     }
 
 
@@ -109,11 +108,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //launches activity ShowDayActivityPerHour
-    private void navigateToShowDayActivityPerHour(String room_name) {
-        Intent intent = new Intent(getApplicationContext(),
-                ShowDayActivityPerHour.class);
-        intent.putExtra(ShowDayActivityPerHour.INTENT_MESSAGE_KEY, room_name);
+    //launches activity ShowFirstAvailableActivity
+    private void navigateToShowFirstAvailableActivity(String room_name) {
+        Intent intent = new Intent(getApplicationContext(), ShowFirstAvailableActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(ROOMNAME_EXTRA, room_name);
+        extras.putString(DATE_EXTRA, dateToday);
+        intent.putExtras(extras);
         startActivity(intent);
     }
 

@@ -84,21 +84,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Gets the availability for a specific room
         getAvailability(changableDate);
 
-        //TODO: fix responsitivity programatically
-        //get display width and height
-        displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
-        int displayWidth = displayMetrics.widthPixels;
-        int displayHeight = displayMetrics.heightPixels;
-        //set layoutparams for imageviews
-
-        /*
-        ViewGroup.LayoutParams leftClickParams = leftClick.getLayoutParams();
-        ViewGroup.LayoutParams rightClickParams = rightClick.getLayoutParams();
-        leftClickParams.height = displayHeight/10;
-        leftClickParams.width = displayWidth/4;
-        rightClickParams.height = displayHeight/10;
-        rightClickParams.width = displayWidth/4;
-         */
     }
 
     //gets id for view
