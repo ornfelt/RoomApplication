@@ -86,6 +86,7 @@
         android:layout_marginTop="83dp"
         android:layout_marginBottom="69dp"
         android:visibility="visible"
+        android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/buttonShowItems"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

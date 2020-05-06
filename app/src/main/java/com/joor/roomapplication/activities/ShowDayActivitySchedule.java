@@ -246,7 +246,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
                 changableCalendar.add(Calendar.DATE, -1);
                 Date clickedDate = changableCalendar.getTime();
-                // Checks if wanted date is before todays date.
+                // Checks if wanted date is before today's date.
                 if (clickedDate.before(constantDate)) {
                     System.out.println("Can't go further back");
                     changableCalendar = Calendar.getInstance();
