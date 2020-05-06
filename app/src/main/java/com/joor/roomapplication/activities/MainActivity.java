@@ -1,6 +1,8 @@
 package com.joor.roomapplication.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +17,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.joor.roomapplication.R;
+import com.joor.roomapplication.adapters.RoomAdapter;
+import com.joor.roomapplication.interfaces.RecyclerClickInterface;
+import com.joor.roomapplication.models.Room;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,15 +34,20 @@ import java.util.Set;
 import static com.joor.roomapplication.activities.ShowDayActivity.DATE_EXTRA;
 import static com.joor.roomapplication.activities.ShowDayActivity.ROOMNAME_EXTRA;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerClickInterface {
     private String dateToday;
-    Spinner roomNameText;
+    private Spinner roomNameText;
+    private RecyclerView recyclerView;
+    private ArrayList <String> roomNames;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Sets dateToday to today's date
+        roomNames = new ArrayList<>();
+        startRecycle();
         getNames();
         setDate();
     }
@@ -48,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         dateToday = formatter.format(today);
     }
 
+    /*
     private void setSpinner(ArrayList roomNames) {
         roomNameText = (Spinner) findViewById(R.id.spinnerRoomName);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomNames);
@@ -55,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         roomNameText.setAdapter(adapter);
-    }
+    }*/
 
     //launches activity ShowItems
     public void onClickShowRooms(View view) {
@@ -96,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         extras.putString(DATE_EXTRA, dateToday);
         intent.putExtras(extras);
         startActivity(intent);
+        overridePendingTransition(0, 0);
+        overridePendingTransition(0, 0);
     }
 
     //launches activity ShowDayActivitySchedule
@@ -106,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
         extras.putString(DATE_EXTRA, dateToday);
         intent.putExtras(extras);
         startActivity(intent);
+        overridePendingTransition(0, 0);
+        overridePendingTransition(0, 0);
     }
 
     //launches activity ShowFirstAvailableActivity
@@ -116,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
         extras.putString(DATE_EXTRA, dateToday);
         intent.putExtras(extras);
         startActivity(intent);
+        overridePendingTransition(0, 0);
+        overridePendingTransition(0, 0);
     }
 
     // Makes a request to the Rest API to collect all names.
@@ -125,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://timeeditrestapi.herokuapp.com/reservations/";
-        final ArrayList<String> roomNames = new ArrayList<>();
+        //final ArrayList<String> roomNames = new ArrayList<>();
         final Set <String> removeDuplicates = new LinkedHashSet<>();
 
         final String [] safetyString = {"C11", "C13", "C15", "Flundran", "Rauken", "Änget", "Backsippan", "Heden", "Myren"};
@@ -173,7 +190,10 @@ public class MainActivity extends AppCompatActivity {
                             */
                             Collections.sort(roomNames);
                             // Spinner values is now fetched roomNames
-                            setSpinner(roomNames);
+                           // setSpinner(roomNames);
+
+                            fillList();
+
                         } catch (Exception e) {
                             System.out.println("Exception " + e);
                         }
@@ -187,5 +207,28 @@ public class MainActivity extends AppCompatActivity {
 
         // Add the request to the RequestQueue.
         queue.add(jsonRequest);
+    }
+
+    private void startRecycle() {
+        recyclerView = findViewById(R.id.new_recycler_view);
+
+        recyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void fillList() {
+        recyclerView.setAdapter(new RoomAdapter(this, roomNames, this));
+        for (String room : roomNames) {
+            System.out.println("Hämtade namn är " + room);
+        }
+
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        String roomName = roomNames.get(position);
+        navigateToShowDayActivitySchedule(roomName);
     }
 }
