@@ -37,7 +37,6 @@ import java.util.List;
 
 public class ShowFirstAvailableActivity extends AppCompatActivity {
 
-    public static String ROOMNAME_EXTRA = "ROOM_NAME";
     public static String DATE_EXTRA;
     private String room_name;
     private RecyclerView recyclerView;
@@ -458,7 +457,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private void getIntents(){
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        room_name = extras.getString(ROOMNAME_EXTRA);
         selectedDate = extras.getString(DATE_EXTRA);
     }
 
@@ -466,7 +464,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         Intent i= new Intent(ShowFirstAvailableActivity.this,ShowFirstAvailableActivity.class);
         Bundle extras = new Bundle();
         System.out.println("UpdateView date is " + selectedDate);
-        extras.putString(ROOMNAME_EXTRA, room_name);
         extras.putString(DATE_EXTRA, selectedDate);
         i.putExtras(extras);
         // Hides the transition between intents

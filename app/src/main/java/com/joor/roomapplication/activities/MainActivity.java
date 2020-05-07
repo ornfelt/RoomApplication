@@ -79,25 +79,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
     public void onClickShowDay(View view) {
         //gets selected room from user
         String roomName = roomNameText.getSelectedItem().toString();
-
-
         navigateToShowDayActivity(roomName);
     }
 
     //when user clicks on show day activity (schedule)
     public void onClickShowDaySchedule(View view) {
         String roomName = roomNameText.getSelectedItem().toString();
-
         navigateToShowDayActivitySchedule(roomName);
     }
 
     //when user clicks on first available
     public void onClickShowFirstAvailable(View view) {
-        String roomName = roomNameText.getSelectedItem().toString();
-
-        navigateToShowFirstAvailableActivity(roomName);
+        navigateToShowFirstAvailableActivity();
     }
-
 
     //launches activity ShowDayActivity
     private void navigateToShowDayActivity(String room_name) {
@@ -124,10 +118,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
     }
 
     //launches activity ShowFirstAvailableActivity
-    private void navigateToShowFirstAvailableActivity(String room_name) {
+    private void navigateToShowFirstAvailableActivity() {
         Intent intent = new Intent(getApplicationContext(), ShowFirstAvailableActivity.class);
         Bundle extras = new Bundle();
-        extras.putString(ROOMNAME_EXTRA, room_name);
         extras.putString(DATE_EXTRA, dateToday);
         intent.putExtras(extras);
         startActivity(intent);
@@ -211,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
 
     private void startRecycle() {
         recyclerView = findViewById(R.id.new_recycler_view);
-
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -223,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         for (String room : roomNames) {
             System.out.println("Hämtade namn är " + room);
         }
-
     }
 
     @Override
