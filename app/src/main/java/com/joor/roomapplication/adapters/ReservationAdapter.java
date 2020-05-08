@@ -93,6 +93,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             boolean isMiddleReservation = false;
 
             if(position % 2 == 0) {
+
+                System.out.println("reservations size: " + reservations.size());
                 //get display width and height
                 displayMetrics = activity.getResources().getDisplayMetrics();
                 int displayWidth = displayMetrics.widthPixels;

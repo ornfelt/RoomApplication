@@ -285,6 +285,7 @@ public class ShowDayActivity extends AppCompatActivity {
                                 for (int j = 0; j < response.length(); j++) {
                                     JSONObject JSONreservation = response.getJSONObject(j);
                                     String startDate = JSONreservation.getString("startDate");
+
                                     //if reservation is for today
                                     if (startDate.equals(dateToday)) {
                                         //sets start and end time for reservation

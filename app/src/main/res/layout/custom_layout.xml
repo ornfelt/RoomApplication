@@ -31,8 +31,8 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="1dp"
         android:background="#0F0F0F"
-        android:textColor="#DADEE0"
-        />
+        android:gravity="right"
+        android:paddingLeft="5dp"/>
 
     <Button
         android:id="@+id/buttonBook2"
@@ -41,6 +41,7 @@
         android:layout_below="@+id/buttonBook"
         android:layout_alignParentRight="true"
         android:background="#0F0F0F"
-        android:textColor="#DADEE0" />
+        android:gravity="right"
+        android:paddingLeft="5dp" />
 
 </RelativeLayout>
