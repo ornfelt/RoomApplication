@@ -13,4 +13,11 @@
         <item>Änget</item>
     </string-array>
 
+
+    <string-array name="filters">
+        <item>ByHour</item>
+        <item>Schedule</item>
+        <item>FirstAvailable</item>
+    </string-array>
+
 </resources>

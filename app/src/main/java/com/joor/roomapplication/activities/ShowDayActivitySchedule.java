@@ -7,10 +7,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,8 +49,9 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
     private List<Reservation> reservations = new ArrayList<Reservation>();
     private ReservationAdapter adapter;
-
+    private Spinner filterOptions;
     private TextView roomName;
+    private TextView filter;
     private TextView todaysDate;
     private ImageView rightClick;
     private ImageView leftClick;
@@ -125,6 +130,8 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
         roomName.setText(room_name);
         setDateTextView();
+        filter = findViewById(R.id.textViewFilter);
+        setSpinner();
     }
 
     @Override
@@ -247,6 +254,8 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
             }
         });
+
+
     }
 
     private void getAvailability(final Date date) {
@@ -474,6 +483,48 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         overridePendingTransition( 0, 0);
         overridePendingTransition( 0, 0);
     }
+
+    private void setSpinner() {
+        filterOptions = (Spinner) findViewById(R.id.spinnerFilter);
+        filterOptions.setVisibility(View.GONE);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.filters, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        filterOptions.setAdapter(adapter);
+
+        filterOptions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            int clickCounter = 0;
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                /*
+                if (clickCounter == 0 && position == 0){
+                    System.out.println("This is the first try. Position is " + position );
+                }*/
+
+
+                    Object item = parent.getItemAtPosition(position);
+                    System.out.println("Valt värde är "+ item);
+                clickCounter++;
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+    }
+
+    public void onClickFilter(View v) {
+        filter.setVisibility(View.GONE);
+        if (filterOptions.getVisibility() == View.VISIBLE) {
+            filterOptions.setVisibility(View.GONE);
+        } else {
+            filterOptions.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+
+
+
 
 
 }

@@ -60,7 +60,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.MyViewHolder> 
             holder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
         } else {
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
+            holder.itemView.setBackgroundColor(Color.parseColor("#E5E5E5"));
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
