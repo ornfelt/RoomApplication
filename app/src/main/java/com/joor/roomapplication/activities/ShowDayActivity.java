@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -48,6 +47,7 @@ public class ShowDayActivity extends AppCompatActivity {
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
     private List<Reservation> reservations = new ArrayList<Reservation>();
     private ReservationTestAdapter adapter;
+    private Spinner filterOptions;
 
     private TextView roomName;
     private TextView todaysDate;
@@ -129,6 +129,7 @@ public class ShowDayActivity extends AppCompatActivity {
         roomName.setText(room_name);
 
         setDateTextView();
+        setSpinner();
     }
 
     @Override
@@ -285,7 +286,6 @@ public class ShowDayActivity extends AppCompatActivity {
                                 for (int j = 0; j < response.length(); j++) {
                                     JSONObject JSONreservation = response.getJSONObject(j);
                                     String startDate = JSONreservation.getString("startDate");
-
                                     //if reservation is for today
                                     if (startDate.equals(dateToday)) {
                                         //sets start and end time for reservation
@@ -478,6 +478,16 @@ public class ShowDayActivity extends AppCompatActivity {
         startActivity(i);
         overridePendingTransition(0, 0);
         overridePendingTransition(0, 0);
+    }
+
+
+    private void setSpinner() {
+        filterOptions = (Spinner) findViewById(R.id.spinnerFilter);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.filters, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        filterOptions.setAdapter(adapter);
     }
 
 
