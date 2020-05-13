@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         recyclerView.setHasFixedSize(true);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
         recyclerView.setLayoutManager(layoutManager);
     }
 

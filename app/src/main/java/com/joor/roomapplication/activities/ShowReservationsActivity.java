@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.GestureDetector;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,12 @@ public class ShowReservationsActivity extends AppCompatActivity {
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
     private List<Reservation> reservations;
     private ReservationAdapter adapter;
+
+    private static final String TAG = "Swipe Position";
+    private float x1,x2,y1,y2;
+    private static int MIN_DISTANCE = 150;
+    private GestureDetector gestureDetector;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
