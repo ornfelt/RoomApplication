@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -80,6 +82,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         // Set up imagelisteners
         setImgListeners();
         setDatePicker();
+        scaleAccordingToResolution();
         // Set up the adapter
         setAdapter();
         // Gets the availability for a specific room
@@ -90,6 +93,31 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private void bindViews() {
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    }
+
+    private void scaleAccordingToResolution(){
+
+        //get display width and height
+        displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        int dWidth = displayMetrics.widthPixels;
+        int dHeight = displayMetrics.heightPixels;
+        System.out.println("width for device: " + dWidth + ", height: " + dHeight);
+
+        //this should fix layout for devices with similar resolution as Galaxy Nexus (720p)
+        if(dHeight <= 1200) {
+
+            ViewGroup.MarginLayoutParams textRoomParams = (ViewGroup.MarginLayoutParams) roomName.getLayoutParams();
+            //textRoomParams.topMargin = 5;
+            roomName.setLayoutParams(textRoomParams);
+
+            ViewGroup.MarginLayoutParams textDateParams = (ViewGroup.MarginLayoutParams) todaysDate.getLayoutParams();
+            todaysDate.setLayoutParams(textDateParams);
+
+            //this seems to fix correctly
+            ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+            recyclerParams.topMargin = 50;
+            recyclerView.setLayoutParams(recyclerParams);
+        }
     }
 
     //when user navigates back
@@ -122,6 +150,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         rightClick = (ImageView) findViewById(R.id.rightClick);
         leftClick = (ImageView) findViewById(R.id.leftClick);
 
+        room_name = "first available";
         roomName.setText(room_name);
         setDateTextView();
     }
@@ -274,7 +303,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
         String completeMin = tSplit[1];
         int min = Integer.parseInt(tSplit[1]);
-        System.out.println("min: " + min);
         String adjustedTime = "";
 
         //if current hour is >= 20 or less than 08
@@ -382,8 +410,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(JSONArray response) {
                                 try {
+                                    //variable for reservations cap. Can be extended to fix layout in recyclerview.
+                                    int reservationsSizeCap = 24;
                                     //loop through every half hour to find free times (most likely won't loop through it all since it'll probably break before end)
-
                                     mainloop:
                                     for(int t = indexOfTimeNow; t < daySchedule.size()-1; t++) {
 
@@ -414,12 +443,12 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                             e.printStackTrace();
                                         }
 
-                                        System.out.println("targetTime1: " + targetTime1);
-
                                         //loop through all rooms to see if target times are available
                                         for (final String room : roomNames) {
                                             //list that will contain all times available for booking
                                             ArrayList<String> freeTimesList = new ArrayList<>();
+                                            //list that will contain all startimes for bookings (needed for recyclerview)
+                                            ArrayList<String> bookedStartTimes = new ArrayList<>();
 
                                             //loops through all available times during a day to find available times
                                             for (int i = 0; i < daySchedule.size(); i++) {
@@ -430,7 +459,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                     JSONObject JSONreservation = response.getJSONObject(j);
                                                     String startDate = JSONreservation.getString("startDate");
                                                     String roomNames = JSONreservation.getString("name");
-                                                    //TODO: FIND NAME
+
                                                     //split based on quotation mark
                                                     String[] roomNamesSplit = roomNames.split("\"");
                                                     boolean roomFound = false;
@@ -444,6 +473,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                     if (startDate.equals(dateToday) && roomFound) {
                                                         //sets start and end time for reservation
                                                         String startTime = JSONreservation.getString("startTime");
+                                                        bookedStartTimes.add(startTime);
 
                                                         //example: if 08:00 is booked
                                                         if (daySchedule.get(i).equals(startTime)) {
@@ -476,14 +506,25 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                             //loop through available times for a specific room to see if targeted times are free
                                             for (int i = 0; i < freeTimesList.size() - 1; i++) {
                                                 //check target times and add to list if they are free
-                                                if (targetTime2 != null && targetTime1.equals(freeTimesList.get(i)) && targetTime2.equals(freeTimesList.get(i + 1))) {
+                                                if (targetTime2 != null && targetTime1.equals(freeTimesList.get(i)) && targetTime2.equals(freeTimesList.get(i+1))) {
                                                     Reservation fillerReservation = new Reservation();
                                                     fillerReservation.setStartTime(targetTime1);
+                                                    //add end time if there's a booking close to time (needed for recyclerview)
+                                                    if(bookedStartTimes.size() > 0){
+                                                        for (String time: bookedStartTimes) {
+                                                            if(isFirstTimeEarlier(targetTime2, time)){
+                                                                fillerReservation.setEndTime(time);
+                                                                System.out.println("endTime added for fillerRes: " + time);
+                                                                bookedStartTimes.remove(time);
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
                                                     //add room name
                                                     String[] roomArr = {room};
                                                     fillerReservation.setName(roomArr);
                                                     //check reservations size before adding new
-                                                    if (reservations.size() < 24) {
+                                                    if (reservations.size() < reservationsSizeCap) {
                                                         reservations.add(fillerReservation);
                                                         //System.out.println("added reservation: " + fillerReservation.getStartTime());
                                                     }
@@ -494,20 +535,41 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                             && targetTime3.equals(freeTimesList.get(i + 2)) && targetTime4.equals(freeTimesList.get(i + 3))) {
                                                         Reservation fillerReservation2 = new Reservation();
                                                         fillerReservation2.setStartTime(targetTime3);
+                                                        //add end time if there's a booking close to time (needed for recyclerview)
+                                                        if(bookedStartTimes.size() > 0){
+                                                            for (String time: bookedStartTimes) {
+                                                                if(isFirstTimeEarlier(targetTime4, time)){
+                                                                    fillerReservation.setEndTime(time);
+                                                                    System.out.println("endTime added for fillerRes: " + time);
+                                                                    bookedStartTimes.remove(time);
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
                                                         //add room name
                                                         fillerReservation2.setName(roomArr);
                                                         //check reservations size before adding new
-                                                        if (reservations.size() < 24) {
+                                                        if (reservations.size() < reservationsSizeCap) {
                                                             reservations.add(fillerReservation2);
                                                             //System.out.println("added reservation: " + fillerReservation2.getStartTime());
                                                         }
                                                     }
-                                                    //break after targetTime is found
+                                                    /*else{
+                                                        Reservation fillerReservation3 = new Reservation();
+                                                        fillerReservation3.setStartTime("skip");
+                                                        fillerReservation3.setName(roomArr);
+                                                        if (reservations.size() < reservationsSizeCap) {
+                                                            reservations.add(fillerReservation3);
+                                                            reservationsSizeCap++;
+                                                        }
+                                                    }
+                                                     */
+                                                    //break after targetTimes are found
                                                     break;
                                                 }
                                             }
                                         }
-                                        if(reservations.size() == 24){
+                                        if(reservations.size() == reservationsSizeCap){
                                             System.out.println("Breaking mainloop");
                                             break mainloop;
                                         }

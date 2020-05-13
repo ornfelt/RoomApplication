@@ -95,56 +95,93 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                 displayMetrics = activity.getResources().getDisplayMetrics();
                 int displayWidth = displayMetrics.widthPixels;
                 int displayHeight = displayMetrics.heightPixels;
+                ViewGroup.LayoutParams textHourParams = textHour.getLayoutParams();
+                ViewGroup.LayoutParams textHourBookingParams = textHourBooking.getLayoutParams();
 
                 //loops two times to get two reservation object for a specific hour
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
                     final Reservation reservation;
 
                     //in case list limit is reached
-                    if(positionCount == 1 && reservations.size() == position+positionCount){
+                    if (positionCount == 1 && reservations.size() == position + positionCount) {
                         break;
                     }
 
                     //get reservation object
                     reservation = reservations.get(position + positionCount);
 
-                        //set button color to green
-                        if (positionCount == 0) {
-                            buttonBook.setBackgroundColor(Color.parseColor("#ff93e6b3"));
-                            ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
-                            buttonBookParams.width = displayWidth;
-                            buttonBook.setLayoutParams(buttonBookParams);
+                    //set button color to green
+                    if (positionCount == 0) {
+                        buttonBook.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                        ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
+                        buttonBookParams.width = displayWidth;
+                        buttonBook.setLayoutParams(buttonBookParams);
+                        if(position > 0 && !reservation.getName().equals(reservations.get(position-1).getName())) {
                             buttonBook.setText(reservation.getName()[0]);
                             buttonBook.bringToFront();
-                        } else {
-                            buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
-                            ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
-                            buttonBook2Params.width = displayWidth;
-                            buttonBook2.setLayoutParams(buttonBook2Params);
-                            //only set text for second block if it's not the same as first room name
-                            if(!buttonBook.getText().equals(reservation.getName()[0])) {
-                                buttonBook2.setText(reservation.getName()[0]);
-                                buttonBook2.bringToFront();
-                            }
+                        }else if(position == 0){
+                            buttonBook.setText(reservation.getName()[0]);
+                            buttonBook.bringToFront();
+                        }
+                    } else {
+                        buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                        ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
+                        buttonBook2Params.width = displayWidth;
+                        buttonBook2.setLayoutParams(buttonBook2Params);
+                        //only set text for second block if it's not the same as first room name
+                        if (!buttonBook.getText().equals(reservation.getName()[0])) {
+                            buttonBook2.setText(reservation.getName()[0]);
+                            buttonBook2.bringToFront();
+                            //also add border to separate
+                            ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook2.getLayoutParams();
+                            buttonMargin.topMargin = 2;
+                            buttonBook2.setLayoutParams(buttonMargin);
+                        }
+                    }
+                        if(position > 0 && positionCount == 0 && reservations.get(position-1).getName()[0].equals(reservation.getName()[0])){
+                            //if last reservation is same room as current, then remove margin from top
+                            ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook.getLayoutParams();
+                            buttonMargin.topMargin = 0;
+                            buttonBook.setLayoutParams(buttonMargin);
                         }
                         //if reservation object and next is the same room, then the room is available for an entire hour
-                        if(positionCount == 0 && position+1 != reservations.size() && reservation.getName()[0].equals(reservations.get(position+1).getName()[0])){
-                            //set text to show that room is available for an hour
-                            //TODO: fix end time & texthourbooking not showing up
-                            textHour.setText(reservation.getStartTime()+" - 1 hour forward");
-                            textHour.bringToFront();
-                            //remove second textview
-                            ViewGroup layout = (ViewGroup) textHourBooking.getParent();
-                            layout.removeView(textHourBooking);
+                        if(positionCount == 0 && position+1 != reservations.size() &&
+                                reservation.getName()[0].equals(reservations.get(position+1).getName()[0])){
+
+                            //check that last reservation object does NOT have the same room as current reservation
+                            if(position > 0 && !reservations.get(position-1).getName()[0].equals(reservation.getName()[0])) {
+                                //set text to show that room is available for an hour
+                                textHour.setText(reservation.getStartTime() + "-" + getTimePlusOneHour(reservation.getStartTime()));
+                                textHour.bringToFront();
+                                //remove second textview
+                            }else if (position == 0){
+                                textHour.setText(reservation.getStartTime() + "-" + getTimePlusOneHour(reservation.getStartTime()));
+                                textHour.bringToFront();
+                                //remove second textview
+                            }
                         }
+
                         //else means two texts should be set
                         else if(positionCount == 0){
-                            textHour.setText(reservation.getStartTime()+"-ENDTIME");
-                            textHour.bringToFront();
+                            if(reservation.getEndTime() != null){
+                                textHour.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
+                                textHour.bringToFront();
+                            }
                             if(position+1 != reservations.size()) {
-                                textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-ENDTIME");
-                                textHourBooking.setGravity(Gravity.BOTTOM);
+                                if(reservation.getEndTime() != null){
+                                    textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
+                                            reservations.get(position + 1).getEndTime());
+                                    textHourBooking.bringToFront();
+                                    textHourBooking.setGravity(Gravity.BOTTOM);
+                                }
+                            }
+
+                            //fix for cases where no text is set
+                            if(position > 0 && textHour.getText().equals("") && textHourBooking.getText().equals("")){
+                                textHourBooking.setText(reservations.get(position-1).getStartTime()
+                                + "-" + getTimePlusOneHour(reservations.get(position-1).getStartTime()));
                                 textHourBooking.bringToFront();
+                                textHourBooking.setGravity(Gravity.BOTTOM);
                             }
                         }
                 }
@@ -158,6 +195,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                 ViewGroup layout2 = (ViewGroup) textHourBooking.getParent();
                 layout2.removeView(textHourBooking);
             }
+
 
             //add onclicklistener to booking buttons
             if(buttonBook.isClickable()){
@@ -202,34 +240,24 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
         context.startActivity(intent);
     }
 
-    private String getTimeByPosition(int pos){
-        String time = "";
+    //string that returns incoming time string after adding 1 hour to it
+    private String getTimePlusOneHour(String t){
 
-        if(pos == 0){
-            time = "08:00-09:00";
-        }else if(pos == 2){
-            time = "09:00-10:00";
-        }else if(pos == 4){
-            time = "10:00-11:00";
-        }else if(pos == 6){
-            time = "11:00-12:00";
-        }else if(pos == 8){
-            time = "12:00-13:00";
-        }else if(pos == 10){
-            time = "13:00-14:00";
-        }else if(pos == 12){
-            time = "14:00-15:00";
-        }else if(pos == 14){
-            time = "15:00-16:00";
-        }else if(pos == 16){
-            time = "16:00-17:00";
-        }else if(pos == 18){
-            time = "17:00-18:00";
-        }else if(pos == 20){
-            time = "18:00-19:00";
-        }else if(pos == 22){
-            time = "19:00-20:00";
+        //this string will be returned
+        String returnTime;
+        //incoming t should be formatted as: HH:mm
+        String[] tSplit = t.split(":");
+        //create int containing hour
+        int hour = Integer.parseInt(tSplit[0]);
+        //String containing minutes
+        String min = tSplit[1];
+
+        //if hour is 08
+        if(hour == 8){
+            returnTime = "09:"+min;
+        }else{
+            returnTime = hour+1 + ":" + min;
         }
-        return time;
+        return returnTime;
     }
 }
