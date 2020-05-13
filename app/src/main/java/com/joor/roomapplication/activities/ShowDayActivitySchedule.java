@@ -9,6 +9,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.style.ClickableSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,7 +44,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class ShowDayActivitySchedule extends AppCompatActivity {
+public class ShowDayActivitySchedule extends AppCompatActivity implements GestureDetector.OnGestureListener {
 
     public static String ROOMNAME_EXTRA = "ROOM_NAME";
     public static String DATE_EXTRA;
@@ -66,12 +70,19 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     private DisplayMetrics displayMetrics;
 
+    private static final String TAG = "Swipe Position";
+    private float x1,x2,y1,y2;
+    private static int MIN_DISTANCE = 150;
+    private GestureDetector gestureDetector;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_day_schedule);
         // Set today's date
         bindViews();
+        View parentView = findViewById(R.id.showSchedule);
 
         //init view elements and checks if there's a saved instance
         setViewElements(savedInstanceState);
@@ -132,6 +143,8 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         setDateTextView();
         filter = findViewById(R.id.textViewFilter);
         setSpinner();
+        filter.setVisibility(View.GONE);
+        this.gestureDetector = new GestureDetector(ShowDayActivitySchedule.this,this);
     }
 
     @Override
@@ -209,49 +222,14 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         rightClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date clickedDate;
-
-                if (datePicked == true) {
-                    changableCalendar.setTime(changableDate);
-                    changableCalendar.add(Calendar.DATE, 1);
-                    clickedDate = changableCalendar.getTime();
-                    datePicked = false;
-                } else
-                {
-                    changableCalendar.add(Calendar.DATE, 1);
-                    clickedDate = changableCalendar.getTime();
-                }
-
-                selectedDate= formatter.format(clickedDate);
-                updateView();
-
+               dateForward();
             }
         });
 
         leftClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (datePicked == true) {
-                    changableCalendar.setTime(changableDate);
-                    datePicked = false;
-                }
-
-                changableCalendar.add(Calendar.DATE, -1);
-                Date clickedDate = changableCalendar.getTime();
-                // Checks if wanted date is before today's date.
-                if (clickedDate.before(constantDate)) {
-                    System.out.println("Can't go further back");
-                    changableCalendar = Calendar.getInstance();
-                    clickedDate = changableCalendar.getTime();
-                    selectedDate = formatter.format(clickedDate);
-                    updateView();
-                } else {
-                    // if wanted date is not before today then set's date to
-                    selectedDate= formatter.format(clickedDate);
-                    updateView();
-                }
-
-
+         dateBackward();
             }
         });
 
@@ -515,16 +493,131 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     public void onClickFilter(View v) {
         filter.setVisibility(View.GONE);
         if (filterOptions.getVisibility() == View.VISIBLE) {
-            filterOptions.setVisibility(View.GONE);
+            //filterOptions.setVisibility(View.GONE);
         } else {
-            filterOptions.setVisibility(View.VISIBLE);
+           // filterOptions.setVisibility(View.VISIBLE);
         }
 
     }
 
 
+    @Override public boolean onTouchEvent (MotionEvent event) {
+
+        gestureDetector.onTouchEvent(event);
+
+        // starting to swipe time gesture
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                y1 = event.getY();
+                break;
+            // ending time swipe gesture
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                y2 = event.getY();
+
+                // getting value for horizontal swipe
+                float valueX = x2 - x1;
+
+                // getting value for vertical swipe
+                float valueY = y2 - y1;
+
+                if (Math.abs(valueX) > MIN_DISTANCE) {
+                    //detect left to right swipe
+                    if (x2 > x1) {
+                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Right Swipe");
+                        dateBackward();
+
+
+                    }
+                    else {// detect right to left swipe}
+                        //Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Left Swipe");
+                       dateForward();
+
+                    }
+                }
 
 
 
+        }
+        return super.onTouchEvent(event);
+    }
 
-}
+
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        return false;
+    }
+
+
+    private void dateForward(){
+        Date clickedDate;
+
+        if (datePicked == true) {
+            changableCalendar.setTime(changableDate);
+            changableCalendar.add(Calendar.DATE, 1);
+            clickedDate = changableCalendar.getTime();
+            datePicked = false;
+        } else
+        {
+            changableCalendar.add(Calendar.DATE, 1);
+            clickedDate = changableCalendar.getTime();
+        }
+
+        selectedDate= formatter.format(clickedDate);
+        updateView();
+    }
+
+    private void dateBackward(){
+
+        if (datePicked == true) {
+            changableCalendar.setTime(changableDate);
+            datePicked = false;
+        }
+
+        changableCalendar.add(Calendar.DATE, -1);
+        Date clickedDate = changableCalendar.getTime();
+        // Checks if wanted date is before today's date.
+        if (clickedDate.before(constantDate)) {
+            System.out.println("Can't go further back");
+            changableCalendar = Calendar.getInstance();
+            clickedDate = changableCalendar.getTime();
+            selectedDate = formatter.format(clickedDate);
+            updateView();
+        } else {
+            // if wanted date is not before today then set's date to
+            selectedDate= formatter.format(clickedDate);
+            updateView();
+        }
+    }
+
+    }

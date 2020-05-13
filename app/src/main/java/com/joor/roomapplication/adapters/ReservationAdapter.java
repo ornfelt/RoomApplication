@@ -11,14 +11,18 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,10 +46,18 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
     private Activity activity;
     private LayoutInflater inflater;
+   // private GestureDetector gestureDetector;
     private List<Reservation> reservations;
     ImageLoader imageLoader = AppController.getmInstance().getmImageLoader();
     View convertView;
     DisplayMetrics displayMetrics;
+
+
+
+   // private static final String TAG = "Swipe Position";
+    //private float x1,x2,y1,y2;
+    //private static int MIN_DISTANCE = 150;
+
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -61,6 +73,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     public ReservationAdapter(Activity activity, List<Reservation> reservations){
         this.activity = activity;
         this.reservations = reservations;
+        //this.gestureDetector = gestureDetector;
     }
 
     @Override
@@ -374,4 +387,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         }
         return time;
     }
+
+
+
+
 }

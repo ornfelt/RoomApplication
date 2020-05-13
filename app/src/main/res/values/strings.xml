@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RoomApplication</string>
+    <string name="app_name">Campus Gotland Roomapplication</string>
 
     <string-array name="grouprooms">
         <item>C11</item>
