@@ -115,7 +115,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
             //this seems to fix correctly
             ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-            recyclerParams.topMargin = 50;
+            recyclerParams.topMargin = 85;
             recyclerView.setLayoutParams(recyclerParams);
         }
     }
@@ -318,6 +318,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             Date tomorrow = calendar.getTime();
             //TODO: control so that tomorrow.toString() doesnt contain sat or sun (not weekend), if that's the case, skip ahead till monday
             dateToday = formatter.format(tomorrow);
+            selectedDate = formatter.format(tomorrow);
 
         }else if(hour1 == 0 && hour2 < 8){
             completeHour = "08";
@@ -391,6 +392,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         timeNow = "19:50";
         System.out.println("date and time before adjust: " + dateToday +", " + timeNow);
         timeNow = adjustTimeStamp(timeNow);
+        //date may change depending on adjustd time, so date text is set again here
+        setDateTextView();
         indexOfTimeNow = 0;
         System.out.println("dateToday: " + dateToday + ", adjusted timeNow: " + timeNow);
 
