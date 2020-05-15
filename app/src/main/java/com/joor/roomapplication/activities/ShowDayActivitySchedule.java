@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -16,10 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,16 +70,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private static final String TAG = "Swipe Position";
     private float x1, x2, y1, y2;
     private static int MIN_DISTANCE = 100;
-    private GestureDetector gestureDetector;
     String[] safetyString;
-
-
-    private int mSlop;
-    private float mDownX;
-    private float mDownY;
-    private boolean mSwiping;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +83,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         setViewElements(savedInstanceState);
 
         ViewConfiguration vc = ViewConfiguration.get(this);
-        mSlop = vc.getScaledTouchSlop();
+        //mSlop = vc.getScaledTouchSlop();
 
         try {
             setDate(selectedDate);
@@ -230,9 +218,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         //creates RecycleAdapter and sets it
         adapter = new ReservationAdapter(this, reservations);
         recyclerView.setAdapter(adapter);
-        // ItemTouchHelper itHelper = new ItemTouchHelper(simpleCallback);
-        // itHelper.attachToRecyclerView(recyclerView);
-
     }
 
     private void setImgListeners() {
@@ -242,15 +227,12 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 dateForward();
             }
         });
-
         leftClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dateBackward();
             }
         });
-
-
     }
 
     private void getAvailability(final Date date) {
@@ -524,133 +506,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
     }
 
-    /*
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        gestureDetector.onTouchEvent(event);
-        // starting to swipe time gesture
-        switch (event.getAction()) {
-
-            case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                y1 = event.getY();
-                break;
-            // ending time swipe gesture
-            case MotionEvent.ACTION_UP:
-                x2 = event.getX();
-                y2 = event.getY();
-
-                // getting value for horizontal swipe
-                float valueX = x2 - x1;
-
-                // getting value for vertical swipe
-                float valueY = y2 - y1;
-
-                if (Math.abs(valueX) > MIN_DISTANCE) {
-                    //detect left to right swipe
-                    if (x2 > x1) {
-                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Right Swipe");
-                        dateBackward();
-
-                    } else {// detect right to left swipe}
-                        //Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Left Swipe");
-                        dateForward();
-
-                    }
-
-                } else if (Math.abs(valueY) > MIN_DISTANCE) {
-                    // detect top to bottom swipe
-                    if (y2 > y1) {
-                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Bottom Swipe");
-
-                        // Changes Room/ & activity with down swipe
-                        for (int i = 0; i < safetyString.length; i++) {
-                            if (safetyString[i].equals(room_name)) {
-                                System.out.println("Matchning på " + room_name + " vid position " + i);
-                                // if match on last position -> go to first (since update is +1)
-                                if ((safetyString[safetyString.length - 1].equals(room_name))) {
-                                    updateViewName(safetyString[0]);
-
-                                    break;
-                                }
-
-                                // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                updateViewName(safetyString[i + 1]);
-                                break;
-                            }
-                        }
-                    }
-                    // detect bottom to to top swipe
-                    else {// detect right to left swipe}
-                        Log.d(TAG, "Top Swipe");
-
-                        // Changes Room/ & activity with up swipe
-                        for (int i = 0; i < safetyString.length; i++) {
-                            if (safetyString[i].equals(room_name)) {
-                                System.out.println("Matchning på " + room_name + " vid position " + i);
-                                // if match on first position -> go to last position
-                                if (safetyString[0].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 1]);
-                                    break;
-                                }
-                                // if match on last position -> go to second last position
-                                else if (safetyString[safetyString.length - 1].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 2]);
-                                    break;
-                                } else
-
-                                    // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                    updateViewName(safetyString[i - 1]);
-                                break;
-                            }
-                        }
-                    }
-
-                }
-
-
-        }
-        return super.onTouchEvent(event);
-    }
-
-
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
-
-     */
 
     private void dateForward() {
         Date clickedDate;
@@ -692,7 +548,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         }
     }
 
-    private void updateViewName(String name, String direction) {
+    private void updateViewName(String name) {
         Intent i = new Intent(ShowDayActivitySchedule.this, ShowDayActivitySchedule.class);
         Bundle extras = new Bundle();
         System.out.println("UpdateView date is " + selectedDate);
@@ -702,17 +558,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Hides the transition between intents
         startActivity(i);
         overridePendingTransition(0, 0);
-
-        /*if (direction.equals("down")) {
-            overridePendingTransition(R.anim.slide_down, R.anim.slide_up);
-        } else
-
-
-    {
-        overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
-        //overridePendingTransition(0, 0);
     }
-    */}
 
     // Allows to read swipe-gestures over all elements in viewgroup
     @Override
@@ -720,7 +566,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
-                mSwiping = false;
+                //mSwiping = false;
                 break;
             case MotionEvent.ACTION_UP:
                 x2 = event.getX();
@@ -751,32 +597,19 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                     }
 
                 }
-/*
-            case MotionEvent.ACTION_MOVE:
-                float x = event.getX();
-                float y = event.getY();
-                float xDelta = Math.abs(x - mDownX);
-                float yDelta = Math.abs(y - mDownY);
-
-                if (yDelta > mSlop && yDelta / 2 > xDelta) {
-                    mSwiping = true;
-                    return true;
-                }
-                break;*/
         }
 
         return super.dispatchTouchEvent(event);
     }
 
 
-
+    // Handles up/down swipes to change name in array
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 y1 = event.getY();
-                mSwiping = false;
+                //mSwiping = false;
                 break;
             case MotionEvent.ACTION_UP:
                 y2 = event.getY();
@@ -796,13 +629,13 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                                 System.out.println("Matchning på " + room_name + " vid position " + i);
                                 // if match on last position -> go to first (since update is +1)
                                 if ((safetyString[safetyString.length - 1].equals(room_name))) {
-                                    updateViewName(safetyString[0], direction);
+                                    updateViewName(safetyString[0]);
 
                                     return true;
                                 }
 
                                 // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                updateViewName(safetyString[i + 1],direction);
+                                updateViewName(safetyString[i + 1]);
                                 return true;
                             }
                         }
@@ -818,17 +651,17 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                                 System.out.println("Matchning på " + room_name + " vid position " + i);
                                 // if match on first position -> go to last position
                                 if (safetyString[0].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 1],direction);
+                                    updateViewName(safetyString[safetyString.length - 1]);
                                     return true;
                                 }
                                 // if match on last position -> go to second last position
                                 else if (safetyString[safetyString.length - 1].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 2], direction);
+                                    updateViewName(safetyString[safetyString.length - 2]);
                                     return true;
                                 } else
 
                                     // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                    updateViewName(safetyString[i - 1], direction);
+                                    updateViewName(safetyString[i - 1]);
                                 return true;
                             }
                         }
@@ -842,65 +675,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     }
 
 
-    private void updateView(String direction) {
-        Intent i = new Intent(ShowDayActivitySchedule.this, ShowDayActivitySchedule.class);
-        Bundle extras = new Bundle();
-        System.out.println("UpdateView date is " + selectedDate);
-        extras.putString(ROOMNAME_EXTRA, room_name);
-        extras.putString(DATE_EXTRA, selectedDate);
-        i.putExtras(extras);
-        // Hides the transition between intents
-        startActivity(i);
-        if (direction.equals("Left")) {
-            overridePendingTransition(R.anim.slide_out_right, R.anim.slide_in_left);
-            //overridePendingTransition(0, 0);
-        }
-        else
-        {
-            overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right);
-        }
-}
 
-
-    private void dateForward(String direction) {
-        Date clickedDate;
-
-        if (datePicked == true) {
-            changableCalendar.setTime(changableDate);
-            changableCalendar.add(Calendar.DATE, 1);
-            clickedDate = changableCalendar.getTime();
-            datePicked = false;
-        } else {
-            changableCalendar.add(Calendar.DATE, 1);
-            clickedDate = changableCalendar.getTime();
-        }
-
-        selectedDate = formatter.format(clickedDate);
-        updateView(direction);
-    }
-
-    private void dateBackward(String direction) {
-
-        if (datePicked == true) {
-            changableCalendar.setTime(changableDate);
-            datePicked = false;
-        }
-
-        changableCalendar.add(Calendar.DATE, -1);
-        Date clickedDate = changableCalendar.getTime();
-        // Checks if wanted date is before today's date.
-        if (clickedDate.before(constantDate)) {
-            System.out.println("Can't go further back");
-            changableCalendar = Calendar.getInstance();
-            clickedDate = changableCalendar.getTime();
-            selectedDate = formatter.format(clickedDate);
-            updateView();
-        } else {
-            // if wanted date is not before today then set's date to
-            selectedDate = formatter.format(clickedDate);
-            updateView();
-        }
-    }
 
 
 
