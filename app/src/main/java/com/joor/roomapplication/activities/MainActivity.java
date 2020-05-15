@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import com.android.volley.Request;
@@ -51,6 +53,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         startRecycle();
         getNames();
         setDate();
+
+        TypedValue tv = new TypedValue();
+        getApplicationContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
+        int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
+        Button btn = findViewById(R.id.buttonShowFirst);
+        btn.setHeight(actionBarHeight);
     }
 
     private void setDate() {
