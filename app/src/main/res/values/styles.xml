@@ -18,4 +18,9 @@
         <item name="background">@color/uppsalaRed</item>
     </style>
 
+
+    <style name="DatePickerStyle" parent="Theme.AppCompat.Light.Dialog">
+    <item name="colorAccent">@color/uppsalaRed</item>
+    </style>
+
 </resources>

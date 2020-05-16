@@ -52,6 +52,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     View convertView;
     DisplayMetrics displayMetrics;
 
+    private float x1,x2,y1,y2;
+    private static int MIN_DISTANCE = 150;
+    private GestureDetector gestureDetector;
 
 
    // private static final String TAG = "Swipe Position";
@@ -88,6 +91,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+
+
+
         if (inflater == null) {
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -102,6 +108,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             final Button buttonBook2 = (Button) convertView.findViewById(R.id.buttonBook2);
             final TextView textHour = (TextView) convertView.findViewById(R.id.textHour);
             final TextView textHourBooking = (TextView) convertView.findViewById(R.id.textHourBooking);
+
+
             //boolean used to find middle time block in reservation
             boolean isMiddleReservation = false;
 
@@ -387,8 +395,51 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         }
         return time;
     }
+    public boolean onTouchEvent(MotionEvent event){
+            // starting to swipe time gesture
+            switch (event.getAction()) {
+
+                case MotionEvent.ACTION_DOWN:
+                    x1 = event.getX();
+                    y1 = event.getY();
+                    break;
+                // ending time swipe gesture
+                case MotionEvent.ACTION_UP:
+                    x2 = event.getX();
+                    y2 = event.getY();
+
+                    // getting value for horizontal swipe
+                    float valueX = x2 - x1;
+
+                    // getting value for vertical swipe
+                    float valueY = y2 - y1;
+
+                    if (Math.abs(valueX) > MIN_DISTANCE) {
+                        //detect left to right swipe
+                        if (x2 > x1) {
+                            //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
+                            System.out.println("Right Swipe");
 
 
 
 
-}
+                        }
+                        else {// detect right to left swipe}
+                            //Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
+                            System.out.println("Left Swipe");
+
+
+                        }
+                    }
+
+
+
+            }
+            return false;
+        }
+    }
+
+
+
+
+
