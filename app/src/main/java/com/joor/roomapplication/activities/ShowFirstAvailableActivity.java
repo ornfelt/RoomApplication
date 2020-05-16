@@ -39,8 +39,9 @@ import java.util.List;
 
 public class ShowFirstAvailableActivity extends AppCompatActivity {
 
-    public static String DATE_EXTRA;
-    public static String ROOMNAMES_EXTRA;
+    public static String VALUES_EXTRA;
+    public static String SHOW_MORE_EXTRA;
+    public static String DAY_COUNT_EXTRA;
     private String room_name;
     private RecyclerView recyclerView;
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
@@ -64,6 +65,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private DisplayMetrics displayMetrics;
     private String targetTime1, targetTime2, targetTime3, targetTime4;
     private int indexOfTimeNow;
+    private int showMoreAmount;
+    private int dayCount;
+    private boolean isFirstResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +85,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         }
         // Set up imagelisteners
         setImgListeners();
-        setDatePicker();
         scaleAccordingToResolution();
         // Set up the adapter
         setAdapter();
@@ -161,11 +164,15 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         //saves when onDestroyed
         outState.putStringArray("roomNames", roomNames);
         outState.putString("selectedDate", selectedDate);
+        outState.putInt("showMoreAmount", showMoreAmount);
+        outState.putInt("dayCount", dayCount);
     }
 
     private void initValuesFromSavedState(Bundle savedInstanceState) throws IOException {
         roomNames = savedInstanceState.getStringArray("roomNames");
         selectedDate = savedInstanceState.getString("selectedDate");
+        showMoreAmount = savedInstanceState.getInt("showMoreAmount");
+        dayCount = savedInstanceState.getInt("dayCount");
     }
 
     private ArrayList<String> timeList() {
@@ -229,20 +236,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         rightClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date clickedDate;
-
-                if (datePicked == true) {
-                    changableCalendar.setTime(changableDate);
-                    changableCalendar.add(Calendar.DATE, 1);
-                    clickedDate = changableCalendar.getTime();
-                    datePicked = false;
-                } else
-                {
-                    changableCalendar.add(Calendar.DATE, 1);
-                    clickedDate = changableCalendar.getTime();
-                }
-
-                selectedDate= formatter.format(clickedDate);
                 updateView();
 
             }
@@ -251,27 +244,12 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         leftClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (datePicked == true) {
-                    changableCalendar.setTime(changableDate);
-                    datePicked = false;
-                }
-
-                changableCalendar.add(Calendar.DATE, -1);
-                Date clickedDate = changableCalendar.getTime();
-                // Checks if wanted date is before today's date.
-                if (clickedDate.before(constantDate)) {
-                    System.out.println("Can't go further back");
-                    changableCalendar = Calendar.getInstance();
-                    clickedDate = changableCalendar.getTime();
-                    selectedDate = formatter.format(clickedDate);
+                if(!isFirstResult) {
                     updateView();
-                } else {
-                    // if wanted date is not before today then set's date to
-                    selectedDate= formatter.format(clickedDate);
-                    updateView();
+                }else{
+                    //TODO: tell user that it's not possible to go back
+
                 }
-
-
             }
         });
     }
@@ -316,7 +294,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             calendar.add(Calendar.DAY_OF_YEAR, 1);
             // now get "tomorrow"
             Date tomorrow = calendar.getTime();
-            //TODO: control so that tomorrow.toString() doesnt contain sat or sun (not weekend), if that's the case, skip ahead till monday
             dateToday = formatter.format(tomorrow);
             selectedDate = formatter.format(tomorrow);
 
@@ -382,25 +359,47 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: get availability for first available booking time
     private void getAvailability(final Date date) {
         //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();
-        //create today's date
         dateToday = formatter.format(date);
         String timeNow = getCurrentTimeStamp();
-        timeNow = "19:50";
+
+        //if end of days schedule is reached, then look for next days availability
+        if(dayCount > 0 ){
+            // get a calendar instance, which defaults to "now"
+            Calendar calendar = Calendar.getInstance();
+            // add one day to the date/calendar
+            calendar.add(Calendar.DAY_OF_YEAR, dayCount);
+            // now get "tomorrow"
+            Date tomorrow = calendar.getTime();
+            dateToday = formatter.format(tomorrow);
+            selectedDate = formatter.format(tomorrow);
+            //get first time of day's schedule if new day
+            timeNow = daySchedule.get(0);
+            System.out.println("dateToday changed in getAvailability: " + dateToday);
+        }
+
+        //timeNow = "19:50";
         System.out.println("date and time before adjust: " + dateToday +", " + timeNow);
         timeNow = adjustTimeStamp(timeNow);
-        //date may change depending on adjustd time, so date text is set again here
+        //date may change depending on adjusted time, so date text is set again here
         setDateTextView();
+        dateToday = selectedDate;
         indexOfTimeNow = 0;
-        System.out.println("dateToday: " + dateToday + ", adjusted timeNow: " + timeNow);
+        System.out.println("dayCount: " + dayCount + ", dateToday: " + dateToday + ", adjusted timeNow: " + timeNow);
 
         for (String s: daySchedule) {
             if(s.equals(timeNow)){
-                indexOfTimeNow = daySchedule.indexOf(s);
-                System.out.println("index of time now found at: " + indexOfTimeNow);
+                if(showMoreAmount != 0 && showMoreAmount < daySchedule.size()){
+                    //when user clicks on right/left click, the view should show the next/previous set of available times
+                    indexOfTimeNow = showMoreAmount;
+                    isFirstResult = false;
+                }else {
+                    System.out.println("indexOfTimeNow found at: " + indexOfTimeNow);
+                    isFirstResult = true;
+                    indexOfTimeNow = daySchedule.indexOf(s);
+                }
             }
         }
 
@@ -426,20 +425,39 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                             if (t + 1 <= daySchedule.size() - 1) {
                                                 targetTime2 = daySchedule.get(t + 1);
                                             } else {
-                                                targetTime2 = null;
+                                                //targetTime2 = null;
+                                                targetTime2 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                                //update t
+                                                for (String s: daySchedule) {
+                                                    if(s.equals(targetTime2)){
+                                                            t = daySchedule.indexOf(s);
+                                                    }
+                                                }
                                             }
                                             t++;
 
                                             if (t + 1 <= daySchedule.size() - 1) {
                                                 targetTime3 = daySchedule.get(t + 1);
                                             } else {
-                                                targetTime3 = null;
+                                                targetTime3 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                                //update t
+                                                for (String s: daySchedule) {
+                                                    if(s.equals(targetTime2)){
+                                                        t = daySchedule.indexOf(s);
+                                                    }
+                                                }
                                             }
                                             t++;
                                             if (t + 1 <= daySchedule.size() - 1) {
                                                 targetTime4 = daySchedule.get(t + 1);
                                             } else {
-                                                targetTime4 = null;
+                                                targetTime4 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                                //update t
+                                                for (String s: daySchedule) {
+                                                    if(s.equals(targetTime2)){
+                                                        t = daySchedule.indexOf(s);
+                                                    }
+                                                }
                                             }
                                             t++;
                                         }catch(Exception e){
@@ -557,26 +575,31 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                             //System.out.println("added reservation: " + fillerReservation2.getStartTime());
                                                         }
                                                     }
-                                                    /*else{
-                                                        Reservation fillerReservation3 = new Reservation();
-                                                        fillerReservation3.setStartTime("skip");
-                                                        fillerReservation3.setName(roomArr);
-                                                        if (reservations.size() < reservationsSizeCap) {
-                                                            reservations.add(fillerReservation3);
-                                                            reservationsSizeCap++;
-                                                        }
-                                                    }
-                                                     */
                                                     //break after targetTimes are found
                                                     break;
                                                 }
                                             }
                                         }
                                         if(reservations.size() == reservationsSizeCap){
-                                            System.out.println("Breaking mainloop");
+                                            System.out.println("Breaking mainloop... dayShedule size: " + daySchedule.size());
+                                            showMoreAmount = t+1;
+                                            //if all times have been looped
+                                            if(showMoreAmount >= daySchedule.size()-2){
+                                                adjustTimeStamp(daySchedule.get(showMoreAmount));
+                                                showMoreAmount = 0;
+                                                dayCount++;
+                                                System.out.println("End of day reached (first if), dayCount++: " + dayCount);
+                                            }
                                             break mainloop;
                                         }
                                     }
+                                    if(showMoreAmount > 0 && showMoreAmount >= daySchedule.size()-2){
+                                        adjustTimeStamp(daySchedule.get(showMoreAmount));
+                                        showMoreAmount = 0;
+                                        dayCount++;
+                                        System.out.println("End of day reached (2nd if), dayCount++: " + dayCount);
+                                    }
+
                                 } catch (Exception e) {
                                     System.out.println("something wrong..");
                                     e.printStackTrace();
@@ -593,56 +616,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                 // Add the request to the RequestQueue.
                 AppController.getmInstance().addToRequestQueue(jsonRequest);
                 //queue.add(jsonRequest);
-
-    }
-
-    private void setDatePicker() {
-        todaysDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int year = changableCalendar.get(Calendar.YEAR);
-                int month = changableCalendar.get(Calendar.MONTH);
-                int day = changableCalendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        ShowFirstAvailableActivity.this,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        mDateSetListener,
-                        year, month, day);
-                dialog.getDatePicker().setMinDate(constantDate.getTime());
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
-            }
-        });
-
-        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                datePicked = true;
-
-                if (month < 10 && day < 10) {
-                    selectedDate = year + "-0" + month + "-0" + day;
-                    editDate(selectedDate);
-                    updateView();
-                } else if (day < 10) {
-                    selectedDate = year + "-" + month + "-0" + day;
-                    editDate(selectedDate);
-                    updateView();
-
-                } else if (month < 10) {
-                    selectedDate = year + "-0" + month + "-" + day;
-                    editDate(selectedDate);
-                    updateView();
-
-                } else {
-                    selectedDate = year + "-" + month + "-" + day;
-                    editDate(selectedDate);
-                    updateView();
-                }
-            }
-
-        };
     }
 
     private void editDate(String date) {
@@ -660,6 +633,10 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         dateChecker.add(Calendar.DATE, 1);
         String dateTomorrow = formatter.format(dateChecker.getTime());
 
+        if(selectedDate == null){
+            selectedDate = dateToday;
+        }
+
         if (dateToday.equals(selectedDate)) {
             todaysDate.setText("Today");
         } else if (selectedDate.equals(dateTomorrow)) {
@@ -670,24 +647,20 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
     //get values from intent
     private void getIntents(){
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        selectedDate = extras.getString(DATE_EXTRA);
-        roomNames = extras.getStringArray(ROOMNAMES_EXTRA);
-        final String [] safetyString = {"C11", "C13", "C15", "Flundran", "Rauken", "Änget", "Backsippan", "Heden", "Myren"};
-        roomNames = safetyString;
-        System.out.println("tried to get roomNames " + roomNames[0]);
-        for(String s : roomNames){
-            System.out.println(s);
-        }
+        roomNames = MainActivity.safetyString;
+        Bundle extras = getIntent().getExtras();
+        int[] extraArr = extras.getIntArray(VALUES_EXTRA);
+        showMoreAmount = extraArr[0];
+        dayCount = extraArr[1];
+
+        System.out.println("showMoreAmount: " + showMoreAmount + ", date: " + selectedDate);
     }
 
     private void updateView(){
         Intent i= new Intent(ShowFirstAvailableActivity.this,ShowFirstAvailableActivity.class);
         Bundle extras = new Bundle();
-        System.out.println("UpdateView date is " + selectedDate);
-        extras.putString(DATE_EXTRA, selectedDate);
-        extras.putStringArray(ROOMNAMES_EXTRA, roomNames);
+        int[] extraArr = {showMoreAmount, dayCount};
+        extras.putIntArray(VALUES_EXTRA, extraArr);
         i.putExtras(extras);
         // Hides the transition between intents
         startActivity(i);

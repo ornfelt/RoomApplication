@@ -168,7 +168,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                 textHour.bringToFront();
                             }
                             if(position+1 != reservations.size()) {
-                                if(reservation.getEndTime() != null){
+                                if(reservations.get(position+1).getEndTime() != null){
                                     textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
                                             reservations.get(position + 1).getEndTime());
                                     textHourBooking.bringToFront();
@@ -195,7 +195,6 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                 ViewGroup layout2 = (ViewGroup) textHourBooking.getParent();
                 layout2.removeView(textHourBooking);
             }
-
 
             //add onclicklistener to booking buttons
             if(buttonBook.isClickable()){
@@ -257,7 +256,11 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
             returnTime = "09:"+min;
         }else{
             returnTime = hour+1 + ":" + min;
+            if(hour+1 == 20){
+                returnTime = hour+1 + ":" + "00";
+            }
         }
+
         return returnTime;
     }
 }

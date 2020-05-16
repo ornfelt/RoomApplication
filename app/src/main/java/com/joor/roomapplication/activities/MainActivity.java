@@ -33,14 +33,15 @@ import java.util.Set;
 
 import static com.joor.roomapplication.activities.ShowDayActivity.DATE_EXTRA;
 import static com.joor.roomapplication.activities.ShowDayActivity.ROOMNAME_EXTRA;
-import static com.joor.roomapplication.activities.ShowFirstAvailableActivity.ROOMNAMES_EXTRA;
+import static com.joor.roomapplication.activities.ShowFirstAvailableActivity.VALUES_EXTRA;
 
 public class MainActivity extends AppCompatActivity implements RecyclerClickInterface {
     private String dateToday;
     private Spinner roomNameText;
     private RecyclerView recyclerView;
     private ArrayList <String> roomNames;
-
+    //can be used by other classes
+    public static String [] safetyString = {"C11", "C13", "C15", "Flundran", "Rauken", "Änget", "Backsippan", "Heden", "Myren"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,13 +123,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
     private void navigateToShowFirstAvailableActivity() {
         Intent intent = new Intent(getApplicationContext(), ShowFirstAvailableActivity.class);
         Bundle extras = new Bundle();
-        //send all room names to ShowFirstAvailableActivity
-        String[] roomNamesArr = new String[roomNames.size()];
-        for(int i = 0; i < roomNames.size(); i++){
-            roomNamesArr[i] = roomNames.get(0);
-        }
-        extras.putStringArray(ROOMNAMES_EXTRA, roomNamesArr);
-        extras.putString(DATE_EXTRA, dateToday);
+        int[] extraArr = {0, 0};
+        extras.putIntArray(VALUES_EXTRA, extraArr);
         intent.putExtras(extras);
         startActivity(intent);
         overridePendingTransition(0, 0);
@@ -144,8 +140,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         String url = "https://timeeditrestapi.herokuapp.com/reservations/";
         //final ArrayList<String> roomNames = new ArrayList<>();
         final Set <String> removeDuplicates = new LinkedHashSet<>();
-
-        final String [] safetyString = {"C11", "C13", "C15", "Flundran", "Rauken", "Änget", "Backsippan", "Heden", "Myren"};
 
         // Request a json response from the provided URL, in this case an jsonarray.
         JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, url, null,
