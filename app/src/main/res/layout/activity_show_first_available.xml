@@ -8,8 +8,9 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="86dp"
-        android:layout_height="80dp"
+        android:layout_width="84dp"
+        android:layout_height="74dp"
+        android:layout_marginTop="-5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/uu_logo_tranp4f125px" />

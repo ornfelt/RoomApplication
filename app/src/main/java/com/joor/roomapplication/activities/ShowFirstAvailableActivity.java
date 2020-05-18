@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -65,6 +66,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private boolean datePicked;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     private DisplayMetrics displayMetrics;
+    private String timeNow;
     private String targetTime1, targetTime2, targetTime3, targetTime4;
     private int indexOfTimeNow;
     private int showMoreAmount;
@@ -92,6 +94,12 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         setAdapter();
         // Gets the availability for a specific room
         getAvailability(changableDate);
+
+        if(showMoreAmount == 0 && dayCount == 0){
+            //show info toast
+            Toast toast = Toast.makeText(getApplicationContext(), "Click the arrows to show more/previous.", Toast.LENGTH_LONG);
+            toast.show();
+        }
     }
 
     //gets id for view
@@ -118,9 +126,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             ViewGroup.MarginLayoutParams textDateParams = (ViewGroup.MarginLayoutParams) todaysDate.getLayoutParams();
             todaysDate.setLayoutParams(textDateParams);
 
-            //this seems to fix correctly
+            //this seems to fix for dHeight <= 1200
             ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-            recyclerParams.topMargin = 85;
+            recyclerParams.topMargin = 105;
             recyclerView.setLayoutParams(recyclerParams);
         }
     }
@@ -155,7 +163,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         rightClick = (ImageView) findViewById(R.id.rightClick);
         leftClick = (ImageView) findViewById(R.id.leftClick);
 
-        room_name = "first available";
+        room_name = "First Available";
         roomName.setText(room_name);
         setDateTextView();
     }
@@ -217,7 +225,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     }
 
     private void setDate(String date) throws ParseException {
-        System.out.println("Begärt datum är"+ date);
         Date d1 = formatter.parse(date);
         changableCalendar = Calendar.getInstance();
         changableCalendar.setTime(d1);
@@ -250,7 +257,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                     updateView();
                 }else{
                     //TODO: tell user that it's not possible to go back
-
+                    Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
@@ -262,6 +270,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         //return time only (hour and min)
         return dateTimeSplit[1];
     }
+
+
 
     //adjust time string to match booking schedule, example: if timeNow is 20:30, then set time to 08:00
     private String adjustTimeStamp(String t){
@@ -285,7 +295,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         int min = Integer.parseInt(tSplit[1]);
         String adjustedTime = "";
 
-        //if current hour is >= 20 or less than 08
+        //if current hour is >= 20
         if(Integer.parseInt(completeHour) >= 20){
             //set hour to 08
             completeHour = "08";
@@ -311,9 +321,15 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                 completeMin = "15";
             }else if(min < 30){
                 completeMin = "30";
+            } //if time is > 19:30 go to next day
+            else if(min > 30 && completeHour.equals("19")){
+                //recurse
+                adjustedTime = adjustTimeStamp("20:00");
+                return adjustedTime;
             }else if(min < 45){
                 completeMin = "45";
-            } //else means minute is >= 45, then hour needs adjustment as well
+            }
+            //else means minute is >= 45, then hour needs adjustment as well
             else{
                 completeMin = "00";
                 if(hour1 == 0 && hour2 == 8){
@@ -361,11 +377,43 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         }
     }
 
+
+    //this method adds to dayCount if necessary, a bit redundant code here...
+    private void addToDayCount(String t ){
+        //incoming t should be formatted as: HH:mm
+        String[] tSplit = t.split(":");
+        String completeHour = tSplit[0];
+        String[] hourSplit = completeHour.split("");
+
+        int hour1;
+        int hour2;
+        //split hour, example: split 08 to 0 and 8
+        if(hourSplit.length == 3){
+            hour1 = Integer.parseInt(hourSplit[1]);
+            hour2 = Integer.parseInt(hourSplit[2]);
+        }else{
+            hour1 = Integer.parseInt(hourSplit[0]);
+            hour2 = Integer.parseInt(hourSplit[1]);
+        }
+
+        String completeMin = tSplit[1];
+        int min = Integer.parseInt(tSplit[1]);
+
+        //only add if time is > 19:30
+        if(min > 30 && completeHour.equals("19")){
+            dayCount++;
+        }
+    }
+
     private void getAvailability(final Date date) {
         //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();
         dateToday = formatter.format(date);
-        String timeNow = getCurrentTimeStamp();
+        timeNow = getCurrentTimeStamp();
+        if(dayCount == 0) {
+            timeNow = "08:00";
+            addToDayCount(timeNow);
+        }
 
         //if end of days schedule is reached, then look for next days availability
         if(dayCount > 0 ){
@@ -382,7 +430,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             System.out.println("dateToday changed in getAvailability: " + dateToday);
         }
 
-        //timeNow = "19:50";
         System.out.println("date and time before adjust: " + dateToday +", " + timeNow);
         timeNow = adjustTimeStamp(timeNow);
         //date may change depending on adjusted time, so date text is set again here
@@ -401,6 +448,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                     System.out.println("indexOfTimeNow found at: " + indexOfTimeNow);
                     isFirstResult = true;
                     indexOfTimeNow = daySchedule.indexOf(s);
+
                 }
             }
         }
@@ -537,7 +585,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                         for (String time: bookedStartTimes) {
                                                             if(isFirstTimeEarlier(targetTime2, time)){
                                                                 fillerReservation.setEndTime(time);
-                                                                System.out.println("endTime added for fillerRes: " + time);
                                                                 bookedStartTimes.remove(time);
                                                                 break;
                                                             }
@@ -547,10 +594,10 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                     String[] roomArr = {room};
                                                     fillerReservation.setName(roomArr);
                                                     //check reservations size before adding new
-                                                    if (reservations.size() < reservationsSizeCap) {
+                                                    //if (reservations.size() < reservationsSizeCap) {
                                                         reservations.add(fillerReservation);
                                                         //System.out.println("added reservation: " + fillerReservation.getStartTime());
-                                                    }
+                                                    //}
                                                     //else nothing happens - can't break main loop within jsonrequest
 
                                                     //if first half hour is free, then also check next half hour
@@ -562,8 +609,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                         if(bookedStartTimes.size() > 0){
                                                             for (String time: bookedStartTimes) {
                                                                 if(isFirstTimeEarlier(targetTime4, time)){
-                                                                    fillerReservation.setEndTime(time);
-                                                                    System.out.println("endTime added for fillerRes: " + time);
+                                                                    fillerReservation2.setEndTime(time);
                                                                     bookedStartTimes.remove(time);
                                                                     break;
                                                                 }
@@ -572,34 +618,38 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                         //add room name
                                                         fillerReservation2.setName(roomArr);
                                                         //check reservations size before adding new
-                                                        if (reservations.size() < reservationsSizeCap) {
+                                                        //if (reservations.size() < reservationsSizeCap) {
                                                             reservations.add(fillerReservation2);
                                                             //System.out.println("added reservation: " + fillerReservation2.getStartTime());
-                                                        }
+                                                        //}
                                                     }
                                                     //break after targetTimes are found
                                                     break;
                                                 }
                                             }
                                         }
-                                        if(reservations.size() == reservationsSizeCap){
+                                        if(reservations.size() >= reservationsSizeCap){
                                             System.out.println("Breaking mainloop... dayShedule size: " + daySchedule.size());
                                             showMoreAmount = t+1;
                                             //if all times have been looped
-                                            if(showMoreAmount >= daySchedule.size()-2){
+                                            if(showMoreAmount >= daySchedule.size()-4){
                                                 adjustTimeStamp(daySchedule.get(showMoreAmount));
                                                 showMoreAmount = 0;
                                                 dayCount++;
-                                                System.out.println("End of day reached (first if), dayCount++: " + dayCount);
                                             }
                                             break mainloop;
                                         }
                                     }
+                                    //if all times in schedule has been checked, then set new day
                                     if(showMoreAmount > 0 && showMoreAmount >= daySchedule.size()-2){
                                         adjustTimeStamp(daySchedule.get(showMoreAmount));
                                         showMoreAmount = 0;
                                         dayCount++;
-                                        System.out.println("End of day reached (2nd if), dayCount++: " + dayCount);
+                                    }
+                                    if(showMoreAmount > 0 && targetTime4.equals(daySchedule.get(daySchedule.size()-2))){
+                                        adjustTimeStamp(daySchedule.get(showMoreAmount));
+                                        showMoreAmount = 0;
+                                        dayCount++;
                                     }
 
                                 } catch (Exception e) {
@@ -654,8 +704,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         int[] extraArr = extras.getIntArray(VALUES_EXTRA);
         showMoreAmount = extraArr[0];
         dayCount = extraArr[1];
-
-        System.out.println("showMoreAmount: " + showMoreAmount + ", date: " + selectedDate);
     }
 
     private void updateView(){
