@@ -114,7 +114,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int dWidth = displayMetrics.widthPixels;
         int dHeight = displayMetrics.heightPixels;
-        System.out.println("width for device: " + dWidth + ", height: " + dHeight);
+        int dDensityPerInch = displayMetrics.densityDpi;
+        System.out.println("width for device: " + dWidth + ", height: " + dHeight + " density: " + dDensityPerInch);
 
         //this should fix layout for devices with similar resolution as Galaxy Nexus (720p)
         if(dHeight <= 1200) {

@@ -93,7 +93,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
 
 
-
         if (inflater == null) {
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -120,6 +119,9 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 displayMetrics = activity.getResources().getDisplayMetrics();
                 int displayWidth = displayMetrics.widthPixels;
                 int displayHeight = displayMetrics.heightPixels;
+
+                int dDensityPerInch = displayMetrics.densityDpi;
+
                 ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
                 ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
                 ViewGroup.LayoutParams textHourBookingParams = textHourBooking.getLayoutParams();
@@ -147,6 +149,10 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
                         }
+                        if(dDensityPerInch>420){
+
+                        }
+
                     }
                     //else means the reservation is booked
                     else {
@@ -170,8 +176,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             buttonBook2.setLayoutParams(buttonBook2Params);
                             //buttonBook2.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
                         }
-
-                        //need to find middle of reservation and only set the time text there
+                        //TODO, need to find middle of reservation and only set the time text there
 
 
                         //count "time steps" till endTime is reached
@@ -395,48 +400,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         }
         return time;
     }
-    public boolean onTouchEvent(MotionEvent event){
-            // starting to swipe time gesture
-            switch (event.getAction()) {
 
-                case MotionEvent.ACTION_DOWN:
-                    x1 = event.getX();
-                    y1 = event.getY();
-                    break;
-                // ending time swipe gesture
-                case MotionEvent.ACTION_UP:
-                    x2 = event.getX();
-                    y2 = event.getY();
-
-                    // getting value for horizontal swipe
-                    float valueX = x2 - x1;
-
-                    // getting value for vertical swipe
-                    float valueY = y2 - y1;
-
-                    if (Math.abs(valueX) > MIN_DISTANCE) {
-                        //detect left to right swipe
-                        if (x2 > x1) {
-                            //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
-                            System.out.println("Right Swipe");
-
-
-
-
-                        }
-                        else {// detect right to left swipe}
-                            //Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
-                            System.out.println("Left Swipe");
-
-
-                        }
-                    }
-
-
-
-            }
-            return false;
-        }
     }
 
 
