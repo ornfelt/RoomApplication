@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -116,10 +117,14 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         int dHeight = displayMetrics.heightPixels;
         int dDensityPerInch = displayMetrics.densityDpi;
         System.out.println("width for device: " + dWidth + ", height: " + dHeight + " density: " + dDensityPerInch);
+        Configuration configuration = this.getResources().getConfiguration();
+        int screenWidthDp = configuration.screenWidthDp; //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
+        int screenHeightDp = configuration.screenHeightDp;
+        System.out.println("Usable width in this activity: " + screenWidthDp + ", usable height: " + screenHeightDp);
 
         //this should fix layout for devices with similar resolution as Galaxy Nexus (720p)
         if(dHeight <= 1200) {
-
+            System.out.println("dHeight <= 1200 ");
             ViewGroup.MarginLayoutParams textRoomParams = (ViewGroup.MarginLayoutParams) roomName.getLayoutParams();
             //textRoomParams.topMargin = 5;
             roomName.setLayoutParams(textRoomParams);
@@ -129,7 +134,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
             //this seems to fix for dHeight <= 1200
             ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-            recyclerParams.topMargin = 105;
+            recyclerParams.topMargin = 5;
             recyclerView.setLayoutParams(recyclerParams);
         }
     }
@@ -454,221 +459,221 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             }
         }
 
-                //String requestUrl = url + "room/" + room;
-                String requestUrl = url;
-                System.out.println("requestUrl: " + requestUrl);
-                // Request a json response from the provided URL
-                JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, requestUrl, null,
-                        new Response.Listener<JSONArray>() {
-                            @Override
-                            public void onResponse(JSONArray response) {
+        //String requestUrl = url + "room/" + room;
+        String requestUrl = url;
+        System.out.println("requestUrl: " + requestUrl);
+        // Request a json response from the provided URL
+        JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, requestUrl, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            //variable for reservations cap. Can be extended to fix layout in recyclerview.
+                            int reservationsSizeCap = 24;
+                            //loop through every half hour to find free times (most likely won't loop through it all since it'll probably break before end)
+                            mainloop:
+                            for(int t = indexOfTimeNow; t < daySchedule.size()-1; t++) {
+
+                                //set string targetTime1: example: 08:15, and targetTime2: example: 08:30 etc...
+                                targetTime1 = daySchedule.get(t);
+
                                 try {
-                                    //variable for reservations cap. Can be extended to fix layout in recyclerview.
-                                    int reservationsSizeCap = 24;
-                                    //loop through every half hour to find free times (most likely won't loop through it all since it'll probably break before end)
-                                    mainloop:
-                                    for(int t = indexOfTimeNow; t < daySchedule.size()-1; t++) {
-
-                                        //set string targetTime1: example: 08:15, and targetTime2: example: 08:30 etc...
-                                        targetTime1 = daySchedule.get(t);
-
-                                        try {
-                                            if (t + 1 <= daySchedule.size() - 1) {
-                                                targetTime2 = daySchedule.get(t + 1);
-                                            } else {
-                                                //targetTime2 = null;
-                                                targetTime2 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
-                                                //update t
-                                                for (String s: daySchedule) {
-                                                    if(s.equals(targetTime2)){
-                                                            t = daySchedule.indexOf(s);
-                                                    }
-                                                }
-                                            }
-                                            t++;
-
-                                            if (t + 1 <= daySchedule.size() - 1) {
-                                                targetTime3 = daySchedule.get(t + 1);
-                                            } else {
-                                                targetTime3 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
-                                                //update t
-                                                for (String s: daySchedule) {
-                                                    if(s.equals(targetTime2)){
-                                                        t = daySchedule.indexOf(s);
-                                                    }
-                                                }
-                                            }
-                                            t++;
-                                            if (t + 1 <= daySchedule.size() - 1) {
-                                                targetTime4 = daySchedule.get(t + 1);
-                                            } else {
-                                                targetTime4 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
-                                                //update t
-                                                for (String s: daySchedule) {
-                                                    if(s.equals(targetTime2)){
-                                                        t = daySchedule.indexOf(s);
-                                                    }
-                                                }
-                                            }
-                                            t++;
-                                        }catch(Exception e){
-                                            e.printStackTrace();
-                                        }
-
-                                        //loop through all rooms to see if target times are available
-                                        for (final String room : roomNames) {
-                                            //list that will contain all times available for booking
-                                            ArrayList<String> freeTimesList = new ArrayList<>();
-                                            //list that will contain all startimes for bookings (needed for recyclerview)
-                                            ArrayList<String> bookedStartTimes = new ArrayList<>();
-
-                                            //loops through all available times during a day to find available times
-                                            for (int i = 0; i < daySchedule.size(); i++) {
-                                                boolean timeFound = false;
-
-                                                //loops through response data
-                                                for (int j = 0; j < response.length(); j++) {
-                                                    JSONObject JSONreservation = response.getJSONObject(j);
-                                                    String startDate = JSONreservation.getString("startDate");
-                                                    String roomNames = JSONreservation.getString("name");
-
-                                                    //split based on quotation mark
-                                                    String[] roomNamesSplit = roomNames.split("\"");
-                                                    boolean roomFound = false;
-                                                    for(String s : roomNamesSplit){
-                                                        if(s.equals(room)){
-                                                            roomFound = true;
-                                                        }
-                                                    }
-
-                                                    //if reservation is for today
-                                                    if (startDate.equals(dateToday) && roomFound) {
-                                                        //sets start and end time for reservation
-                                                        String startTime = JSONreservation.getString("startTime");
-                                                        bookedStartTimes.add(startTime);
-
-                                                        //example: if 08:00 is booked
-                                                        if (daySchedule.get(i).equals(startTime)) {
-                                                            timeFound = true;
-                                                            freeTimesList.add("startTime");
-                                                            //get end time for reservation
-                                                            String endTime = JSONreservation.getString("endTime");
-                                                            boolean endTimeReached = false;
-                                                            //loops until end time is found
-                                                            while (!endTimeReached) {
-                                                                //set i to new time, example: 08:15
-                                                                i++;
-                                                                if (daySchedule.get(i).equals(endTime)) {
-                                                                    endTimeReached = true;
-                                                                    //change i back
-                                                                    i--;
-                                                                } else {
-                                                                    freeTimesList.add("Time booked");
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                if (!timeFound) {
-                                                    //time is added to freeTimesList
-                                                    freeTimesList.add(daySchedule.get(i));
-                                                }
-                                            }
-
-                                            //loop through available times for a specific room to see if targeted times are free
-                                            for (int i = 0; i < freeTimesList.size() - 1; i++) {
-                                                //check target times and add to list if they are free
-                                                if (targetTime2 != null && targetTime1.equals(freeTimesList.get(i)) && targetTime2.equals(freeTimesList.get(i+1))) {
-                                                    Reservation fillerReservation = new Reservation();
-                                                    fillerReservation.setStartTime(targetTime1);
-                                                    //add end time if there's a booking close to time (needed for recyclerview)
-                                                    if(bookedStartTimes.size() > 0){
-                                                        for (String time: bookedStartTimes) {
-                                                            if(isFirstTimeEarlier(targetTime2, time)){
-                                                                fillerReservation.setEndTime(time);
-                                                                bookedStartTimes.remove(time);
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                    //add room name
-                                                    String[] roomArr = {room};
-                                                    fillerReservation.setName(roomArr);
-                                                    //check reservations size before adding new
-                                                    //if (reservations.size() < reservationsSizeCap) {
-                                                        reservations.add(fillerReservation);
-                                                        //System.out.println("added reservation: " + fillerReservation.getStartTime());
-                                                    //}
-                                                    //else nothing happens - can't break main loop within jsonrequest
-
-                                                    //if first half hour is free, then also check next half hour
-                                                    if (i + 2 != freeTimesList.size() && targetTime3 != null && targetTime4 != null
-                                                            && targetTime3.equals(freeTimesList.get(i + 2)) && targetTime4.equals(freeTimesList.get(i + 3))) {
-                                                        Reservation fillerReservation2 = new Reservation();
-                                                        fillerReservation2.setStartTime(targetTime3);
-                                                        //add end time if there's a booking close to time (needed for recyclerview)
-                                                        if(bookedStartTimes.size() > 0){
-                                                            for (String time: bookedStartTimes) {
-                                                                if(isFirstTimeEarlier(targetTime4, time)){
-                                                                    fillerReservation2.setEndTime(time);
-                                                                    bookedStartTimes.remove(time);
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                        //add room name
-                                                        fillerReservation2.setName(roomArr);
-                                                        //check reservations size before adding new
-                                                        //if (reservations.size() < reservationsSizeCap) {
-                                                            reservations.add(fillerReservation2);
-                                                            //System.out.println("added reservation: " + fillerReservation2.getStartTime());
-                                                        //}
-                                                    }
-                                                    //break after targetTimes are found
-                                                    break;
-                                                }
+                                    if (t + 1 <= daySchedule.size() - 1) {
+                                        targetTime2 = daySchedule.get(t + 1);
+                                    } else {
+                                        //targetTime2 = null;
+                                        targetTime2 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                        //update t
+                                        for (String s: daySchedule) {
+                                            if(s.equals(targetTime2)){
+                                                t = daySchedule.indexOf(s);
                                             }
                                         }
-                                        if(reservations.size() >= reservationsSizeCap){
-                                            System.out.println("Breaking mainloop... dayShedule size: " + daySchedule.size());
-                                            showMoreAmount = t+1;
-                                            //if all times have been looped
-                                            if(showMoreAmount >= daySchedule.size()-4){
-                                                adjustTimeStamp(daySchedule.get(showMoreAmount));
-                                                showMoreAmount = 0;
-                                                dayCount++;
+                                    }
+                                    t++;
+
+                                    if (t + 1 <= daySchedule.size() - 1) {
+                                        targetTime3 = daySchedule.get(t + 1);
+                                    } else {
+                                        targetTime3 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                        //update t
+                                        for (String s: daySchedule) {
+                                            if(s.equals(targetTime2)){
+                                                t = daySchedule.indexOf(s);
                                             }
-                                            break mainloop;
                                         }
                                     }
-                                    //if all times in schedule has been checked, then set new day
-                                    if(showMoreAmount > 0 && showMoreAmount >= daySchedule.size()-2){
-                                        adjustTimeStamp(daySchedule.get(showMoreAmount));
-                                        showMoreAmount = 0;
-                                        dayCount++;
+                                    t++;
+                                    if (t + 1 <= daySchedule.size() - 1) {
+                                        targetTime4 = daySchedule.get(t + 1);
+                                    } else {
+                                        targetTime4 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                        //update t
+                                        for (String s: daySchedule) {
+                                            if(s.equals(targetTime2)){
+                                                t = daySchedule.indexOf(s);
+                                            }
+                                        }
                                     }
-                                    if(showMoreAmount > 0 && targetTime4.equals(daySchedule.get(daySchedule.size()-2))){
-                                        adjustTimeStamp(daySchedule.get(showMoreAmount));
-                                        showMoreAmount = 0;
-                                        dayCount++;
-                                    }
-
-                                } catch (Exception e) {
-                                    System.out.println("something wrong..");
+                                    t++;
+                                }catch(Exception e){
                                     e.printStackTrace();
                                 }
-                                adapter.notifyDataSetChanged();
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println("Volleyerror: " + error.toString());
-                    }
-                });
 
-                // Add the request to the RequestQueue.
-                AppController.getmInstance().addToRequestQueue(jsonRequest);
-                //queue.add(jsonRequest);
+                                //loop through all rooms to see if target times are available
+                                for (final String room : roomNames) {
+                                    //list that will contain all times available for booking
+                                    ArrayList<String> freeTimesList = new ArrayList<>();
+                                    //list that will contain all startimes for bookings (needed for recyclerview)
+                                    ArrayList<String> bookedStartTimes = new ArrayList<>();
+
+                                    //loops through all available times during a day to find available times
+                                    for (int i = 0; i < daySchedule.size(); i++) {
+                                        boolean timeFound = false;
+
+                                        //loops through response data
+                                        for (int j = 0; j < response.length(); j++) {
+                                            JSONObject JSONreservation = response.getJSONObject(j);
+                                            String startDate = JSONreservation.getString("startDate");
+                                            String roomNames = JSONreservation.getString("name");
+
+                                            //split based on quotation mark
+                                            String[] roomNamesSplit = roomNames.split("\"");
+                                            boolean roomFound = false;
+                                            for(String s : roomNamesSplit){
+                                                if(s.equals(room)){
+                                                    roomFound = true;
+                                                }
+                                            }
+
+                                            //if reservation is for today
+                                            if (startDate.equals(dateToday) && roomFound) {
+                                                //sets start and end time for reservation
+                                                String startTime = JSONreservation.getString("startTime");
+                                                bookedStartTimes.add(startTime);
+
+                                                //example: if 08:00 is booked
+                                                if (daySchedule.get(i).equals(startTime)) {
+                                                    timeFound = true;
+                                                    freeTimesList.add("startTime");
+                                                    //get end time for reservation
+                                                    String endTime = JSONreservation.getString("endTime");
+                                                    boolean endTimeReached = false;
+                                                    //loops until end time is found
+                                                    while (!endTimeReached) {
+                                                        //set i to new time, example: 08:15
+                                                        i++;
+                                                        if (daySchedule.get(i).equals(endTime)) {
+                                                            endTimeReached = true;
+                                                            //change i back
+                                                            i--;
+                                                        } else {
+                                                            freeTimesList.add("Time booked");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (!timeFound) {
+                                            //time is added to freeTimesList
+                                            freeTimesList.add(daySchedule.get(i));
+                                        }
+                                    }
+
+                                    //loop through available times for a specific room to see if targeted times are free
+                                    for (int i = 0; i < freeTimesList.size() - 1; i++) {
+                                        //check target times and add to list if they are free
+                                        if (targetTime2 != null && targetTime1.equals(freeTimesList.get(i)) && targetTime2.equals(freeTimesList.get(i+1))) {
+                                            Reservation fillerReservation = new Reservation();
+                                            fillerReservation.setStartTime(targetTime1);
+                                            //add end time if there's a booking close to time (needed for recyclerview)
+                                            if(bookedStartTimes.size() > 0){
+                                                for (String time: bookedStartTimes) {
+                                                    if(isFirstTimeEarlier(targetTime2, time)){
+                                                        fillerReservation.setEndTime(time);
+                                                        bookedStartTimes.remove(time);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            //add room name
+                                            String[] roomArr = {room};
+                                            fillerReservation.setName(roomArr);
+                                            //check reservations size before adding new
+                                            //if (reservations.size() < reservationsSizeCap) {
+                                            reservations.add(fillerReservation);
+                                            //System.out.println("added reservation: " + fillerReservation.getStartTime());
+                                            //}
+                                            //else nothing happens - can't break main loop within jsonrequest
+
+                                            //if first half hour is free, then also check next half hour
+                                            if (i + 2 != freeTimesList.size() && targetTime3 != null && targetTime4 != null
+                                                    && targetTime3.equals(freeTimesList.get(i + 2)) && targetTime4.equals(freeTimesList.get(i + 3))) {
+                                                Reservation fillerReservation2 = new Reservation();
+                                                fillerReservation2.setStartTime(targetTime3);
+                                                //add end time if there's a booking close to time (needed for recyclerview)
+                                                if(bookedStartTimes.size() > 0){
+                                                    for (String time: bookedStartTimes) {
+                                                        if(isFirstTimeEarlier(targetTime4, time)){
+                                                            fillerReservation2.setEndTime(time);
+                                                            bookedStartTimes.remove(time);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                //add room name
+                                                fillerReservation2.setName(roomArr);
+                                                //check reservations size before adding new
+                                                //if (reservations.size() < reservationsSizeCap) {
+                                                reservations.add(fillerReservation2);
+                                                //System.out.println("added reservation: " + fillerReservation2.getStartTime());
+                                                //}
+                                            }
+                                            //break after targetTimes are found
+                                            break;
+                                        }
+                                    }
+                                }
+                                if(reservations.size() >= reservationsSizeCap){
+                                    System.out.println("Breaking mainloop... dayShedule size: " + daySchedule.size());
+                                    showMoreAmount = t+1;
+                                    //if all times have been looped
+                                    if(showMoreAmount >= daySchedule.size()-4){
+                                        adjustTimeStamp(daySchedule.get(showMoreAmount));
+                                        showMoreAmount = 0;
+                                        dayCount++;
+                                    }
+                                    break mainloop;
+                                }
+                            }
+                            //if all times in schedule has been checked, then set new day
+                            if(showMoreAmount > 0 && showMoreAmount >= daySchedule.size()-2){
+                                adjustTimeStamp(daySchedule.get(showMoreAmount));
+                                showMoreAmount = 0;
+                                dayCount++;
+                            }
+                            if(showMoreAmount > 0 && targetTime4.equals(daySchedule.get(daySchedule.size()-2))){
+                                adjustTimeStamp(daySchedule.get(showMoreAmount));
+                                showMoreAmount = 0;
+                                dayCount++;
+                            }
+
+                        } catch (Exception e) {
+                            System.out.println("something wrong..");
+                            e.printStackTrace();
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("Volleyerror: " + error.toString());
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        AppController.getmInstance().addToRequestQueue(jsonRequest);
+        //queue.add(jsonRequest);
     }
 
     private void editDate(String date) {

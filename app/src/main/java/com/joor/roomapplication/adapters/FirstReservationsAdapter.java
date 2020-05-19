@@ -64,7 +64,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
     @Override
     public FirstReservationsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         //create new view
-        convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout, parent, false);
+        convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_available, parent, false);
         ViewHolder vh = new ViewHolder(convertView);
         return vh;
     }
@@ -77,7 +77,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.custom_layout, null);
+            convertView = inflater.inflate(R.layout.custom_layout_available, null);
         }
 
         //init textviews and buttons

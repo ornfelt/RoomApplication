@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -93,6 +95,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Set up imagelisteners
         setImgListeners();
         setDatePicker();
+        scaleAccordingToResolution();
         // Set up the adapter
         setAdapter();
         // Gets the availability for a specific room
@@ -110,6 +113,36 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private void bindViews() {
         recyclerView = findViewById(R.id.my_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+    }
+
+    private void scaleAccordingToResolution(){
+
+        //get display width and height
+        displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        int dWidth = displayMetrics.widthPixels;
+        int dHeight = displayMetrics.heightPixels;
+        int dDensityPerInch = displayMetrics.densityDpi;
+        System.out.println("width for device: " + dWidth + ", height: " + dHeight + " density: " + dDensityPerInch);
+        Configuration configuration = this.getResources().getConfiguration();
+        int screenWidthDp = configuration.screenWidthDp; //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
+        int screenHeightDp = configuration.screenHeightDp;
+        System.out.println("Usable width in this activity: " + screenWidthDp + ", usable height: " + screenHeightDp);
+
+        //this should fix layout for devices with similar resolution as Galaxy Nexus (720p)
+        if(dHeight <= 1200) {
+            System.out.println("dHeight <= 1200 ");
+            ViewGroup.MarginLayoutParams textRoomParams = (ViewGroup.MarginLayoutParams) roomName.getLayoutParams();
+            //textRoomParams.topMargin = 5;
+            roomName.setLayoutParams(textRoomParams);
+
+            ViewGroup.MarginLayoutParams textDateParams = (ViewGroup.MarginLayoutParams) todaysDate.getLayoutParams();
+            todaysDate.setLayoutParams(textDateParams);
+
+            //this seems to fix for dHeight <= 1200
+            ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+            recyclerParams.topMargin = 5;
+            recyclerView.setLayoutParams(recyclerParams);
+        }
     }
 
     //when user navigates back

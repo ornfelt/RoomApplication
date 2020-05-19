@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
     private void navigateToShowFirstAvailableActivity() {
         Intent intent = new Intent(getApplicationContext(), ShowFirstAvailableActivity.class);
         Bundle extras = new Bundle();
-        int[] extraArr = {0, 0};
+        int[] extraArr = {0,0};
         extras.putIntArray(VALUES_EXTRA, extraArr);
         intent.putExtras(extras);
         startActivity(intent);
