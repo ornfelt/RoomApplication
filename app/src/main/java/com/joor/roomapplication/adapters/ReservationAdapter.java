@@ -52,15 +52,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     View convertView;
     DisplayMetrics displayMetrics;
 
-    private float x1,x2,y1,y2;
-    private static int MIN_DISTANCE = 150;
-    private GestureDetector gestureDetector;
-
-
-   // private static final String TAG = "Swipe Position";
-    //private float x1,x2,y1,y2;
-    //private static int MIN_DISTANCE = 150;
-
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -141,11 +132,13 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                     if (reservation.getStartTime().equals("free")) {
                         //set button color to greenb
                         if (positionCount == 0) {
-                            buttonBook.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                            // old color #ff93e6b3
+                            buttonBook.setBackgroundColor(Color.parseColor("#FFFFFF"));
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
                         } else {
-                            buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                            // old color #ff93e6b3"
+                            buttonBook2.setBackgroundColor(Color.parseColor("#FFFFFF"));
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
                         }
@@ -158,7 +151,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                     else {
                         //set button color to red and make nonclickable
                         if (positionCount == 0) {
-                            buttonBook.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                            // old color #fffa7d89
+                            buttonBook.setBackgroundColor(Color.parseColor("#F2F2F2"));
                             buttonBook.setClickable(false);
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
@@ -170,7 +164,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                                 buttonBook.setLayoutParams(buttonMargin);
                             }
                         } else{
-                            buttonBook2.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                            // old color #fffa7d89
+                            buttonBook2.setBackgroundColor(Color.parseColor("#F2F2F2"));
                             buttonBook2.setClickable(false);
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
