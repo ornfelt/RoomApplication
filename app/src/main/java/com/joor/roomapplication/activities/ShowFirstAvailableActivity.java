@@ -29,6 +29,7 @@ import com.joor.roomapplication.R;
 import com.joor.roomapplication.adapters.FirstReservationsAdapter;
 import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.models.Reservation;
+import com.joor.roomapplication.utility.ShowAmountValues;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,8 +45,6 @@ import java.util.List;
 public class ShowFirstAvailableActivity extends AppCompatActivity {
 
     public static String VALUES_EXTRA;
-    public static String SHOW_MORE_EXTRA;
-    public static String DAY_COUNT_EXTRA;
     private String room_name;
     private RecyclerView recyclerView;
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
@@ -71,8 +70,10 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private String targetTime1, targetTime2, targetTime3, targetTime4;
     private int indexOfTimeNow;
     private int showMoreAmount;
+    private int showLessAmount;
     private int dayCount;
     private boolean isFirstResult;
+    private boolean dayCountWasAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     }
 
     private void scaleAccordingToResolution(){
-
         //get display width and height
         displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int dWidth = displayMetrics.widthPixels;
@@ -181,6 +181,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         outState.putStringArray("roomNames", roomNames);
         outState.putString("selectedDate", selectedDate);
         outState.putInt("showMoreAmount", showMoreAmount);
+        outState.putInt("showLessAmount", showLessAmount);
         outState.putInt("dayCount", dayCount);
     }
 
@@ -188,6 +189,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         roomNames = savedInstanceState.getStringArray("roomNames");
         selectedDate = savedInstanceState.getString("selectedDate");
         showMoreAmount = savedInstanceState.getInt("showMoreAmount");
+        showLessAmount = savedInstanceState.getInt("showLessAmount");
         dayCount = savedInstanceState.getInt("dayCount");
     }
 
@@ -259,13 +261,25 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         leftClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //adjust dayCount if it was added in current view
+                if(dayCountWasAdded){
+                    dayCount--;
+                }
                 if(!isFirstResult) {
-                    //resets
-                    showMoreAmount = 0;
-                    dayCount = 0;
+                    ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+                    if(showAmountValues.showAmountList.size() > 1){
+                        //get second last
+                        showMoreAmount = showAmountValues.showAmountList.get(showAmountValues.showAmountList.size()-2);
+                    }else{
+                        //get first value if there only is 1
+                        showMoreAmount = 0;
+                        if(dayCount > 0 ){
+                            dayCount--;
+                        }
+                    }
+                    showAmountValues.resetShowAmountList();
                     updateView();
                 }else{
-                    //TODO: tell user that it's not possible to go back
                     Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -279,8 +293,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         //return time only (hour and min)
         return dateTimeSplit[1];
     }
-
-
 
     //adjust time string to match booking schedule, example: if timeNow is 20:30, then set time to 08:00
     private String adjustTimeStamp(String t){
@@ -446,6 +458,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         dateToday = selectedDate;
         indexOfTimeNow = 0;
         System.out.println("dayCount: " + dayCount + ", dateToday: " + dateToday + ", adjusted timeNow: " + timeNow);
+
 
         for (String s: daySchedule) {
             if(s.equals(timeNow)){
@@ -626,7 +639,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                 if(bookedStartTimes.size() > 0){
                                                     for (String time: bookedStartTimes) {
                                                         if(isFirstTimeEarlier(targetTime4, time)){
-                                                            fillerReservation2.setEndTime(time);
+                                                            fillerReservation.setEndTime(time);
                                                             bookedStartTimes.remove(time);
                                                             break;
                                                         }
@@ -654,6 +667,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                         adjustTimeStamp(daySchedule.get(showMoreAmount));
                                         showMoreAmount = 0;
                                         dayCount++;
+                                        dayCountWasAdded = true;
                                     }
                                     break mainloop;
                                 }
@@ -663,11 +677,13 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                 adjustTimeStamp(daySchedule.get(showMoreAmount));
                                 showMoreAmount = 0;
                                 dayCount++;
+                                dayCountWasAdded = true;
                             }
                             if(showMoreAmount > 0 && targetTime4.equals(daySchedule.get(daySchedule.size()-2))){
                                 adjustTimeStamp(daySchedule.get(showMoreAmount));
                                 showMoreAmount = 0;
                                 dayCount++;
+                                dayCountWasAdded = true;
                             }
 
                         } catch (Exception e) {
@@ -722,6 +738,13 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         int[] extraArr = extras.getIntArray(VALUES_EXTRA);
         showMoreAmount = extraArr[0];
         dayCount = extraArr[1];
+        if(showMoreAmount > 0) {
+            //save previous
+            showLessAmount = showMoreAmount;
+            //create instance of utility singleton class ShowAmountValues and add current showLessAmount
+            ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+            showAmountValues.showAmountList.add(showLessAmount);
+        }
     }
 
     private void updateView(){

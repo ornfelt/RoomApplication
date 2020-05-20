@@ -182,14 +182,18 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         int posAdd = 1;
                         boolean endTimeReached = false;
                         while (!endTimeReached) {
-                            //if endTime is NOT equal to "booked"
-                            if (!reservations.get(position + positionCount + posAdd).getStartTime().equals("booked")) {
-                                //endTime is reached
+                            if(reservations.size() > position + positionCount + posAdd) {
+                                //if endTime is NOT equal to "booked"
+                                if (!reservations.get(position + positionCount + posAdd).getStartTime().equals("booked")) {
+                                    //endTime is reached
+                                    endTimeReached = true;
+                                } else {
+                                    //otherwise increase time step counter
+                                    timeStepToEnd++;
+                                    posAdd++;
+                                }
+                            }else{
                                 endTimeReached = true;
-                            } else {
-                                //otherwise increase time step counter
-                                timeStepToEnd++;
-                                posAdd++;
                             }
                         }
 
