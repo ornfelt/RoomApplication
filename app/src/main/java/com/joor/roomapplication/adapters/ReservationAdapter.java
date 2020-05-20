@@ -67,7 +67,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     public ReservationAdapter(Activity activity, List<Reservation> reservations){
         this.activity = activity;
         this.reservations = reservations;
-        //this.gestureDetector = gestureDetector;
     }
 
     @Override
@@ -91,6 +90,14 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             convertView = inflater.inflate(R.layout.custom_layout, null);
         }
 
+        displayMetrics = activity.getResources().getDisplayMetrics();
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+
+        int dDensityPerInch = displayMetrics.densityDpi;
+
+
+
         if (imageLoader != null) {
             //init values
             imageLoader = AppController.getmInstance().getmImageLoader();
@@ -100,6 +107,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             final TextView textHourBooking = (TextView) convertView.findViewById(R.id.textHourBooking);
 
 
+
             //boolean used to find middle time block in reservation
             boolean isMiddleReservation = false;
 
@@ -107,11 +115,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
                 System.out.println("reservations size: " + reservations.size());
                 //get display width and height
-                displayMetrics = activity.getResources().getDisplayMetrics();
-                int displayWidth = displayMetrics.widthPixels;
-                int displayHeight = displayMetrics.heightPixels;
-
-                int dDensityPerInch = displayMetrics.densityDpi;
 
                 ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
                 ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
@@ -121,6 +124,11 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
                     final Reservation reservation;
 
+                    if(dDensityPerInch>420){
+                        ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                        layoutParams.height = 100;
+                        convertView.setLayoutParams(layoutParams);
+                    }
                     //in case list limit is reached
                     if(positionCount == 1 && reservations.size() == position+positionCount){
                         break;
@@ -142,13 +150,11 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
                         }
-                        if(dDensityPerInch>420){
-
-                        }
 
                     }
                     //else means the reservation is booked
                     else {
+
                         //set button color to red and make nonclickable
                         if (positionCount == 0) {
                             // old color #fffa7d89

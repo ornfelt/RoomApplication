@@ -134,12 +134,19 @@ import java.util.List;
                                 buttonBook2.setLayoutParams(buttonBook2Params);
                             }
                             if(dDensityPerInch>420){
-
+                                ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                                layoutParams.height = 100;
+                                convertView.setLayoutParams(layoutParams);
                             }
 
                         }
                         //else means the reservation is booked
                         else {
+                            if(dDensityPerInch>420){
+                                ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                                layoutParams.height = 100;
+                                convertView.setLayoutParams(layoutParams);
+                            }
                             //set button color to red and make nonclickable
                             if (positionCount == 0) {
                                 // old color #fffa7d89

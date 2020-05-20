@@ -771,9 +771,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                         Log.d(TAG, "Left Swipe");
                         // After swipe is detected, consumes action
                         // Which means in this case, the recycler won't be clicked after a swipe
-
-
-
                         return true;
                     }
 
