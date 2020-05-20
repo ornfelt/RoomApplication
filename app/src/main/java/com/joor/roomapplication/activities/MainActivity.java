@@ -36,6 +36,7 @@ import java.util.Set;
 import static com.joor.roomapplication.activities.ShowDayActivity.DATE_EXTRA;
 import static com.joor.roomapplication.activities.ShowDayActivity.ROOMNAME_EXTRA;
 import static com.joor.roomapplication.activities.ShowFirstAvailableActivity.VALUES_EXTRA;
+//import static com.joor.roomapplication.activities.ShowFirstAvailableActivity.FIRST_DATE_EXTRA;
 
 public class MainActivity extends AppCompatActivity implements RecyclerClickInterface {
     private String dateToday;
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         Bundle extras = new Bundle();
         int[] extraArr = {0,0};
         extras.putIntArray(VALUES_EXTRA, extraArr);
+        //extras.putString(FIRST_DATE_EXTRA, dateToday);
         intent.putExtras(extras);
         startActivity(intent);
         overridePendingTransition(0, 0);

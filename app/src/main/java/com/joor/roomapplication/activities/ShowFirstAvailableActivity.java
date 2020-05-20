@@ -98,7 +98,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
         if(showMoreAmount == 0 && dayCount == 0){
             //show info toast
-            Toast toast = Toast.makeText(getApplicationContext(), "Click the arrows to show more/previous.", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplicationContext(), "Click the arrows to show more/reset.", Toast.LENGTH_LONG);
             toast.show();
         }
     }
@@ -260,6 +260,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!isFirstResult) {
+                    //resets
+                    showMoreAmount = 0;
+                    dayCount = 0;
                     updateView();
                 }else{
                     //TODO: tell user that it's not possible to go back
@@ -469,7 +472,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         try {
                             //variable for reservations cap. Can be extended to fix layout in recyclerview.
-                            int reservationsSizeCap = 24;
+                            int reservationsSizeCap = 30;
                             //loop through every half hour to find free times (most likely won't loop through it all since it'll probably break before end)
                             mainloop:
                             for(int t = indexOfTimeNow; t < daySchedule.size()-1; t++) {
@@ -596,14 +599,22 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             }
+                                            //boolean to prevent bug where same room repeated
+                                            boolean isNotSameAsLast = true;
+                                            if(reservations.size() > 1){
+                                                if(room.equals(reservations.get(reservations.size()-2).getName()[0])){
+                                                    isNotSameAsLast = false;
+                                                }
+                                            }
                                             //add room name
                                             String[] roomArr = {room};
                                             fillerReservation.setName(roomArr);
                                             //check reservations size before adding new
-                                            //if (reservations.size() < reservationsSizeCap) {
-                                            reservations.add(fillerReservation);
-                                            //System.out.println("added reservation: " + fillerReservation.getStartTime());
-                                            //}
+                                            if (reservations.size() < reservationsSizeCap && isNotSameAsLast) {
+                                                        reservations.add(fillerReservation);
+                                                        System.out.println("added reservation: " + fillerReservation.getStartTime() +
+                                                                ", name: " + room);
+                                            }
                                             //else nothing happens - can't break main loop within jsonrequest
 
                                             //if first half hour is free, then also check next half hour
@@ -624,10 +635,11 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                 //add room name
                                                 fillerReservation2.setName(roomArr);
                                                 //check reservations size before adding new
-                                                //if (reservations.size() < reservationsSizeCap) {
+                                                if (reservations.size() < reservationsSizeCap && isNotSameAsLast) {
                                                 reservations.add(fillerReservation2);
-                                                //System.out.println("added reservation: " + fillerReservation2.getStartTime());
-                                                //}
+                                                System.out.println("added reservation: " + fillerReservation2.getStartTime() +
+                                                        ", name: " + room);
+                                                }
                                             }
                                             //break after targetTimes are found
                                             break;
@@ -723,6 +735,4 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         overridePendingTransition( 0, 0);
         overridePendingTransition( 0, 0);
     }
-
-
 }

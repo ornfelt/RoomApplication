@@ -43,7 +43,6 @@
         app:srcCompat="@drawable/abc_vector_test"
         tools:visibility="visible" />
 
-
     <ImageView
         android:id="@+id/rightClick"
         android:layout_width="wrap_content"

@@ -47,6 +47,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
     ImageLoader imageLoader = AppController.getmInstance().getmImageLoader();
     View convertView;
     DisplayMetrics displayMetrics;
+    private String lastRoomName = "";
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -86,7 +87,6 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
         final Button buttonBook = (Button) convertView.findViewById(R.id.buttonBook);
         final Button buttonBook2 = (Button) convertView.findViewById(R.id.buttonBook2);
 
-        try {
             if (imageLoader != null) {
                 //init imageLoader
                 imageLoader = AppController.getmInstance().getmImageLoader();
@@ -119,9 +119,11 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                             ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
-                            if (position > 0 && !reservation.getName().equals(reservations.get(position - 1).getName())) {
-                                buttonBook.setText(reservation.getName()[0]);
+                            if (position > 0 && !reservation.getName().equals(reservations.get(position - 1).getName()) &&
+                            !lastRoomName.equals(reservation.getName()[0])) {
+                                buttonBook.setText(reservation.getName()[0] );
                                 buttonBook.bringToFront();
+                                lastRoomName = reservation.getName()[0];
                             } else if (position == 0) {
                                 buttonBook.setText(reservation.getName()[0]);
                                 buttonBook.bringToFront();
@@ -192,7 +194,6 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                     textHourBooking.setGravity(Gravity.BOTTOM);
                                 }
                             }
-
                             //fix for cases where no text is set
                             if (position > 0 && textHour.getText().equals("") && textHourBooking.getText().equals("")) {
                                 textHourBooking.setText(reservations.get(position - 1).getStartTime()
@@ -246,9 +247,6 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                     });
                 }
             }
-        }catch(NullPointerException ne){
-            ne.printStackTrace();
-        }
     }
 
     //getItemCount needs to return the size of the reservations list, otherwise recyclerview never tries to instatiate a view

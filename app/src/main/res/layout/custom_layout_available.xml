@@ -11,40 +11,40 @@
     <Button
         android:id="@+id/buttonBook"
         android:layout_width="200dp"
-        android:layout_height="18dp"
+        android:layout_height="16dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="1dp"
         android:background="#0F0F0F"
         android:gravity="right"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:paddingLeft="5dp" />
 
     <Button
         android:id="@+id/buttonBook2"
         android:layout_width="200dp"
-        android:layout_height="18dp"
+        android:layout_height="16dp"
         android:layout_below="@+id/buttonBook"
         android:layout_alignParentRight="true"
         android:background="#0F0F0F"
         android:gravity="right"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:paddingLeft="5dp" />
 
     <TextView
         android:id="@+id/textHour"
         android:layout_width="200dp"
-        android:layout_height="36dp"
+        android:layout_height="32dp"
         android:layout_alignParentLeft="true"
         android:elevation="100dp"
-        android:textSize="14sp"
+        android:textSize="13sp"
         tools:text="XX:00-YY00" />
 
     <TextView
         android:id="@+id/textHourBooking"
         android:layout_width="200dp"
-        android:layout_height="36dp"
+        android:layout_height="32dp"
         android:elevation="100dp"
-        android:textSize="14sp"
+        android:textSize="13sp"
         tools:text="XX:00-YY00" />
 
 </RelativeLayout>
