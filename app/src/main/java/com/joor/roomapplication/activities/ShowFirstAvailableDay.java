@@ -417,6 +417,7 @@ public class ShowFirstAvailableDay extends AppCompatActivity {
         extras.putString(DATE_EXTRA, selectedDate);
         i.putExtras(extras);
         // Hides the transition between intents
+        finish();
         startActivity(i);
         overridePendingTransition(0,0);
         //overridePendingTransition(0, 0);
@@ -470,6 +471,7 @@ public class ShowFirstAvailableDay extends AppCompatActivity {
         extras.putString(DATE_EXTRA, selectedDate);
         i.putExtras(extras);
         // Hides the transition between intents
+        finish();
         startActivity(i);
         overridePendingTransition(0, 0);
     }

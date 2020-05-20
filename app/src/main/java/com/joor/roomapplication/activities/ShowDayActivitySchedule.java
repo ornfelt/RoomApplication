@@ -507,6 +507,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         extras.putString(DATE_EXTRA, selectedDate);
         i.putExtras(extras);
         // Hides the transition between intents
+        finish();
         startActivity(i);
         overridePendingTransition(0,0);
         //overridePendingTransition(0, 0);
@@ -562,6 +563,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         extras.putString(ROOMNAME_EXTRA, name);
         extras.putString(DATE_EXTRA, selectedDate);
         i.putExtras(extras);
+        finish();
         // Hides the transition between intents
         startActivity(i);
         overridePendingTransition(0, 0);

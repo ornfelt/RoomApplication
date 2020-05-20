@@ -763,8 +763,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         extras.putIntArray(VALUES_EXTRA, extraArr);
         i.putExtras(extras);
         // Hides the transition between intents
+        finish();
         startActivity(i);
-        overridePendingTransition( 0, 0);
         overridePendingTransition( 0, 0);
     }
 
