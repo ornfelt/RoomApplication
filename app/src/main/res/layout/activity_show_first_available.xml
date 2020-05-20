@@ -7,6 +7,15 @@
     tools:context=".activities.ShowFirstAvailableActivity">
 
     <ImageView
+        android:id="@+id/imageViewSigill2"
+        android:layout_width="229dp"
+        android:layout_height="275dp"
+        android:alpha="0.05"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sigillnv_resized" />
+
+    <ImageView
         android:id="@+id/imageView"
         android:layout_width="84dp"
         android:layout_height="74dp"
