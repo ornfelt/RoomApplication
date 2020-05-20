@@ -107,13 +107,13 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                             if (positionCount == 1 && reservations.size() == position + positionCount) {
                                 break;
                             }
-                            /*
+
                         if(dDensityPerInch>420){
                             ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                             layoutParams.height = 86;
                             convertView.setLayoutParams(layoutParams);
                         }
-                             */
+
 
                         //in case list limit is reached
                         if (positionCount == 1 && reservations.size() == position + positionCount) {

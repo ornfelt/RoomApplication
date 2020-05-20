@@ -833,7 +833,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                 updateView();
                                 return true;
                             }
-                    else {// detect right to left swipe}
+                    else {
                         Toast.makeText(this, "Up is swiped", Toast.LENGTH_SHORT).show();
                         if(!isFirstResult) {
                             //resets
@@ -845,7 +845,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                         }
                     }
 
-                    // detect bottom to to top swipe
 
                         }
 

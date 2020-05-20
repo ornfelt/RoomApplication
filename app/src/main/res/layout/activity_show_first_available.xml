@@ -30,7 +30,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,28 +54,29 @@
 
     <ImageView
         android:id="@+id/rightClick"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:rotation="180"
-        android:tint="#0C0A0A"
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:rotation="0"
+        android:tint="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/date"
         app:layout_constraintTop_toTopOf="@+id/date"
-        app:srcCompat="@drawable/abc_vector_test" />
+        app:srcCompat="@drawable/right_arrow_new" />
 
     <ImageView
         android:id="@+id/leftClick"
-        android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:tint="#0C0A0A"
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:rotation="180"
+        android:tint="#000000"
         app:layout_constraintBottom_toBottomOf="@+id/date"
         app:layout_constraintEnd_toStartOf="@+id/date"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/date"
-        app:srcCompat="@drawable/abc_vector_test"
+        app:srcCompat="@drawable/right_arrow_new"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

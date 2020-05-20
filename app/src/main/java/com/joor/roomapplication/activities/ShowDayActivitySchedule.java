@@ -19,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,10 +61,12 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private ImageView leftClick;
     private Date constantDate;
     private Date changableDate;
+    private Date maxDate;
     private Calendar constantCalendar;
     private Calendar changableCalendar;
     private String dateToday;
     private String selectedDate;
+
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private boolean datePicked;
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -247,6 +250,11 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         constantCalendar = Calendar.getInstance();
         constantDate = constantCalendar.getTime();
         datePicked = false;
+
+        // Used to only be able to check availability for 252, i.e. 36 weeks
+        Calendar maxCalendar= constantCalendar;
+        maxCalendar.add(Calendar.DATE, 252);
+        maxDate = maxCalendar.getTime();
     }
 
     private void setAdapter() {
@@ -413,6 +421,8 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 int day = changableCalendar.get(Calendar.DAY_OF_MONTH);
 
 
+
+
                 // Old settings are:
                 // android.R.style.Theme_Holo_Light_Dialog_MinWidth
                 // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -423,6 +433,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                         mDateSetListener,
                         year, month, day);
                 dialog.getDatePicker().setMinDate(constantDate.getTime());
+                dialog.getDatePicker().setMaxDate(maxDate.getTime());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.uppsalaGray)));
                 dialog.show();
             }
@@ -512,7 +523,11 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         } else {
             changableCalendar.add(Calendar.DATE, 1);
             clickedDate = changableCalendar.getTime();
-        }
+            if(clickedDate.after(maxDate)){
+                Toast toast = Toast.makeText(getApplicationContext(), "Can't go further", Toast.LENGTH_SHORT);
+                toast.show();
+                clickedDate = maxDate;
+        }}
 
         selectedDate = formatter.format(clickedDate);
         updateView();
@@ -529,7 +544,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         Date clickedDate = changableCalendar.getTime();
         // Checks if wanted date is before today's date.
         if (clickedDate.before(constantDate)) {
-            System.out.println("Can't go further back");
             changableCalendar = Calendar.getInstance();
             clickedDate = changableCalendar.getTime();
             selectedDate = formatter.format(clickedDate);
@@ -596,7 +610,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 if (Math.abs(valueY) > MIN_DISTANCE) {
                     // detect top to bottom swipe
                     if (y2 > y1) {
-                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Bottom Swipe");
                         String direction = "down";
                         // Changes Room/ & activity with down swipe

@@ -123,13 +123,13 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 //loops two times to get two reservation object for a specific hour
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
                     final Reservation reservation;
-                    /*
+
                     if(dDensityPerInch>420){
                         ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
-                        layoutParams.height = 100;
+                        layoutParams.height = 108;
                         convertView.setLayoutParams(layoutParams);
                     }
-                     */
+
                     //in case list limit is reached
                     if(positionCount == 1 && reservations.size() == position+positionCount){
                         break;
@@ -142,12 +142,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         //set button color to greenb
                         if (positionCount == 0) {
                             // old color #ff93e6b3
-                            buttonBook.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                            buttonBook.setBackgroundColor(Color.parseColor("#e5e5e5"));
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
                         } else {
                             // old color #ff93e6b3"
-                            buttonBook2.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                            buttonBook2.setBackgroundColor(Color.parseColor("#e5e5e5"));
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
                         }
@@ -159,7 +159,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                         //set button color to red and make nonclickable
                         if (positionCount == 0) {
                             // old color #fffa7d89
-                            buttonBook.setBackgroundColor(Color.parseColor("#F2F2F2"));
+                            buttonBook.setBackgroundColor(Color.parseColor("#333333"));
                             buttonBook.setClickable(false);
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
@@ -172,7 +172,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             }
                         } else{
                             // old color #fffa7d89
-                            buttonBook2.setBackgroundColor(Color.parseColor("#F2F2F2"));
+                            buttonBook2.setBackgroundColor(Color.parseColor("#333333"));
                             buttonBook2.setClickable(false);
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
