@@ -52,15 +52,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     View convertView;
     DisplayMetrics displayMetrics;
 
-    private float x1,x2,y1,y2;
-    private static int MIN_DISTANCE = 150;
-    private GestureDetector gestureDetector;
-
-
-   // private static final String TAG = "Swipe Position";
-    //private float x1,x2,y1,y2;
-    //private static int MIN_DISTANCE = 150;
-
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -76,7 +67,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     public ReservationAdapter(Activity activity, List<Reservation> reservations){
         this.activity = activity;
         this.reservations = reservations;
-        //this.gestureDetector = gestureDetector;
     }
 
     @Override
@@ -100,6 +90,14 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             convertView = inflater.inflate(R.layout.custom_layout, null);
         }
 
+        displayMetrics = activity.getResources().getDisplayMetrics();
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+
+        int dDensityPerInch = displayMetrics.densityDpi;
+
+
+
         if (imageLoader != null) {
             //init values
             imageLoader = AppController.getmInstance().getmImageLoader();
@@ -109,6 +107,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             final TextView textHourBooking = (TextView) convertView.findViewById(R.id.textHourBooking);
 
 
+
             //boolean used to find middle time block in reservation
             boolean isMiddleReservation = false;
 
@@ -116,11 +115,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
                 System.out.println("reservations size: " + reservations.size());
                 //get display width and height
-                displayMetrics = activity.getResources().getDisplayMetrics();
-                int displayWidth = displayMetrics.widthPixels;
-                int displayHeight = displayMetrics.heightPixels;
-
-                int dDensityPerInch = displayMetrics.densityDpi;
 
                 ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
                 ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
@@ -130,6 +124,11 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
                     final Reservation reservation;
 
+                    if(dDensityPerInch>420){
+                        ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                        layoutParams.height = 100;
+                        convertView.setLayoutParams(layoutParams);
+                    }
                     //in case list limit is reached
                     if(positionCount == 1 && reservations.size() == position+positionCount){
                         break;
@@ -141,24 +140,25 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                     if (reservation.getStartTime().equals("free")) {
                         //set button color to greenb
                         if (positionCount == 0) {
-                            buttonBook.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                            // old color #ff93e6b3
+                            buttonBook.setBackgroundColor(Color.parseColor("#FFFFFF"));
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
                         } else {
-                            buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                            // old color #ff93e6b3"
+                            buttonBook2.setBackgroundColor(Color.parseColor("#FFFFFF"));
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
-                        }
-                        if(dDensityPerInch>420){
-
                         }
 
                     }
                     //else means the reservation is booked
                     else {
+
                         //set button color to red and make nonclickable
                         if (positionCount == 0) {
-                            buttonBook.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                            // old color #fffa7d89
+                            buttonBook.setBackgroundColor(Color.parseColor("#F2F2F2"));
                             buttonBook.setClickable(false);
                             buttonBookParams.width = displayWidth;
                             buttonBook.setLayoutParams(buttonBookParams);
@@ -170,7 +170,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                                 buttonBook.setLayoutParams(buttonMargin);
                             }
                         } else{
-                            buttonBook2.setBackgroundColor(Color.parseColor("#fffa7d89"));
+                            // old color #fffa7d89
+                            buttonBook2.setBackgroundColor(Color.parseColor("#F2F2F2"));
                             buttonBook2.setClickable(false);
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);

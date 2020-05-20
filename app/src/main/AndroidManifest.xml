@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.ShowFirstAvailableActivity"></activity>
+        <activity android:name=".activities.ShowFirstAvailableDay"></activity>
+        <activity android:name=".activities.ShowFirstAvailableActivity_DayVersion" />
+        <activity android:name=".activities.ShowFirstAvailableActivity" />
         <activity android:name=".activities.BookingActivity" />
         <activity android:name=".activities.ShowDayActivitySchedule" />
         <activity android:name=".activities.ShowDayActivity" />

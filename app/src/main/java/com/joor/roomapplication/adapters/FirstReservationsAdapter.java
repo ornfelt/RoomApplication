@@ -73,7 +73,6 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         if (inflater == null) {
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -87,16 +86,18 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
         final Button buttonBook = (Button) convertView.findViewById(R.id.buttonBook);
         final Button buttonBook2 = (Button) convertView.findViewById(R.id.buttonBook2);
 
-            if (imageLoader != null) {
+        //get display width and height
+        displayMetrics = activity.getResources().getDisplayMetrics();
+        int displayWidth = displayMetrics.widthPixels;
+        int displayHeight = displayMetrics.heightPixels;
+        int dDensityPerInch = displayMetrics.densityDpi;
+
+
+        if (imageLoader != null) {
                 //init imageLoader
                 imageLoader = AppController.getmInstance().getmImageLoader();
                 try {
                     if (position % 2 == 0) {
-
-                        //get display width and height
-                        displayMetrics = activity.getResources().getDisplayMetrics();
-                        int displayWidth = displayMetrics.widthPixels;
-                        int displayHeight = displayMetrics.heightPixels;
 
                         //loops two times to get two reservation object for a specific hour
                         for (int positionCount = 0; positionCount < 2; positionCount++) {
@@ -106,6 +107,15 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                             if (positionCount == 1 && reservations.size() == position + positionCount) {
                                 break;
                             }
+                        if(dDensityPerInch>420){
+                            ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                            layoutParams.height = 86;
+                            convertView.setLayoutParams(layoutParams);
+                        }
+                        //in case list limit is reached
+                        if (positionCount == 1 && reservations.size() == position + positionCount) {
+                            break;
+                        }
 
                             //get reservation object
                             reservation = reservations.get(position + positionCount);

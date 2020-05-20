@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -74,6 +76,11 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private int dayCount;
     private boolean isFirstResult;
     private boolean dayCountWasAdded = false;
+
+
+    private static final String TAG = "Swipe Position";
+    private float x1, x2, y1, y2;
+    private static int MIN_DISTANCE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -758,4 +765,68 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         overridePendingTransition( 0, 0);
         overridePendingTransition( 0, 0);
     }
+
+    // Allows to read swipe-gestures over all elements in viewgroup
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                y1 = event.getY();
+                //mSwiping = false;
+                break;
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                y2 = event.getY();
+                // getting value for horizontal swipe
+                float valueX = x2 - x1;
+                float valueY = y2 - y1;
+
+                if (Math.abs(valueX) > MIN_DISTANCE) {
+                    //detect left to right swipe
+                    if (x2 > x1) {
+                        Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Right Swipe");
+                        updateView();
+                        return true;
+                    } else {// detect right to left swipe}
+                        Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Left Swipe");
+                        // After swipe is detected, consumes action
+                        // Which means in this case, the recycler won't be clicked after a swipe
+                        return true;
+                    }
+
+                }
+
+                if (Math.abs(valueY) > MIN_DISTANCE) {
+                    // detect top to bottom swipe
+                    if (y2 > y1) {
+                        Toast.makeText(this, "Down is swiped", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Bottom Swipe");
+                                updateView();
+                                return true;
+                            }
+                    else {// detect right to left swipe}
+                        Toast.makeText(this, "Up is swiped", Toast.LENGTH_SHORT).show();
+                        if(!isFirstResult) {
+                            //resets
+                            showMoreAmount = 0;
+                            dayCount = 0;
+                            updateView();
+                            return true;
+                        }
+                        }
+                    }
+
+                    // detect bottom to to top swipe
+
+                        }
+
+
+        return super.dispatchTouchEvent(event);
+    }
+
+
+
 }
