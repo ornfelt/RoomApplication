@@ -3,7 +3,7 @@ package com.joor.roomapplication.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-//this class proivdes utility by storing showAmount-values used by activity: FirstAvailable
+//this singleton class provides utility by storing showAmount-values used by activity: FirstAvailable
 public class ShowAmountValues {
 
     //instance of showAmountList (singleton)

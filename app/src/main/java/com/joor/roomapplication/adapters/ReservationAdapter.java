@@ -123,12 +123,13 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 //loops two times to get two reservation object for a specific hour
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
                     final Reservation reservation;
-
+                    /*
                     if(dDensityPerInch>420){
                         ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                         layoutParams.height = 100;
                         convertView.setLayoutParams(layoutParams);
                     }
+                     */
                     //in case list limit is reached
                     if(positionCount == 1 && reservations.size() == position+positionCount){
                         break;

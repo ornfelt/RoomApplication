@@ -106,7 +106,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
         if(showMoreAmount == 0 && dayCount == 0){
             //show info toast
-            Toast toast = Toast.makeText(getApplicationContext(), "Click the arrows to show more/reset.", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplicationContext(), "Swipe left or right to see more / previous", Toast.LENGTH_LONG);
             toast.show();
         }
     }
@@ -272,21 +272,23 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                 if(dayCountWasAdded){
                     dayCount--;
                 }
+                ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
                 if(!isFirstResult) {
-                    ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
                     if(showAmountValues.showAmountList.size() > 1){
                         //get second last
                         showMoreAmount = showAmountValues.showAmountList.get(showAmountValues.showAmountList.size()-2);
                     }else{
-                        //get first value if there only is 1
                         showMoreAmount = 0;
-                        if(dayCount > 0 ){
-                            dayCount--;
-                        }
                     }
                     showAmountValues.resetShowAmountList();
                     updateView();
-                }else{
+                }else if(isFirstResult && dayCount > 0){
+                    dayCount--;
+                    showMoreAmount = 0;
+                    showAmountValues.resetShowAmountList();
+                    updateView();
+                }
+                else{
                     Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -785,13 +787,37 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                 if (Math.abs(valueX) > MIN_DISTANCE) {
                     //detect left to right swipe
                     if (x2 > x1) {
-                        Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Right Swipe");
-                        updateView();
+                        //adjust dayCount if it was added in current view
+                        if(dayCountWasAdded){
+                            dayCount--;
+                        }
+                        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+                        if(!isFirstResult) {
+                            if(showAmountValues.showAmountList.size() > 1){
+                                //get second last
+                                showMoreAmount = showAmountValues.showAmountList.get(showAmountValues.showAmountList.size()-2);
+                            }else{
+                                showMoreAmount = 0;
+                            }
+                            showAmountValues.resetShowAmountList();
+                            updateView();
+                        }else if(isFirstResult && dayCount > 0){
+                            dayCount--;
+                            showMoreAmount = 0;
+                            showAmountValues.resetShowAmountList();
+                            updateView();
+                        }
+                        else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                         return true;
                     } else {// detect right to left swipe}
-                        Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Left Swipe");
+                        updateView();
                         // After swipe is detected, consumes action
                         // Which means in this case, the recycler won't be clicked after a swipe
                         return true;
