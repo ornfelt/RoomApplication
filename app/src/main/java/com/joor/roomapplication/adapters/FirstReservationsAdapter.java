@@ -64,8 +64,15 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
 
     @Override
     public FirstReservationsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        //get display height
+        displayMetrics = activity.getResources().getDisplayMetrics();
+        int displayHeight = displayMetrics.heightPixels;
         //create new view
-        convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_available, parent, false);
+        if(displayHeight <= 1200){
+            convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_available_720p, parent, false);
+        }else {
+            convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_available, parent, false);
+        }
         ViewHolder vh = new ViewHolder(convertView);
         return vh;
     }
@@ -92,7 +99,6 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
         int displayHeight = displayMetrics.heightPixels;
         int dDensityPerInch = displayMetrics.densityDpi;
 
-
         if (imageLoader != null) {
                 //init imageLoader
                 imageLoader = AppController.getmInstance().getmImageLoader();
@@ -107,13 +113,12 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                             if (positionCount == 1 && reservations.size() == position + positionCount) {
                                 break;
                             }
-
-                        if(dDensityPerInch>420){
+                        if(dDensityPerInch > 420 && displayHeight > 1200){
                             ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                             layoutParams.height = 86;
                             convertView.setLayoutParams(layoutParams);
+                        }else if(dDensityPerInch < 350 && displayHeight < 1200){
                         }
-
 
                         //in case list limit is reached
                         if (positionCount == 1 && reservations.size() == position + positionCount) {
@@ -122,10 +127,6 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
 
                             //get reservation object
                             reservation = reservations.get(position + positionCount);
-                            if (buttonBook == null) {
-                                System.out.println("null pointer here, position: " + position + ", res size: " +
-                                        reservations.size());
-                            }
 
                             //set button color to green
                             if (positionCount == 0) {
@@ -153,7 +154,11 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                     buttonBook2.bringToFront();
                                     //also add border to separate
                                     ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook2.getLayoutParams();
-                                    buttonMargin.topMargin = 2;
+                                    if(displayHeight <= 1200){
+                                        buttonMargin.topMargin = 1;
+                                    }else {
+                                        buttonMargin.topMargin = 2;
+                                    }
                                     buttonBook2.setLayoutParams(buttonMargin);
                                     //set text for next block
                                     if (position + 1 != reservations.size()) {

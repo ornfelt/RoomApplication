@@ -12,8 +12,10 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,8 +108,22 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
         if(showMoreAmount == 0 && dayCount == 0){
             //show info toast
-            Toast toast = Toast.makeText(getApplicationContext(), "Swipe left or right to see more / previous", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplicationContext(), "Swipe up/down to see more/previous.", Toast.LENGTH_LONG);
             toast.show();
+
+            //wait 2s for second toast
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Toast toast= Toast.makeText(getApplicationContext(),
+                            "Swipe sideways to\nchange selected day.", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT, 0, 0);
+                    toast.show();
+                }
+            }, 2000);
         }
     }
 
@@ -149,6 +165,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     //when user navigates back
     @Override
     public void onBackPressed() {
+        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+        showAmountValues.resetShowAmountList();
         Intent intent = new Intent(getApplicationContext(),
                 MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -260,8 +278,11 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         rightClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dayCount++;
+                showMoreAmount = 0;
+                ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+                showAmountValues.resetShowAmountList();
                 updateView();
-
             }
         });
 
@@ -273,22 +294,12 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                     dayCount--;
                 }
                 ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
-                if(!isFirstResult) {
-                    if(showAmountValues.showAmountList.size() > 1){
-                        //get second last
-                        showMoreAmount = showAmountValues.showAmountList.get(showAmountValues.showAmountList.size()-2);
-                    }else{
-                        showMoreAmount = 0;
-                    }
-                    showAmountValues.resetShowAmountList();
-                    updateView();
-                }else if(isFirstResult && dayCount > 0){
+                if(dayCount != 0){
                     dayCount--;
                     showMoreAmount = 0;
                     showAmountValues.resetShowAmountList();
                     updateView();
-                }
-                else{
+                } else{
                     Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -787,12 +798,41 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                 if (Math.abs(valueX) > MIN_DISTANCE) {
                     //detect left to right swipe
                     if (x2 > x1) {
-                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Right Swipe");
                         //adjust dayCount if it was added in current view
                         if(dayCountWasAdded){
                             dayCount--;
                         }
+                        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+                        if(dayCount != 0){
+                        dayCount--;
+                        showMoreAmount = 0;
+                        showAmountValues.resetShowAmountList();
+                        updateView();
+                        } else{
+                            Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                        return true;
+                    } else {// detect right to left swipe}
+                        Log.d(TAG, "Left Swipe");
+                        dayCount++;
+                        showMoreAmount = 0;
+                        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+                        showAmountValues.resetShowAmountList();
+                        updateView();
+                        // After swipe is detected, consumes action
+                        // Which means in this case, the recycler won't be clicked after a swipe
+                        return true;
+                    }
+
+                }
+
+                if (Math.abs(valueY) > MIN_DISTANCE) {
+                    // detect top to bottom swipe
+                    if (y2 > y1) {
+                        //down swiped
+                        Log.d(TAG, "Down swiped");
                         ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
                         if(!isFirstResult) {
                             if(showAmountValues.showAmountList.size() > 1){
@@ -813,45 +853,15 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                             Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
                             toast.show();
                         }
-                        return true;
-                    } else {// detect right to left swipe}
-                        //Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Left Swipe");
-                        updateView();
-                        // After swipe is detected, consumes action
-                        // Which means in this case, the recycler won't be clicked after a swipe
-                        return true;
-                    }
-
-                }
-
-                if (Math.abs(valueY) > MIN_DISTANCE) {
-                    // detect top to bottom swipe
-                    if (y2 > y1) {
-                        Toast.makeText(this, "Down is swiped", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Bottom Swipe");
-                                updateView();
                                 return true;
                             }
+                    //up swiped
                     else {
-                        Toast.makeText(this, "Up is swiped", Toast.LENGTH_SHORT).show();
-                        if(!isFirstResult) {
-                            //resets
-                            showMoreAmount = 0;
-                            dayCount = 0;
-                            updateView();
-                            return true;
-                        }
+                        Log.d(TAG, "Up swiped");
+                        updateView();
                         }
                     }
-
-
-                        }
-
-
+                }
         return super.dispatchTouchEvent(event);
     }
-
-
-
 }

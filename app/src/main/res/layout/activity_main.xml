@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:shadowColor="#CFCFCF"
         android:shadowDx="12"
         android:shadowDy="12"
@@ -68,6 +68,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/uu_logo_tranp4f125px" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

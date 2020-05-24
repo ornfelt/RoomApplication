@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -32,6 +34,7 @@ import com.joor.roomapplication.R;
 import com.joor.roomapplication.adapters.ReservationAdapter;
 import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.models.Reservation;
+import com.joor.roomapplication.utility.ShowAmountValues;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -86,6 +89,27 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // handleSwipes();
         //init view elements and checks if there's a saved instance
         setViewElements(savedInstanceState);
+        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+
+        if(showAmountValues.showAmountList.size() == 0){
+            //show info toast
+            Toast toast = Toast.makeText(getApplicationContext(), "Swipe up/down to change room.", Toast.LENGTH_SHORT);
+            toast.show();
+
+            //wait 2s for second toast
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    Toast toast= Toast.makeText(getApplicationContext(),
+                            "Swipe sideways to\nchange selected day.", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT, 0, 0);
+                    toast.show();
+                }
+            }, 2000);
+        }
 
         ViewConfiguration vc = ViewConfiguration.get(this);
         //mSlop = vc.getScaledTouchSlop();
@@ -142,15 +166,17 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             todaysDate.setLayoutParams(textDateParams);
 
             //this seems to fix for dHeight <= 1200
-            ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-            recyclerParams.topMargin = 5;
-            recyclerView.setLayoutParams(recyclerParams);
+            //ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+            //recyclerParams.topMargin = 100;
+            //recyclerView.setLayoutParams(recyclerParams);
         }
     }
 
     //when user navigates back
     @Override
     public void onBackPressed() {
+        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+        showAmountValues.resetShowAmountList();
         Intent intent = new Intent(getApplicationContext(),
                 MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -238,7 +264,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             }
         }
     }
-
 
     private void setDate(String date) throws ParseException {
         System.out.println("Begärt datum är" + date);
@@ -503,8 +528,13 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         Intent i = new Intent(ShowDayActivitySchedule.this, ShowDayActivitySchedule.class);
         Bundle extras = new Bundle();
         System.out.println("UpdateView date is " + selectedDate);
+        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
+        if(showAmountValues.showAmountList.size() == 0){
+            showAmountValues.showAmountList.add(0);
+        }
         extras.putString(ROOMNAME_EXTRA, room_name);
         extras.putString(DATE_EXTRA, selectedDate);
+        //send false if intent is not from main activity
         i.putExtras(extras);
         // Hides the transition between intents
         finish();

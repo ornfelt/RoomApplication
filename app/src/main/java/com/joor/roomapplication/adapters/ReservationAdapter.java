@@ -72,8 +72,17 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
     @Override
     public ReservationAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        //get display height
+        displayMetrics = activity.getResources().getDisplayMetrics();
+        int displayHeight = displayMetrics.heightPixels;
         //create new view
-        convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout, parent, false);
+        if(displayHeight <= 1200){
+            System.out.println("720p layout set");
+            convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_720p, parent, false);
+        }else {
+            convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout, parent, false);
+        }
+
         ViewHolder vh = new ViewHolder(convertView);
         return vh;
     }
@@ -94,8 +103,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
         int dDensityPerInch = displayMetrics.densityDpi;
 
-
-
         if (imageLoader != null) {
             //init values
             imageLoader = AppController.getmInstance().getmImageLoader();
@@ -104,14 +111,10 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             final TextView textHour = (TextView) convertView.findViewById(R.id.textHour);
             final TextView textHourBooking = (TextView) convertView.findViewById(R.id.textHourBooking);
 
-
-
             //boolean used to find middle time block in reservation
             boolean isMiddleReservation = false;
 
             if(position % 2 == 0) {
-
-                System.out.println("reservations size: " + reservations.size());
                 //get display width and height
 
                 ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
@@ -122,10 +125,11 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
                     final Reservation reservation;
 
-                    if(dDensityPerInch>420){
+                    if(dDensityPerInch > 420 && displayHeight > 1200){
                         ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                         layoutParams.height = 108;
                         convertView.setLayoutParams(layoutParams);
+                    }else if(dDensityPerInch < 350 && displayHeight < 1200){
                     }
 
                     //in case list limit is reached
@@ -149,7 +153,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             buttonBook2Params.width = displayWidth;
                             buttonBook2.setLayoutParams(buttonBook2Params);
                         }
-
                     }
                     //else means the reservation is booked
                     else {
@@ -227,12 +230,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             timeStepToStart = 0;
                         }
 
-                        System.out.println("pos: " + position + ", " + "timeStepToEnd: " + timeStepToEnd + ", toStart: " + timeStepToStart);
-                        System.out.println("startTime: " + reservations.get(position+positionCount-timeStepToStart).getStartTime());
-
                         //set reservation time at first block
                         if(timeStepToStart == 0 && reservations.get(position+positionCount-timeStepToStart).getEndTime() != null){
-                            System.out.println("reservation text set");
                                 //then set text
                                 textHourBooking.setEnabled(true);
                                 textHourBooking.setText(reservations.get(position+positionCount-timeStepToStart).getStartTime() +
@@ -240,17 +239,6 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                                 isMiddleReservation = true;
                                 textHourBooking.setGravity(Gravity.BOTTOM);
                                 textHourBooking.bringToFront();
-
-                                //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
-                                //something like this:
-                                /*
-                                if(positionCount == 0){
-                                    textHourBooking.setGravity(40);
-                                }else{
-                                    textHourBooking.setGravity(60);
-                                }
-                                 */
-
                         }
                     }
                 }

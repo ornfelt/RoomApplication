@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.joor.roomapplication.R;
 import com.joor.roomapplication.adapters.RoomAdapter;
 import com.joor.roomapplication.interfaces.RecyclerClickInterface;
@@ -33,8 +34,8 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.joor.roomapplication.activities.ShowDayActivity.DATE_EXTRA;
-import static com.joor.roomapplication.activities.ShowDayActivity.ROOMNAME_EXTRA;
+import static com.joor.roomapplication.activities.ShowDayActivitySchedule.DATE_EXTRA;
+import static com.joor.roomapplication.activities.ShowDayActivitySchedule.ROOMNAME_EXTRA;
 import static com.joor.roomapplication.activities.ShowFirstAvailableActivity.VALUES_EXTRA;
 //import static com.joor.roomapplication.activities.ShowFirstAvailableActivity.FIRST_DATE_EXTRA;
 
