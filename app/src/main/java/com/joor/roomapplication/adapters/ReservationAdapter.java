@@ -79,7 +79,11 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
         if(displayHeight <= 1200){
             System.out.println("720p layout set");
             convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_720p, parent, false);
-        }else {
+        }else if(displayHeight >= 1920){
+            convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_1920, parent, false);
+        }
+        //default layout
+        else {
             convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout, parent, false);
         }
 
@@ -125,7 +129,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 for (int positionCount = 0; positionCount < 2; positionCount++) {
                     final Reservation reservation;
 
-                    if(dDensityPerInch > 420 && displayHeight > 1200){
+                    if(displayHeight >= 1900){
+                        ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                        layoutParams.height = 115;
+                        convertView.setLayoutParams(layoutParams);
+                    }
+                    else if(dDensityPerInch > 420 && displayHeight > 1200){
                         ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                         layoutParams.height = 108;
                         convertView.setLayoutParams(layoutParams);

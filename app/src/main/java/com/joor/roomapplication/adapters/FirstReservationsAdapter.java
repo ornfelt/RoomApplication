@@ -70,7 +70,11 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
         //create new view
         if(displayHeight <= 1200){
             convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_available_720p, parent, false);
-        }else {
+        }else if(displayHeight >= 1900){
+            convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_available, parent, false);
+        }
+        //default layout
+        else {
             convertView = (View) LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_layout_available, parent, false);
         }
         ViewHolder vh = new ViewHolder(convertView);
@@ -113,11 +117,21 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                             if (positionCount == 1 && reservations.size() == position + positionCount) {
                                 break;
                             }
-                        if(dDensityPerInch > 420 && displayHeight > 1200){
+                            if(displayHeight >= 1900){
+                                ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                                layoutParams.height = 93;
+                                convertView.setLayoutParams(layoutParams);
+                            }
+                            else if(displayHeight > 1770 && displayHeight <= 1785){
+                                ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                                layoutParams.height = 89;
+                                convertView.setLayoutParams(layoutParams);
+                            }
+                        else if(displayHeight > 1200){
                             ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                             layoutParams.height = 86;
                             convertView.setLayoutParams(layoutParams);
-                        }else if(dDensityPerInch < 350 && displayHeight < 1200){
+                        }else if(displayHeight < 1200){
                         }
 
                         //in case list limit is reached
