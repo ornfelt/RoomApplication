@@ -124,14 +124,17 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                             }
                             else if(displayHeight > 1770 && displayHeight <= 1785){
                                 ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
-                                layoutParams.height = 89;
+                                layoutParams.height = 86;
                                 convertView.setLayoutParams(layoutParams);
                             }
+
                         else if(displayHeight > 1200){
                             ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                             layoutParams.height = 86;
                             convertView.setLayoutParams(layoutParams);
-                        }else if(displayHeight < 1200){
+
+                        }
+                        else if(displayHeight < 1200){
                         }
 
                         //in case list limit is reached

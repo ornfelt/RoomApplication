@@ -136,7 +136,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                     }
                     else if(dDensityPerInch > 420 && displayHeight > 1200){
                         ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
-                        layoutParams.height = 108;
+                        layoutParams.height = 100;
                         convertView.setLayoutParams(layoutParams);
                     }else if(dDensityPerInch < 350 && displayHeight < 1200){
                     }
@@ -166,6 +166,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                     //else means the reservation is booked
                     else {
 
+                        if(dDensityPerInch > 420 && displayHeight > 1200) {
+                            ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                            // As of now this one is a little bigger, because otherwise the color wont cover the hourtext. If that's fixed it should be the same as the other if-case.
+                            layoutParams.height = 103;
+                            convertView.setLayoutParams(layoutParams);
+                        }
                         //set button color to red and make nonclickable
                         if (positionCount == 0) {
                             // old color #fffa7d89

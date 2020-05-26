@@ -445,9 +445,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 int month = changableCalendar.get(Calendar.MONTH);
                 int day = changableCalendar.get(Calendar.DAY_OF_MONTH);
 
-
-
-
                 // Old settings are:
                 // android.R.style.Theme_Holo_Light_Dialog_MinWidth
                 // dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -696,85 +693,5 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
         return super.dispatchTouchEvent(event);
     }
-
-/*
-    // Handles up/down swipes to change name in array
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                y1 = event.getY();
-                //mSwiping = false;
-                break;
-            case MotionEvent.ACTION_UP:
-                y2 = event.getY();
-
-                // getting value for vertical swipe
-                float valueY = y2 - y1;
-
-                if (Math.abs(valueY) > MIN_DISTANCE) {
-                    // detect top to bottom swipe
-                    if (y2 > y1) {
-                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Bottom Swipe");
-                        String direction = "down";
-                        // Changes Room/ & activity with down swipe
-                        for (int i = 0; i < safetyString.length; i++) {
-                            if (safetyString[i].equals(room_name)) {
-                                System.out.println("Matchning på " + room_name + " vid position " + i);
-                                // if match on last position -> go to first (since update is +1)
-                                if ((safetyString[safetyString.length - 1].equals(room_name))) {
-                                    updateViewName(safetyString[0]);
-
-                                    return true;
-                                }
-
-                                // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                updateViewName(safetyString[i + 1]);
-                                return true;
-                            }
-                        }
-                    }
-
-                    // detect bottom to to top swipe
-                    else {// detect right to left swipe}
-                        Log.d(TAG, "Top Swipe");
-                        String direction = "up";
-                        // Changes Room/ & activity with up swipe
-                        for (int i = 0; i < safetyString.length; i++) {
-                            if (safetyString[i].equals(room_name)) {
-                                System.out.println("Matchning på " + room_name + " vid position " + i);
-                                // if match on first position -> go to last position
-                                if (safetyString[0].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 1]);
-                                    return true;
-                                }
-                                // if match on last position -> go to second last position
-                                else if (safetyString[safetyString.length - 1].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 2]);
-                                    return true;
-                                } else
-
-                                    // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                    updateViewName(safetyString[i - 1]);
-                                return true;
-                            }
-                        }
-                    }
-
-                }
-
-
-        }
-        return true;
-    }
-    */
-
-
-
-
-
-
-
 }
 

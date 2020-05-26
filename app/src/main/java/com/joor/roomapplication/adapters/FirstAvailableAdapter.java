@@ -135,7 +135,7 @@ import java.util.List;
                             }
                             if(dDensityPerInch>420){
                                 ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
-                                layoutParams.height = 100;
+                                layoutParams.height = 98;
                                 convertView.setLayoutParams(layoutParams);
                             }
 
@@ -144,7 +144,7 @@ import java.util.List;
                         else {
                             if(dDensityPerInch>420){
                                 ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
-                                layoutParams.height = 100;
+                                layoutParams.height = 98;
                                 convertView.setLayoutParams(layoutParams);
                             }
                             //set button color to red and make nonclickable
