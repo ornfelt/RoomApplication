@@ -507,9 +507,11 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         String dateTomorrow = formatter.format(dateChecker.getTime());
 
         if (dateToday.equals(selectedDate)) {
-            todaysDate.setText("Today");
+            String today = getResources().getString(R.string.today);
+            todaysDate.setText(today);
         } else if (selectedDate.equals(dateTomorrow)) {
-            todaysDate.setText("Tomorrow");
+            String tomorrow= getResources().getString(R.string.tomorrow);
+            todaysDate.setText(tomorrow);
         } else
             todaysDate.setText(selectedDate);
     }

@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Campus Gotland Roomapplication</string>
+    <string name="title">Choose Room</string>
+    <string name="see_first">See First Available</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
 
     <string-array name="grouprooms">
         <item>C11</item>
@@ -13,11 +17,11 @@
         <item>Änget</item>
     </string-array>
 
-
     <string-array name="filters">
         <item>ByHour</item>
         <item>Schedule</item>
         <item>FirstAvailable</item>
     </string-array>
+
 
 </resources>
