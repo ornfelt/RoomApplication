@@ -312,8 +312,17 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();
 
+        //spelling fix for low level API's
+        if(room_name.toLowerCase().equals("änget")){
+            room_name = "anget";
+        }
         //new request url to get data from specific room
         String requestUrl = url + "room/" + room_name;
+
+        //change back to correct room name after requestUrl is set
+        if(room_name.equals("anget")){
+            room_name = "Änget";
+        }
         System.out.println("requestUrl: " + requestUrl);
         // Request a json response from the provided URL
         JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, requestUrl, null,

@@ -17,13 +17,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/buttonShowRoomInfo"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="35dp"
+        android:id="@+id/buttonShowRoomInfo"
         android:onClick="onClickShowRoomInfo"
-        android:text="info"
-        android:textSize="13sp"
+        android:src="@drawable/ic_info_darkgray_24dp"
+        android:layout_marginRight="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

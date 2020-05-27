@@ -30,7 +30,7 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textView;
-        private Button showRoomInfo;
+        private ImageView showRoomInfo;
         Dialog roomInfoDialog;
 
 

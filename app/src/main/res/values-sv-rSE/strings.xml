@@ -5,4 +5,22 @@
     <string name="see_first">Närmsta Lediga Tider</string>
     <string name="today">Idag</string>
     <string name="tomorrow">Imorgon</string>
+
+    <string-array name="grouprooms">
+        <item>C11</item>
+        <item>C13</item>
+        <item>C15</item>
+        <item>Backsippan</item>
+        <item>Flundran</item>
+        <item>Heden</item>
+        <item>Myren</item>
+        <item>Rauken</item>
+        <item>Änget</item>
+    </string-array>
+
+    <string-array name="filters">
+        <item>Timvis</item>
+        <item>Schema</item>
+        <item>FörstaMöjliga</item>
+    </string-array>
 </resources>
