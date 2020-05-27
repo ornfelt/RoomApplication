@@ -169,6 +169,11 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             //ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
             //recyclerParams.topMargin = 100;
             //recyclerView.setLayoutParams(recyclerParams);
+        }else if (dHeight >= 1900){
+            System.out.println("dHeight >= 1900 ");
+            ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+            recyclerParams.topMargin = 70;
+            recyclerView.setLayoutParams(recyclerParams);
         }
     }
 
