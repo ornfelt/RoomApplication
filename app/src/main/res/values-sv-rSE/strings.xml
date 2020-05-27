@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Campus Gotland Roomapplication</string>
+    <string name="title">Välj Rum</string>
+    <string name="see_first">Närmsta Lediga Tider</string>
+    <string name="today">Idag</string>
+    <string name="tomorrow">Imorgon</string>
+</resources>
