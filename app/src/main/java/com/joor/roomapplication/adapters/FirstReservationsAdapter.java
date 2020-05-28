@@ -180,8 +180,14 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                     //set text for next block
                                     if (position + 1 != reservations.size()) {
                                         if (reservations.get(position + 1).getEndTime() != null) {
-                                            textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
-                                                    reservations.get(position + 1).getEndTime());
+                                            if(isFirstTimeEarlier(getTimePlusOneHour(reservations.get(position + 1).getStartTime()),
+                                                    reservations.get(position + 1).getEndTime())){
+                                                textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
+                                                        getTimePlusOneHour(reservations.get(position + 1).getStartTime()));
+                                            }else {
+                                                textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
+                                                        reservations.get(position + 1).getEndTime());
+                                            }
                                             textHourBooking.bringToFront();
                                             textHourBooking.setGravity(Gravity.BOTTOM);
                                         } else {
@@ -224,8 +230,14 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                 }
                                 if (position + 1 != reservations.size()) {
                                     if (reservations.get(position + 1).getEndTime() != null) {
-                                        textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
-                                                reservations.get(position + 1).getEndTime());
+                                        if(isFirstTimeEarlier(getTimePlusOneHour(reservations.get(position + 1).getStartTime()),
+                                                reservations.get(position + 1).getEndTime())){
+                                            textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
+                                                    getTimePlusOneHour(reservations.get(position + 1).getStartTime()));
+                                        }else {
+                                            textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
+                                                    reservations.get(position + 1).getEndTime());
+                                        }
                                         textHourBooking.bringToFront();
                                         textHourBooking.setGravity(Gravity.BOTTOM);
                                     }
@@ -322,7 +334,29 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                 returnTime = hour+1 + ":" + "00";
             }
         }
-
         return returnTime;
+    }
+
+    //compares two time strings and returns true if t1 is earlier than, or equal to t2
+    private boolean isFirstTimeEarlier(String t1, String t2){
+        //incoming time strings should be formatted as: HH:mm
+        String[] t1Split = t1.split(":");
+        int t1Hour = Integer.parseInt(t1Split[0]);
+        int t1Min = Integer.parseInt(t1Split[1]);
+
+        String[] t2Split = t2.split(":");
+        int t2Hour = Integer.parseInt(t2Split[0]);
+        int t2Min = Integer.parseInt(t2Split[1]);
+
+        //return true if example: t1: 08:10 and t2: 09:00
+        if(t1Hour < t2Hour){
+            return true;
+        } //return true if example: t1: 08:30 and t2: 08:35
+        else if(t1Hour == t2Hour && t2Min >= t1Min){
+            return true;
+        } //return false otherwise
+        else{
+            return false;
+        }
     }
 }

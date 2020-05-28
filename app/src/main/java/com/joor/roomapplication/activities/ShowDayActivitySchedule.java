@@ -35,6 +35,7 @@ import com.joor.roomapplication.adapters.ReservationAdapter;
 import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.models.Reservation;
 import com.joor.roomapplication.utility.ShowAmountValues;
+import com.joor.roomapplication.utility.TempValues;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -215,7 +216,9 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         safetyString = new String[]{"Backsippan", "C11", "C13", "C15", "Flundran", "Heden", "Rauken", "Myren", "Änget"};
         //this.gestureDetector = new GestureDetector(ShowDayActivitySchedule.this, this);
 
-
+        //reset utility list used in adapter
+        TempValues tempValues = TempValues.getInstance();
+        tempValues.resetTempValuesList();
     }
 
     @Override

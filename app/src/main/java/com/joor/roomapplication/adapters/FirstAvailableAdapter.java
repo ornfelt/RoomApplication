@@ -27,7 +27,6 @@ import com.joor.roomapplication.models.Reservation;
 
 import java.util.List;
 
-
     /**
      * Recycler View for Reservations
      * @author Jonas Ornfelt & Daniel Arnesson
@@ -42,7 +41,6 @@ import java.util.List;
         ImageLoader imageLoader = AppController.getmInstance().getmImageLoader();
         View convertView;
         DisplayMetrics displayMetrics;
-
 
         static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -73,8 +71,6 @@ import java.util.List;
         @Override
         public void onBindViewHolder(com.joor.roomapplication.adapters.ReservationAdapter.ViewHolder holder, int position) {
 
-
-
             if (inflater == null) {
                 inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
@@ -89,7 +85,6 @@ import java.util.List;
                 final Button buttonBook2 = (Button) convertView.findViewById(R.id.buttonBook2);
                 final TextView textHour = (TextView) convertView.findViewById(R.id.textHour);
                 final TextView textHourBooking = (TextView) convertView.findViewById(R.id.textHourBooking);
-
 
                 //boolean used to find middle time block in reservation
                 boolean isMiddleReservation = false;
@@ -229,16 +224,6 @@ import java.util.List;
                                 isMiddleReservation = true;
                                 textHourBooking.setGravity(Gravity.BOTTOM);
                                 textHourBooking.bringToFront();
-
-                                //TODO: implement functionality so that reservation start and end time is centered in red "booking area"
-                                //something like this:
-                                /*
-                                if(positionCount == 0){
-                                    textHourBooking.setGravity(40);
-                                }else{
-                                    textHourBooking.setGravity(60);
-                                }
-                                 */
 
                             }
                         }

@@ -338,8 +338,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
         //if current hour is >= 20
         if(Integer.parseInt(completeHour) >= 20){
-            //set hour to 08
-            completeHour = "08";
 
             // get a calendar instance, which defaults to "now"
             Calendar calendar = Calendar.getInstance();
@@ -350,8 +348,14 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             dateToday = formatter.format(tomorrow);
             selectedDate = formatter.format(tomorrow);
 
+            //set and return adjusted time
+            adjustedTime = "08:00";
+            return adjustedTime;
+
         }else if(hour1 == 0 && hour2 < 8){
-            completeHour = "08";
+            //set and return adjusted time
+            adjustedTime = "08:00";
+            return adjustedTime;
         }
 
         //if min is 0, 15, 30, 45 then no need to adjust
@@ -418,7 +422,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         }
     }
 
-
     //this method adds to dayCount if necessary, a bit redundant code here...
     private void addToDayCount(String t ){
         //incoming t should be formatted as: HH:mm
@@ -443,6 +446,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         //only add if time is > 19:30
         if(min > 30 && completeHour.equals("19")){
             dayCount++;
+        }else if(Integer.parseInt(completeHour) > 19){
+            dayCount++;
         }
     }
 
@@ -451,10 +456,12 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         final ArrayList<String> daySchedule = timeList();
         dateToday = formatter.format(date);
         timeNow = getCurrentTimeStamp();
+        //test time
+        /*
         if(dayCount == 0) {
-            timeNow = "08:00";
-            addToDayCount(timeNow);
+            timeNow = "10:45";
         }
+         */
 
         //if end of days schedule is reached, then look for next days availability
         if(dayCount > 0 ){
@@ -471,6 +478,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             System.out.println("dateToday changed in getAvailability: " + dateToday);
         }
 
+        addToDayCount(timeNow);
+
         System.out.println("date and time before adjust: " + dateToday +", " + timeNow);
         timeNow = adjustTimeStamp(timeNow);
         //date may change depending on adjusted time, so date text is set again here
@@ -478,7 +487,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         dateToday = selectedDate;
         indexOfTimeNow = 0;
         System.out.println("dayCount: " + dayCount + ", dateToday: " + dateToday + ", adjusted timeNow: " + timeNow);
-
 
         for (String s: daySchedule) {
             if(s.equals(timeNow)){
@@ -645,8 +653,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                             //check reservations size before adding new
                                             if (reservations.size() < reservationsSizeCap && isNotSameAsLast) {
                                                         reservations.add(fillerReservation);
-                                                        System.out.println("added reservation: " + fillerReservation.getStartTime() +
-                                                                ", name: " + room);
                                             }
                                             //else nothing happens - can't break main loop within jsonrequest
 
@@ -670,8 +676,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                 //check reservations size before adding new
                                                 if (reservations.size() < reservationsSizeCap && isNotSameAsLast) {
                                                 reservations.add(fillerReservation2);
-                                                System.out.println("added reservation: " + fillerReservation2.getStartTime() +
-                                                        ", name: " + room);
                                                 }
                                             }
                                             //break after targetTimes are found
