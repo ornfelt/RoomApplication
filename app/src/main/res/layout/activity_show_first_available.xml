@@ -89,4 +89,14 @@
         app:srcCompat="@drawable/right_arrow_new"
         tools:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/buttonShowAvailableViewInfo"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="13dp"
+        android:src="@drawable/ic_info_darkgray_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

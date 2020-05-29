@@ -2,14 +2,17 @@ package com.joor.roomapplication.activities;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.os.ConfigurationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -60,6 +63,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private TextView todaysDate;
     private ImageView rightClick;
     private ImageView leftClick;
+    private ImageView infoClick;
     private Date constantDate;
     private Date changableDate;
     private Calendar constantCalendar;
@@ -79,7 +83,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
     private int dayCount;
     private boolean isFirstResult;
     private boolean dayCountWasAdded = false;
-
+    Dialog roomInfoDialog;
 
     private static final String TAG = "Swipe Position";
     private float x1, x2, y1, y2;
@@ -197,6 +201,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         // Clicklisteners
         rightClick = (ImageView) findViewById(R.id.rightClick);
         leftClick = (ImageView) findViewById(R.id.leftClick);
+        infoClick = (ImageView) findViewById(R.id.buttonShowAvailableViewInfo);
 
         setDateTextView();
     }
@@ -305,6 +310,47 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
                     toast.show();
                 }
+            }
+        });
+
+        roomInfoDialog = new Dialog(ShowFirstAvailableActivity.this);
+        infoClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //set new content view
+                roomInfoDialog.setContentView(R.layout.room_popup);
+
+                //init image and text view inside popup
+                final ImageView closeInfoPopup = roomInfoDialog.findViewById(R.id.imgCloseInfoPopup);
+                final TextView textViewTitle = roomInfoDialog.findViewById(R.id.textRoomName);
+                final ImageView roomImage = roomInfoDialog.findViewById(R.id.imgRoom);
+                final TextView textViewViewInfo = roomInfoDialog.findViewById(R.id.textRoomInfo);
+
+                String svTitleText = "Information om vy";
+                String engTitleText = "View information";
+
+                String svViewInfo = "I denna vy...";
+                String engViewInfo = "In this view...";
+
+                String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
+                if (language.equals("sv_SE")) {
+                    textViewTitle.setText(svTitleText);
+                    textViewViewInfo.setText(svViewInfo);
+                } else {
+                    textViewTitle.setText(engTitleText);
+                    textViewViewInfo.setText(engViewInfo);
+                }
+
+                closeInfoPopup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        roomInfoDialog.dismiss();
+                    }
+                });
+                roomInfoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                roomInfoDialog.show();
+
             }
         });
     }
