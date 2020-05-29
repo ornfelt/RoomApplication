@@ -1,10 +1,12 @@
 package com.joor.roomapplication.activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.os.ConfigurationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -57,10 +60,9 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private static final String url = "https://timeeditrestapi.herokuapp.com/reservations/";
     private List<Reservation> reservations = new ArrayList<Reservation>();
     private ReservationAdapter adapter;
-    private Spinner filterOptions;
     private TextView roomName;
-    private TextView filter;
     private TextView todaysDate;
+    private TextView dayofweek;
     private ImageView rightClick;
     private ImageView leftClick;
     private Date constantDate;
@@ -70,6 +72,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private Calendar changableCalendar;
     private String dateToday;
     private String selectedDate;
+
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private boolean datePicked;
@@ -120,6 +123,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        setDateTextView();
         // Set up imagelisteners
         setImgListeners();
         setDatePicker();
@@ -135,6 +139,8 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         int dDensityPerInch = displayMetrics.densityDpi;
         System.out.println("width for device: " + dWidth + ", height: " + dHeight + " density: " + dDensityPerInch);
 
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar_layout);
     }
 
     //gets id for view
@@ -210,11 +216,11 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Clicklisteners
         rightClick = (ImageView) findViewById(R.id.rightClick);
         leftClick = (ImageView) findViewById(R.id.leftClick);
-
+        dayofweek = (TextView) findViewById(R.id.dayofweek);
         roomName.setText(room_name);
-        setDateTextView();
+        //setDateTextView();
         safetyString = new String[]{"Backsippan", "C11", "C13", "C15", "Flundran", "Heden", "Rauken", "Myren", "Änget"};
-        //this.gestureDetector = new GestureDetector(ShowDayActivitySchedule.this, this);
+
 
         //reset utility list used in adapter
         TempValues tempValues = TempValues.getInstance();
@@ -522,6 +528,20 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         dateToday = formatter.format(dateChecker.getTime());
         dateChecker.add(Calendar.DATE, 1);
         String dateTomorrow = formatter.format(dateChecker.getTime());
+
+
+        String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
+        int dayNumber = changableCalendar.get(Calendar.DAY_OF_WEEK);
+        String[] swedishDays = new String[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
+        String[] englishDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
+        String weekday ="";
+        if (language.equals("sv_SE")){
+            //weekday = swedishDays[dayNumber-1];
+            dayofweek.setText(swedishDays[dayNumber-1]);
+        }
+        else{dayofweek.setText(englishDays[dayNumber-1]);}
+
+
 
         if (dateToday.equals(selectedDate)) {
             String today = getResources().getString(R.string.today);

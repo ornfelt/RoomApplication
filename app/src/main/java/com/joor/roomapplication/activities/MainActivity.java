@@ -65,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         getNames();
         setDate();
 
+
+        // Implementing Custom ActionBar
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar_layout);
+
         TypedValue tv = new TypedValue();
         getApplicationContext().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true);
         int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);

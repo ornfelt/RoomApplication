@@ -20,7 +20,9 @@
         android:id="@+id/imageView"
         android:layout_width="86dp"
         android:layout_height="80dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/uu_logo_tranp4f125px" />
@@ -29,7 +31,7 @@
         android:id="@+id/txtRoomName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="8dp"
         android:gravity="top"
         android:inputType="text"
         android:text="Room Name"
@@ -83,7 +85,7 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="9dp"
         android:text="Date"
         android:textColor="#333333"
         android:textSize="22sp"
@@ -93,6 +95,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtRoomName" />
 
+    <TextView
+        android:id="@+id/dayofweek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/my_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

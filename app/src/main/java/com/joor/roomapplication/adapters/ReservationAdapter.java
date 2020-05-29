@@ -171,12 +171,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             //set button color to greenb
                             if (positionCount == 0) {
                                 // old color #ff93e6b3
-                                buttonBook.setBackgroundColor(Color.parseColor("#eeeeee"));
+                                buttonBook.setBackgroundColor(Color.parseColor("#eaeaea"));
                                 buttonBookParams.width = displayWidth;
                                 buttonBook.setLayoutParams(buttonBookParams);
                             } else {
                                 // old color #ff93e6b3"
-                                buttonBook2.setBackgroundColor(Color.parseColor("#eeeeee"));
+                                buttonBook2.setBackgroundColor(Color.parseColor("#eaeaea"));
                                 buttonBook2Params.width = displayWidth;
                                 buttonBook2.setLayoutParams(buttonBook2Params);
                             }
@@ -192,6 +192,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             //set button color to red and make nonclickable
                             if (positionCount == 0) {
                                 // old color #fffa7d89
+                                // alternate c1c1c1
                                 buttonBook.setBackgroundColor(Color.parseColor("#c2c2c2"));
                                 buttonBook.setClickable(false);
                                 buttonBookParams.width = displayWidth;

@@ -1,5 +1,6 @@
 package com.joor.roomapplication.activities;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -125,6 +126,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                 }
             }, 2000);
         }
+        // Implemntation of custom Actionbar
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar_layout);
     }
 
     //gets id for view
