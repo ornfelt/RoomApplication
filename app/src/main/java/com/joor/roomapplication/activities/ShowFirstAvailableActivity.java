@@ -741,7 +741,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         dateChecker.add(Calendar.DATE, 1);
         String dateTomorrow = formatter.format(dateChecker.getTime());
         String today = getResources().getString(R.string.today);
-        String tomorrow= getResources().getString(R.string.today);
+        String tomorrow= getResources().getString(R.string.tomorrow);
         if(selectedDate == null){
             selectedDate = dateToday;
         }
