@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         getNames();
         setDate();
 
-
         // Implementing Custom ActionBar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_layout);
@@ -83,15 +82,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         dateToday = formatter.format(today);
     }
 
-    /*
-    private void setSpinner(ArrayList roomNames) {
-        roomNameText = (Spinner) findViewById(R.id.spinnerRoomName);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, roomNames);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        roomNameText.setAdapter(adapter);
-    }*/
 
     //launches activity ShowItems
     public void onClickShowRooms(View view) {

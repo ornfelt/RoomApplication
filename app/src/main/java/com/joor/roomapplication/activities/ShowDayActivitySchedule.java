@@ -541,8 +541,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         }
         else{dayofweek.setText(englishDays[dayNumber-1]);}
 
-
-
         if (dateToday.equals(selectedDate)) {
             String today = getResources().getString(R.string.today);
             todaysDate.setText(today);

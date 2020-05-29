@@ -6,7 +6,7 @@
     android:id="@+id/timeElements"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#201E1E"
+    android:background="#100F0F"
     android:orientation="vertical">
 
     <Button
@@ -45,7 +45,7 @@
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:elevation="100dp"
-        android:textColor="@color/design_default_color_background"
+        android:textColor="#FFFFFF"
         android:textSize="14sp"
         tools:text="XX:00-YY00"
         />
