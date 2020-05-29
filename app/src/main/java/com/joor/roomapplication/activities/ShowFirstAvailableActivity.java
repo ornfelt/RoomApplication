@@ -194,8 +194,6 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         rightClick = (ImageView) findViewById(R.id.rightClick);
         leftClick = (ImageView) findViewById(R.id.leftClick);
 
-        room_name = "First Available";
-        roomName.setText(room_name);
         setDateTextView();
     }
 
@@ -742,15 +740,16 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         dateToday = formatter.format(dateChecker.getTime());
         dateChecker.add(Calendar.DATE, 1);
         String dateTomorrow = formatter.format(dateChecker.getTime());
-
+        String today = getResources().getString(R.string.today);
+        String tomorrow= getResources().getString(R.string.today);
         if(selectedDate == null){
             selectedDate = dateToday;
         }
 
         if (dateToday.equals(selectedDate)) {
-            todaysDate.setText("Today");
+            todaysDate.setText(today);
         } else if (selectedDate.equals(dateTomorrow)) {
-            todaysDate.setText("Tomorrow");
+            todaysDate.setText(tomorrow);
         } else
             todaysDate.setText(selectedDate);
     }

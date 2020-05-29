@@ -4,6 +4,7 @@
     <string name="see_first">See First Available</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+    <string name="first_available">First Available</string>
 
     <string-array name="grouprooms">
         <item>C11</item>

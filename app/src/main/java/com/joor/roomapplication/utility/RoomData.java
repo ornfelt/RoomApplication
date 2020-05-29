@@ -1,5 +1,9 @@
 package com.joor.roomapplication.utility;
 
+import android.content.res.Resources;
+
+import androidx.core.os.ConfigurationCompat;
+
 /**
  * This class contains image links and information for available group rooms at Campus Gotland
  * @author Jonas Ornfelt & Daniel Arnesson
@@ -53,27 +57,54 @@ public class RoomData {
 
     public String getInfoByRoomName(String name) {
         //this string is used for all rooms and contains the same information as the info at https://www.campusgotland.uu.se/
-        String template = " är ett av rummen du även kan boka som student för t ex grupparbete.";
+        String swedishTemplate = " är ett av rummen du även kan boka som student för t.ex. grupparbete.";
+        String englishTemplate = " can be booked by students for group work.";
 
+        String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
+
+if (language.equals("sv_SE")){
         if (name.toLowerCase().equals("änget")) {
-            return name + " har " + roomSizeAnget + " platser. " + name + template;
+            return name + " har " + roomSizeAnget + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("backsippan")) {
-            return name + " har " + roomSizeBacksippan + " platser. " + name + template;
+            return name + " har " + roomSizeBacksippan + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("c11")) {
-            return name + " har " + roomSizeC11 + " platser. " + name + template;
+            return name + " har " + roomSizeC11 + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("c13")) {
-            return name + " har " + roomSizeC13 + " platser. " + name + template;
+            return name + " har " + roomSizeC13 + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("c15")) {
-            return name + " har " + roomSizeC15 + " platser. " + name + template;
+            return name + " har " + roomSizeC15 + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("flundran")) {
-            return name + " har " + roomSizeFlundran + " platser. " + name + template;
+            return name + " har " + roomSizeFlundran + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("heden")) {
-            return name + " har " + roomSizeHeden + " platser. " + name + template;
+            return name + " har " + roomSizeHeden + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("myren")) {
-            return name + " har " + roomSizeMyren + " platser. " + name + template;
+            return name + " har " + roomSizeMyren + " platser. " + name + swedishTemplate;
         } else if (name.toLowerCase().equals("rauken")) {
-            return name + " har " + roomSizeRauken + " platser. " + name + template;
+            return name + " har " + roomSizeRauken + " platser. " + name + swedishTemplate;
         }
+        return name;
+    }
+else
+
+if (name.toLowerCase().equals("änget")) {
+    return name + " has " + roomSizeAnget + " seats. " + name + englishTemplate;
+} else if (name.toLowerCase().equals("backsippan")) {
+    return name + " has " + roomSizeBacksippan + " seats. " + name + englishTemplate;
+} else if (name.toLowerCase().equals("c11")) {
+    return name + " has " + roomSizeC11 + " seats. " + name + englishTemplate;
+} else if (name.toLowerCase().equals("c13")) {
+    return name + " has " + roomSizeC13 + " seats. " + name + englishTemplate;
+} else if (name.toLowerCase().equals("c15")) {
+    return name + " has " + roomSizeC15 + " seats. " + name + englishTemplate;
+} else if (name.toLowerCase().equals("flundran")) {
+    return name + " has " + roomSizeFlundran + " seats. " + name + englishTemplate;
+} else if (name.toLowerCase().equals("heden")) {
+    return name + " has " + roomSizeHeden + " seats. " + name + englishTemplate;
+} else if (name.toLowerCase().equals("myren")) {
+    return name + " has " + roomSizeMyren + " seats " + name + englishTemplate;
+} else if (name.toLowerCase().equals("rauken")) {
+    return name + " has " + roomSizeRauken + " seats. " + name + englishTemplate;
+}
         return name;
     }
 

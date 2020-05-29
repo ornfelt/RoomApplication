@@ -6,19 +6,19 @@
     android:id="@+id/timeElements"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryDark"
+    android:background="#201E1E"
     android:orientation="vertical">
 
+
     <Button
+        android:layout_marginTop="0.5dp"
         android:id="@+id/buttonBook"
         android:layout_width="200dp"
         android:layout_height="20dp"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="1dp"
-        android:background="#000000"
         android:gravity="right"
-        android:textSize="14sp"
-        android:paddingLeft="5dp" />
+        android:paddingLeft="5dp"
+        android:textSize="14sp" />
 
     <Button
         android:id="@+id/buttonBook2"
@@ -26,10 +26,9 @@
         android:layout_height="20dp"
         android:layout_below="@+id/buttonBook"
         android:layout_alignParentRight="true"
-        android:background="#000000"
         android:gravity="right"
-        android:textSize="14sp"
-        android:paddingLeft="5dp" />
+        android:paddingLeft="5dp"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/textHour"
@@ -45,9 +44,8 @@
         android:layout_width="200dp"
         android:layout_height="40dp"
         android:elevation="100dp"
-        android:textColor="@color/design_default_color_background"
+        android:textColor="@color/uppsalaRed"
         android:textSize="14sp"
-        tools:text="XX:00-YY00"
-        />
+        tools:text="XX:00-YY00" />
 
 </RelativeLayout>

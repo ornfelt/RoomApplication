@@ -2,9 +2,10 @@
 <resources>
     <string name="app_name">Campus Gotland Roomapplication</string>
     <string name="title">Välj Rum</string>
-    <string name="see_first">Närmsta Lediga Tider</string>
+    <string name="see_first">Första Lediga Tider</string>
     <string name="today">Idag</string>
     <string name="tomorrow">Imorgon</string>
+    <string name="first_available">Första Lediga</string>
 
     <string-array name="grouprooms">
         <item>C11</item>
