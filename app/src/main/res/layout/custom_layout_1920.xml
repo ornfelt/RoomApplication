@@ -38,7 +38,9 @@
         android:layout_alignParentLeft="true"
         android:elevation="100dp"
         android:textSize="14sp"
-        tools:text="XX:00-YY00" />
+        tools:text="XX:00-YY00"
+        app:fontFamily="@font/arial"
+        android:layout_marginLeft="4dp"/>
 
     <TextView
         android:id="@+id/textHourBooking"
@@ -48,6 +50,8 @@
         android:textColor="#FFFFFF"
         android:textSize="14sp"
         tools:text="XX:00-YY00"
+        app:fontFamily="@font/arial"
+        android:layout_marginLeft="4dp"
         />
 
 </RelativeLayout>

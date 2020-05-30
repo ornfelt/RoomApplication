@@ -65,6 +65,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private TextView dayofweek;
     private ImageView rightClick;
     private ImageView leftClick;
+    private ImageView info;
     private Date constantDate;
     private Date changableDate;
     private Date maxDate;
@@ -730,5 +731,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
         return super.dispatchTouchEvent(event);
     }
+
 }
 

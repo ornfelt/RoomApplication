@@ -171,12 +171,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             //set button color to greenb
                             if (positionCount == 0) {
                                 // old color #ff93e6b3
-                                buttonBook.setBackgroundColor(Color.parseColor("#eaeaea"));
+                                buttonBook.setBackgroundColor(Color.parseColor("#e5e5e5"));
                                 buttonBookParams.width = displayWidth;
                                 buttonBook.setLayoutParams(buttonBookParams);
                             } else {
                                 // old color #ff93e6b3"
-                                buttonBook2.setBackgroundColor(Color.parseColor("#eaeaea"));
+                                buttonBook2.setBackgroundColor(Color.parseColor("#e5e5e5"));
                                 buttonBook2Params.width = displayWidth;
                                 buttonBook2.setLayoutParams(buttonBook2Params);
                             }
@@ -193,7 +193,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             if (positionCount == 0) {
                                 // old color #fffa7d89
                                 // alternate c1c1c1
-                                buttonBook.setBackgroundColor(Color.parseColor("#c2c2c2"));
+                                buttonBook.setBackgroundColor(Color.parseColor("#b2b2b2"));
                                 buttonBook.setClickable(false);
                                 buttonBookParams.width = displayWidth;
                                 buttonBook.setLayoutParams(buttonBookParams);
@@ -206,7 +206,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                                 }
                             } else {
                                 // old color #fffa7d89
-                                buttonBook2.setBackgroundColor(Color.parseColor("#c2c2c2"));
+                                buttonBook2.setBackgroundColor(Color.parseColor("#b2b2b2"));
                                 buttonBook2.setClickable(false);
                                 buttonBook2Params.width = displayWidth;
                                 buttonBook2.setLayoutParams(buttonBook2Params);
