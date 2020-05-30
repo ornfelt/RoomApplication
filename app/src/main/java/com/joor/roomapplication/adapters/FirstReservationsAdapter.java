@@ -83,7 +83,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         if (inflater == null) {
             inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -276,6 +276,8 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                 Intent intent = new Intent(activity,
                                         BookingActivity.class);
                                 intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                                //TODO add clicked roomName to intent below
+                                intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, reservations.get(position).getName());
                                 activity.startActivity(intent);
 
                             }
@@ -289,6 +291,8 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                 Intent intent = new Intent(activity,
                                         BookingActivity.class);
                                 intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                                //TODO add clicked roomName to intent below
+                                intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, reservations.get(position).getName());
                                 activity.startActivity(intent);
 
                             }
