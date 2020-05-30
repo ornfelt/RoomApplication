@@ -54,7 +54,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     ImageLoader imageLoader = AppController.getmInstance().getmImageLoader();
     View convertView;
     DisplayMetrics displayMetrics;
-
+private String roomName;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -67,9 +67,10 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     }
 
     //constructor - RecyclerAdapter for better performance
-    public ReservationAdapter(Activity activity, List<Reservation> reservations){
+    public ReservationAdapter(Activity activity, List<Reservation> reservations, String roomName){
         this.activity = activity;
         this.reservations = reservations;
+        this.roomName = roomName;
     }
 
     @Override
@@ -370,10 +371,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                     buttonBook.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
                             //navigate to booking view
                             Intent intent = new Intent(activity,
                                     BookingActivity.class);
                             intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                            intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, roomName);
                             activity.startActivity(intent);
 
                         }
@@ -387,6 +390,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             Intent intent = new Intent(activity,
                                     BookingActivity.class);
                             intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                            intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, roomName);
                             activity.startActivity(intent);
 
                         }

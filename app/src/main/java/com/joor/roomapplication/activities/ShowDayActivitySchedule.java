@@ -304,7 +304,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
     private void setAdapter() {
         //creates RecycleAdapter and sets it
-        adapter = new ReservationAdapter(this, reservations);
+        adapter = new ReservationAdapter(this, reservations,room_name);
         recyclerView.setAdapter(adapter);
     }
 
