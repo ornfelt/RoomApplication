@@ -123,9 +123,17 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
             boolean doSetText = true;
 
             try {
-                if (position % 2 == 0) {
-                    //get display width and height
+                //boolean to fix bug where an extra block element appeared
+                boolean allElementsShown = false;
+                //fix for extra block appearing after schedule
+                if(position > 2 && getTimeByPosition(position-2).equals("19:00-20:00")){
+                    //remove elements
+                    allElementsShown = true;
+                }
 
+                if (position % 2 == 0 && !allElementsShown) {
+
+                    //get display width and height
                     ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
                     ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
                     ViewGroup.LayoutParams textHourBookingParams = textHourBooking.getLayoutParams();
