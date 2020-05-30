@@ -50,9 +50,9 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.MyViewHolder> 
     @Override
     public RoomAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
-       View rowView = LayoutInflater.from(parent.getContext()).inflate(R.layout.roomnames_layout, parent, false);
+        View rowView = LayoutInflater.from(parent.getContext()).inflate(R.layout.roomnames_layout, parent, false);
 
-       MyViewHolder vh = new MyViewHolder(rowView);
+        MyViewHolder vh = new MyViewHolder(rowView);
         return vh;
     }
 

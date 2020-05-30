@@ -4,9 +4,11 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +39,8 @@ import com.joor.roomapplication.R;
 import com.joor.roomapplication.adapters.ReservationAdapter;
 import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.models.Reservation;
+import com.joor.roomapplication.utility.LoadImage;
+import com.joor.roomapplication.utility.RoomData;
 import com.joor.roomapplication.utility.ShowAmountValues;
 import com.joor.roomapplication.utility.TempValues;
 
@@ -65,6 +69,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private TextView dayofweek;
     private ImageView rightClick;
     private ImageView leftClick;
+    private ImageView infoClick;
     private Date constantDate;
     private Date changableDate;
     private Date maxDate;
@@ -72,7 +77,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
     private Calendar changableCalendar;
     private String dateToday;
     private String selectedDate;
-
+    Dialog roomInfoDialog;
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private boolean datePicked;
@@ -216,6 +221,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Clicklisteners
         rightClick = (ImageView) findViewById(R.id.rightClick);
         leftClick = (ImageView) findViewById(R.id.leftClick);
+        infoClick = (ImageView) findViewById(R.id.buttonShowViewInfo);
         dayofweek = (TextView) findViewById(R.id.dayofweek);
         roomName.setText(room_name);
         //setDateTextView();
@@ -313,6 +319,53 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dateBackward();
+            }
+        });
+
+        roomInfoDialog = new Dialog(ShowDayActivitySchedule.this);
+        infoClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //set new content view
+                roomInfoDialog.setContentView(R.layout.room_popup);
+
+                //init image and text view inside popup
+                final ImageView closeInfoPopup = roomInfoDialog.findViewById(R.id.imgCloseInfoPopup);
+                final TextView textViewTitle = roomInfoDialog.findViewById(R.id.textRoomName);
+                final ImageView roomImage = roomInfoDialog.findViewById(R.id.imgRoom);
+                final TextView textViewViewInfo = roomInfoDialog.findViewById(R.id.textRoomInfo);
+
+                String svTitleText = "Välkommen till Rumsvyn";
+                String engTitleText = "Welcome to RoomView";
+
+                String svViewInfo =
+                        "Swipe höger går till nästa dag" + "\n" +
+                        "Swipe vänster går till föregående dag" + "\n" +
+                        "Swipe upp/ner växlar mellan rum" + "\n" + "\n" +
+                                "Klick på datum öppnar kalendern för val av specifikt datum " + "\n"+"\n"+
+                                "Klicka på den tid du vill boka för omredigering till TimeEdit";
+
+                String engViewInfo = "In this view...";
+
+                String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
+                if (language.equals("sv_SE")) {
+                    textViewTitle.setText(svTitleText);
+                    textViewViewInfo.setText(svViewInfo);
+                } else {
+                    textViewTitle.setText(engTitleText);
+                    textViewViewInfo.setText(engViewInfo);
+                }
+
+                closeInfoPopup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        roomInfoDialog.dismiss();
+                    }
+                });
+                roomInfoDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                roomInfoDialog.show();
+
             }
         });
     }
@@ -510,7 +563,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                     updateView();
                 }
             }
-
         };
     }
 
@@ -520,7 +572,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
     }
 
     private void setDateTextView() {
@@ -528,7 +579,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         dateToday = formatter.format(dateChecker.getTime());
         dateChecker.add(Calendar.DATE, 1);
         String dateTomorrow = formatter.format(dateChecker.getTime());
-
 
         String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
         int dayNumber = changableCalendar.get(Calendar.DAY_OF_WEEK);
@@ -566,6 +616,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         if(showAmountValues.showAmountList.size() == 0){
             showAmountValues.showAmountList.add(0);
         }
+
         extras.putString(ROOMNAME_EXTRA, room_name);
         extras.putString(DATE_EXTRA, selectedDate);
         //send false if intent is not from main activity
@@ -592,7 +643,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 Toast toast = Toast.makeText(getApplicationContext(), "Can't go further", Toast.LENGTH_SHORT);
                 toast.show();
                 clickedDate = maxDate;
-        }}
+            }}
 
         selectedDate = formatter.format(clickedDate);
         updateView();
@@ -670,7 +721,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
                         return true;
                     }
-
                 }
 
                 if (Math.abs(valueY) > MIN_DISTANCE) {
@@ -688,7 +738,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
                                     return true;
                                 }
-
                                 // System.out.println("Nästa namn är"+ safetyString[i+1]);
                                 updateViewName(safetyString[i + 1]);
                                 return true;
@@ -721,14 +770,8 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                             }
                         }
                     }
-
                 }
-
-
-
         }
-
         return super.dispatchTouchEvent(event);
     }
 }
-

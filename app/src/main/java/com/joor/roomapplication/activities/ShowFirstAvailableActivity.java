@@ -700,7 +700,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                             fillerReservation.setName(roomArr);
                                             //check reservations size before adding new
                                             if (reservations.size() < reservationsSizeCap && isNotSameAsLast) {
-                                                        reservations.add(fillerReservation);
+                                                reservations.add(fillerReservation);
                                             }
                                             //else nothing happens - can't break main loop within jsonrequest
 
@@ -723,7 +723,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                 fillerReservation2.setName(roomArr);
                                                 //check reservations size before adding new
                                                 if (reservations.size() < reservationsSizeCap && isNotSameAsLast) {
-                                                reservations.add(fillerReservation2);
+                                                    reservations.add(fillerReservation2);
                                                 }
                                             }
                                             //break after targetTimes are found
@@ -858,10 +858,10 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                         }
                         ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
                         if(dayCount != 0){
-                        dayCount--;
-                        showMoreAmount = 0;
-                        showAmountValues.resetShowAmountList();
-                        updateView();
+                            dayCount--;
+                            showMoreAmount = 0;
+                            showAmountValues.resetShowAmountList();
+                            updateView();
                         } else{
                             Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
                             toast.show();
@@ -906,15 +906,15 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                             Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
                             toast.show();
                         }
-                                return true;
-                            }
+                        return true;
+                    }
                     //up swiped
                     else {
                         Log.d(TAG, "Up swiped");
                         updateView();
-                        }
                     }
                 }
+        }
         return super.dispatchTouchEvent(event);
     }
 }
