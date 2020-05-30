@@ -33,7 +33,6 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.MyViewHolder> 
         private ImageView showRoomInfo;
         Dialog roomInfoDialog;
 
-
         public MyViewHolder(View v) {
             super(v);
             textView = v.findViewById(R.id.roomMain);
