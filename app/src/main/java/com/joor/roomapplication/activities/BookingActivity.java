@@ -36,23 +36,19 @@ public class BookingActivity extends AppCompatActivity {
         room= intent.getStringExtra(RESERVATION_ROOM_NAME);
         TextView textTime = (TextView) findViewById(R.id.textBookingTime);
         textTime.setText(booking_time);
-        // TODO: room name needs to be sent as intent as well from previous view. More links are also needed.
-        // The one below only works for C11
-
-
-        //redirect user to booking site
         webView = (WebView) findViewById(R.id.web_view);
         webView.setWebViewClient(new WebViewClient());
         WebSettings webSettings = webView.getSettings();
         // Enables Javascript
         webSettings.setJavaScriptEnabled(true);
-        //link for redirect to C11 booking site
+        //link for redirect to booking site
         loadUrl(room);
     }
 
     public void loadUrl(String name) {
+        // TODO: Find dynamic link. "https://cloud.timeedit.net/uu/web/wr_student/ri.html?h=t&sid=10&objects=2547822.212%2C&ox=0&types=0&fe=0&part=f&tg=-1&se=f&exw=t&rr=1" possibly works better.
         if (name.toLowerCase().equals("änget")) {
-            webView.loadUrl("https://cloud.timeedit.net/uu/web/wr_student/ri.html?h=t&sid=10&p=20200526-20200526&objects=2547822.212%2C&ox=0&types=0&fe=0&part=f&tg=-1&se=f&exw=t&rr=1");
+            webView.loadUrl("https://cloud.timeedit.net/uu/web/wr_student/ri.html?h=t&sid=10&objects=2547822.212%2C&ox=0&types=0&fe=0&part=f&tg=-1&se=f&exw=t&rr=1");
         } else if (name.toLowerCase().equals("backsippan")) {
             webView.loadUrl("https://cloud.timeedit.net/uu/web/wr_student/ri.html?h=t&sid=10&p=20200526-20200526&objects=2547823.212%2C&ox=0&types=0&fe=0&part=f&tg=-1&se=f&exw=t&rr=1");
         } else if (name.toLowerCase().equals("c11")) {

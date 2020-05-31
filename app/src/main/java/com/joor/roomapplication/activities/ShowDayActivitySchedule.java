@@ -340,13 +340,17 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 String engTitleText = "Welcome to RoomView";
 
                 String svViewInfo =
-                        "Swipe höger går till nästa dag" + "\n" +
-                        "Swipe vänster går till föregående dag" + "\n" +
-                        "Swipe upp/ner växlar mellan rum" + "\n" + "\n" +
-                                "Klick på datum öppnar kalendern för val av specifikt datum " + "\n"+"\n"+
-                                "Klicka på den tid du vill boka för omredigering till TimeEdit";
+                        "Swipe höger visar nästa dag" + "\n" +
+                        "Swipe vänster visar förgående dag" + "\n" +
+                        "Swipe upp/ner byter rum" + "\n" + "\n" +
+                                "Klick på datum öppnar kalendern " + "\n"+"\n"+
+                                "Klick på ledig tid öppnar inloggning till TimeEdit";
 
-                String engViewInfo = "In this view...";
+                String engViewInfo = "Swipe right displays next day" + "\n" +
+                        "Swipe left displays previous day" + "\n" +
+                        "Swipe up/down changes room" + "\n" + "\n" +
+                        "Click on date opens the calendar " + "\n"+"\n"+
+                        "Click on available time opens TimeEdit login ";
 
                 String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
                 if (language.equals("sv_SE")) {
