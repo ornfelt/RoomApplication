@@ -46,10 +46,10 @@ public class BookingActivity extends AppCompatActivity {
     }
 
     public void loadUrl(String name) {
-
         // TODO:
         //  Implement an in-parameter for selected_date. If date is today then use the already implemented if-case, else dynamically build links.
         //  Format in-parameter value to same format as"p=20200526-20200526" which is "p=YYYY-mm-dd". Try to make sure it opens the dayview inside the phone.
+        //  Link to concat is  https://cloud.timeedit.net/uu/web/wr_student/ri.html?h=t&sid=10&p=20200526-20200526&objects=2547815.212%2C&ox=0&types=0&fe=0&part=f&tg=-1&se=f&exw=t&rr=1
 
         if (name.toLowerCase().equals("änget")) {
             webView.loadUrl("https://cloud.timeedit.net/uu/web/wr_student/ri.html?h=t&sid=10&objects=2547822.212%2C&ox=0&types=0&fe=0&part=f&tg=-1&se=f&exw=t&rr=1");
