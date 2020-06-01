@@ -70,9 +70,8 @@
                     android:layout_marginRight="20dp"
                     android:id="@+id/textRoomInfo"
                     android:text="Room information..."
-                    android:textAlignment="center"
                     android:textSize="14sp"
-                    android:gravity="center_horizontal" />
+                    android:gravity="center" />
 
 
             </LinearLayout>

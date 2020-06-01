@@ -110,7 +110,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         setAdapter();
         // Gets the availability for a specific room
         getAvailability(changableDate);
-
+/*
         if(showMoreAmount == 0 && dayCount == 0){
             //show info toast
             Toast toast = Toast.makeText(getApplicationContext(), "Swipe up/down to see more/previous.", Toast.LENGTH_LONG);
@@ -129,8 +129,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                     toast.show();
                 }
             }, 2000);
-        }
-        // Implemntation of custom Actionbar
+        }*/
+
+        // Implementation of custom Actionbar
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_layout);
     }
@@ -326,12 +327,23 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                 final TextView textViewTitle = roomInfoDialog.findViewById(R.id.textRoomName);
                 final ImageView roomImage = roomInfoDialog.findViewById(R.id.imgRoom);
                 final TextView textViewViewInfo = roomInfoDialog.findViewById(R.id.textRoomInfo);
+                textViewViewInfo.setGravity(Gravity.LEFT);
+                String svTitleText = "Första Lediga";
+                String engTitleText = "First Available";
 
-                String svTitleText = "Information om vy";
-                String engTitleText = "View information";
+                String svViewInfo =
+                        "Swipe upp/ner visar fler lediga tider samma dag" + "\n" + "\n" +
+                        "Swipe höger visar nästa dag" + "\n" + "\n" +
+                                "Swipe vänster visar förgående dag" + "\n" +"\n" +
+                                "Klick på datum öppnar kalendern " + "\n"+"\n"+
+                                "Klick på ledig tid öppnar inloggning till TimeEdit";
 
-                String svViewInfo = "I denna vy...";
-                String engViewInfo = "In this view...";
+                String engViewInfo = "Swipe up/down displays more available times for same day " + "\n" + "\n" +
+                        "Swipe right displays next day" + "\n" + "\n" +
+                        "Swipe left displays previous day" + "\n" + "\n" +
+                        "Click on date opens the calendar " + "\n"+"\n"+
+                        "Click on available time opens TimeEdit login ";
+
 
                 String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
                 if (language.equals("sv_SE")) {

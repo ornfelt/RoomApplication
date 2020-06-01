@@ -147,7 +147,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
 
                             //set button color to green
                             if (positionCount == 0) {
-                                buttonBook.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                                buttonBook.setBackgroundColor(Color.parseColor("#e5e5e5"));
                                 ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
                                 buttonBookParams.width = displayWidth;
                                 buttonBook.setLayoutParams(buttonBookParams);
@@ -161,7 +161,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                     buttonBook.bringToFront();
                                 }
                             } else {
-                                buttonBook2.setBackgroundColor(Color.parseColor("#ff93e6b3"));
+                                buttonBook2.setBackgroundColor(Color.parseColor("#e5e5e5"));
                                 ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
                                 buttonBook2Params.width = displayWidth;
                                 buttonBook2.setLayoutParams(buttonBook2Params);
@@ -277,7 +277,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                         BookingActivity.class);
                                 intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
                                 //TODO add clicked roomName to intent below
-                                intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, reservations.get(position).getName());
+                                intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, buttonBook.getText());
                                 activity.startActivity(intent);
 
                             }
@@ -292,7 +292,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                                         BookingActivity.class);
                                 intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
                                 //TODO add clicked roomName to intent below
-                                intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, reservations.get(position).getName());
+                                intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, buttonBook2.getText());
                                 activity.startActivity(intent);
 
                             }

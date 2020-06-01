@@ -180,6 +180,7 @@ private String roomName;
                             //set button color to greenb
                             if (positionCount == 0) {
                                 // old color #ff93e6b3
+                                // alternate1 (as of 2020-06-01) "#e5e5e5"
                                 buttonBook.setBackgroundColor(Color.parseColor("#e5e5e5"));
                                 buttonBookParams.width = displayWidth;
                                 buttonBook.setLayoutParams(buttonBookParams);
@@ -201,7 +202,8 @@ private String roomName;
                             //set button color to red and make nonclickable
                             if (positionCount == 0) {
                                 // old color #fffa7d89
-                                // alternate c1c1c1
+                                // alternate1 c1c1c1
+                                // alternate2 (as of 2020-06-01) "#b2b2b2"
                                 buttonBook.setBackgroundColor(Color.parseColor("#b2b2b2"));
                                 buttonBook.setClickable(false);
                                 buttonBookParams.width = displayWidth;

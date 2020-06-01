@@ -98,27 +98,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // handleSwipes();
         //init view elements and checks if there's a saved instance
         setViewElements(savedInstanceState);
-        ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
-
-        if(showAmountValues.showAmountList.size() == 0){
-            //show info toast
-            Toast toast = Toast.makeText(getApplicationContext(), "Swipe up/down to change room.", Toast.LENGTH_SHORT);
-            toast.show();
-
-            //wait 2s for second toast
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    Toast toast= Toast.makeText(getApplicationContext(),
-                            "Swipe sideways to\nchange selected day.", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER_VERTICAL|Gravity.RIGHT, 0, 0);
-                    toast.show();
-                }
-            }, 2000);
-        }
 
         ViewConfiguration vc = ViewConfiguration.get(this);
         //mSlop = vc.getScaledTouchSlop();
@@ -335,19 +314,20 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 final TextView textViewTitle = roomInfoDialog.findViewById(R.id.textRoomName);
                 final ImageView roomImage = roomInfoDialog.findViewById(R.id.imgRoom);
                 final TextView textViewViewInfo = roomInfoDialog.findViewById(R.id.textRoomInfo);
-
-                String svTitleText = "Välkommen till Rumsvyn";
-                String engTitleText = "Welcome to RoomView";
+                // Set's the text to the left instead of center which is in main.
+                textViewViewInfo.setGravity(Gravity.LEFT);
+                String svTitleText = "Rumsvyn";
+                String engTitleText = "RoomView";
 
                 String svViewInfo =
-                        "Swipe höger visar nästa dag" + "\n" +
-                        "Swipe vänster visar förgående dag" + "\n" +
+                        "Swipe höger visar nästa dag" + "\n" + "\n" +
+                        "Swipe vänster visar förgående dag" + "\n" + "\n" +
                         "Swipe upp/ner byter rum" + "\n" + "\n" +
                                 "Klick på datum öppnar kalendern " + "\n"+"\n"+
                                 "Klick på ledig tid öppnar inloggning till TimeEdit";
 
-                String engViewInfo = "Swipe right displays next day" + "\n" +
-                        "Swipe left displays previous day" + "\n" +
+                String engViewInfo = "Swipe right displays next day" + "\n" + "\n" +
+                        "Swipe left displays previous day" + "\n" + "\n" +
                         "Swipe up/down changes room" + "\n" + "\n" +
                         "Click on date opens the calendar " + "\n"+"\n"+
                         "Click on available time opens TimeEdit login ";

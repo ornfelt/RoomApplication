@@ -15,7 +15,6 @@
         android:layout_height="17dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="0.5dp"
-        android:background="#000000"
         android:gravity="right"
         android:textSize="13sp"
         android:paddingLeft="5dp" />
@@ -26,7 +25,6 @@
         android:layout_height="17dp"
         android:layout_below="@+id/buttonBook"
         android:layout_alignParentRight="true"
-        android:background="#000000"
         android:gravity="right"
         android:textSize="13sp"
         android:paddingLeft="5dp" />
@@ -38,9 +36,11 @@
         android:layout_alignParentLeft="true"
         android:elevation="100dp"
         android:textSize="13sp"
+        android:textColor="#393939"
         tools:text="XX:00-YY00"
         app:fontFamily="@font/arial"
-        android:layout_marginLeft="4dp"/>
+        android:layout_marginLeft="4dp"
+        android:alpha ="0.6"/>
 
     <TextView
         android:id="@+id/textHourBooking"

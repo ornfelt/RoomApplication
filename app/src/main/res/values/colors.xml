@@ -6,4 +6,5 @@
     <color name="colorGray">#e3e3e3 </color>
     <color name="uppsalaGray">#f2f2f2 </color>
     <color name="uppsalaRed">#a6192e</color>
+    <color name="pitchBlack">#000000</color>
 </resources>
