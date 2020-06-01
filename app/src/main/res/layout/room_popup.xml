@@ -64,6 +64,8 @@
                     android:src="@drawable/uu_logo_icon" />
 
                 <TextView
+                    android:textColor="#393939"
+                    android:fontFamily="@font/arial"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -72,7 +74,6 @@
                     android:text="Room information..."
                     android:textSize="14sp"
                     android:gravity="center" />
-
 
             </LinearLayout>
 

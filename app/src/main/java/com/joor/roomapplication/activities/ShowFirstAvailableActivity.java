@@ -308,8 +308,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                     showAmountValues.resetShowAmountList();
                     updateView();
                 } else{
-                    Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
-                    toast.show();
+                   // Toast toast = Toast.makeText(getApplicationContext(), "Can't go further back", Toast.LENGTH_SHORT);
+                   // toast.show();
                 }
             }
         });
