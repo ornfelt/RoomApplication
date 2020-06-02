@@ -6,6 +6,8 @@
     <string name="today">Idag</string>
     <string name="tomorrow">Imorgon</string>
     <string name="first_available">Första Lediga</string>
+    <string name="available">= Ledig</string>
+    <string name="not_available">= Bokad</string>
 
     <string-array name="grouprooms">
         <item>C11</item>

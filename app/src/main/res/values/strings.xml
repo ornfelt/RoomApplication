@@ -5,6 +5,8 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="first_available">First Available</string>
+    <string name="available">= Available</string>
+    <string name="not_available">= Not Available</string>
 
     <string-array name="grouprooms">
         <item>C11</item>
