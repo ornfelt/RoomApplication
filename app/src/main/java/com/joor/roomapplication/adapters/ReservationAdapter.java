@@ -176,7 +176,8 @@ private String roomName;
                         }
 
                         //if time slot is available
-                        if (reservation.getStartTime().equals("free") && endTimeMin != 45) {
+                        // && endTimeMin != 45
+                        if (reservation.getStartTime().equals("free")) {
                             //set button color to greenb
                             if (positionCount == 0) {
                                 // old color #ff93e6b3
