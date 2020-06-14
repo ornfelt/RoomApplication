@@ -72,7 +72,6 @@ public class BookingActivity extends AppCompatActivity {
         }
     }
 
-
     //when user navigates back
     @Override
     public void onBackPressed(){
@@ -83,5 +82,4 @@ public class BookingActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 }

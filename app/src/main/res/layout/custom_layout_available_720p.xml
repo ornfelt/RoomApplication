@@ -6,7 +6,7 @@
     android:id="@+id/timeElements"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryDark"
+    android:background="#393939"
     android:orientation="vertical">
 
     <Button
@@ -15,9 +15,12 @@
         android:layout_height="14dp"
         android:layout_alignParentRight="true"
         android:layout_marginTop="0.5dp"
+        android:background="#393939"
         android:gravity="center"
-        android:textSize="12sp"
-        android:paddingLeft="5dp" />
+        android:textSize="13sp"
+        android:paddingLeft="5dp"
+        android:textColor="#393939"
+        />
 
     <Button
         android:id="@+id/buttonBook2"
@@ -26,31 +29,36 @@
         android:layout_below="@+id/buttonBook"
         android:layout_alignParentRight="true"
         android:gravity="center"
-        android:textSize="12sp"
-        android:paddingLeft="5dp" />
+        android:textSize="13sp"
+        android:paddingLeft="5dp"
+        android:textColor="#393939"
+        android:background="#393939"/>
+
 
     <TextView
-        android:layout_marginTop ="0.5dp"
+        android:layout_marginTop ="1dp"
         android:textColor="#393939"
         android:id="@+id/textHour"
         android:layout_width="200dp"
         android:layout_height="28dp"
         android:layout_alignParentLeft="true"
         android:elevation="100dp"
-        android:textSize="12sp"
+        android:textSize="13sp"
+        app:fontFamily="@font/arial"
         tools:text="XX:00-YY00"
-        app:fontFamily="@font/arial"/>
+        android:layout_marginLeft="4dp"/>
 
     <TextView
-        android:layout_marginTop ="0.5dp"
+        android:layout_marginTop ="1dp"
         android:textColor="#393939"
         android:id="@+id/textHourBooking"
         android:layout_width="200dp"
         android:layout_height="28dp"
         android:elevation="100dp"
-        android:textSize="12sp"
-        tools:text="XX:00-YY00"
+        android:textSize="13sp"
         app:fontFamily="@font/arial"
-        />
+        tools:text="XX:00-YY00"
+        android:layout_marginLeft="4dp"/>
+
 
 </RelativeLayout>

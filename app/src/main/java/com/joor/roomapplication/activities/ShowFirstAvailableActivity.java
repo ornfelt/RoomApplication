@@ -517,14 +517,12 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         dateToday = formatter.format(date);
         timeNow = getCurrentTimeStamp();
         //test time
-        /*
         if(dayCount == 0) {
             timeNow = "10:45";
         }
-         */
 
         //if end of days schedule is reached, then look for next days availability
-        if(dayCount > 0 ){
+        if (dayCount > 0) {
             // get a calendar instance, which defaults to "now"
             Calendar calendar = Calendar.getInstance();
             // add one day to the date/calendar
@@ -540,7 +538,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
 
         addToDayCount(timeNow);
 
-        System.out.println("date and time before adjust: " + dateToday +", " + timeNow);
+        System.out.println("date and time before adjust: " + dateToday + ", " + timeNow);
         timeNow = adjustTimeStamp(timeNow);
         //date may change depending on adjusted time, so date text is set again here
         setDateTextView();
@@ -548,13 +546,13 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
         indexOfTimeNow = 0;
         System.out.println("dayCount: " + dayCount + ", dateToday: " + dateToday + ", adjusted timeNow: " + timeNow);
 
-        for (String s: daySchedule) {
-            if(s.equals(timeNow)){
-                if(showMoreAmount != 0 && showMoreAmount < daySchedule.size()){
+        for (String s : daySchedule) {
+            if (s.equals(timeNow)) {
+                if (showMoreAmount != 0 && showMoreAmount < daySchedule.size()) {
                     //when user clicks on right/left click, the view should show the next/previous set of available times
                     indexOfTimeNow = showMoreAmount;
                     isFirstResult = false;
-                }else {
+                } else {
                     System.out.println("indexOfTimeNow found at: " + indexOfTimeNow);
                     isFirstResult = true;
                     indexOfTimeNow = daySchedule.indexOf(s);
@@ -576,7 +574,7 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                             int reservationsSizeCap = 30;
                             //loop through every half hour to find free times (most likely won't loop through it all since it'll probably break before end)
                             mainloop:
-                            for(int t = indexOfTimeNow; t < daySchedule.size()-1; t++) {
+                            for (int t = indexOfTimeNow; t < daySchedule.size() - 1; t++) {
 
                                 //set string targetTime1: example: 08:15, and targetTime2: example: 08:30 etc...
                                 targetTime1 = daySchedule.get(t);
@@ -586,10 +584,10 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                         targetTime2 = daySchedule.get(t + 1);
                                     } else {
                                         //targetTime2 = null;
-                                        targetTime2 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                        targetTime2 = adjustTimeStamp(daySchedule.get(daySchedule.size() - 1));
                                         //update t
-                                        for (String s: daySchedule) {
-                                            if(s.equals(targetTime2)){
+                                        for (String s : daySchedule) {
+                                            if (s.equals(targetTime2)) {
                                                 t = daySchedule.indexOf(s);
                                             }
                                         }
@@ -599,10 +597,10 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                     if (t + 1 <= daySchedule.size() - 1) {
                                         targetTime3 = daySchedule.get(t + 1);
                                     } else {
-                                        targetTime3 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                        targetTime3 = adjustTimeStamp(daySchedule.get(daySchedule.size() - 1));
                                         //update t
-                                        for (String s: daySchedule) {
-                                            if(s.equals(targetTime2)){
+                                        for (String s : daySchedule) {
+                                            if (s.equals(targetTime2)) {
                                                 t = daySchedule.indexOf(s);
                                             }
                                         }
@@ -611,16 +609,16 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                     if (t + 1 <= daySchedule.size() - 1) {
                                         targetTime4 = daySchedule.get(t + 1);
                                     } else {
-                                        targetTime4 = adjustTimeStamp(daySchedule.get(daySchedule.size()-1));
+                                        targetTime4 = adjustTimeStamp(daySchedule.get(daySchedule.size() - 1));
                                         //update t
-                                        for (String s: daySchedule) {
-                                            if(s.equals(targetTime2)){
+                                        for (String s : daySchedule) {
+                                            if (s.equals(targetTime2)) {
                                                 t = daySchedule.indexOf(s);
                                             }
                                         }
                                     }
                                     t++;
-                                }catch(Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
@@ -644,8 +642,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                             //split based on quotation mark
                                             String[] roomNamesSplit = roomNames.split("\"");
                                             boolean roomFound = false;
-                                            for(String s : roomNamesSplit){
-                                                if(s.equals(room)){
+                                            for (String s : roomNamesSplit) {
+                                                if (s.equals(room)) {
                                                     roomFound = true;
                                                 }
                                             }
@@ -687,13 +685,13 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                     //loop through available times for a specific room to see if targeted times are free
                                     for (int i = 0; i < freeTimesList.size() - 1; i++) {
                                         //check target times and add to list if they are free
-                                        if (targetTime2 != null && targetTime1.equals(freeTimesList.get(i)) && targetTime2.equals(freeTimesList.get(i+1))) {
+                                        if (targetTime2 != null && targetTime1.equals(freeTimesList.get(i)) && targetTime2.equals(freeTimesList.get(i + 1))) {
                                             Reservation fillerReservation = new Reservation();
                                             fillerReservation.setStartTime(targetTime1);
                                             //add end time if there's a booking close to time (needed for recyclerview)
-                                            if(bookedStartTimes.size() > 0){
-                                                for (String time: bookedStartTimes) {
-                                                    if(isFirstTimeEarlier(targetTime2, time)){
+                                            if (bookedStartTimes.size() > 0) {
+                                                for (String time : bookedStartTimes) {
+                                                    if (isFirstTimeEarlier(targetTime2, time)) {
                                                         fillerReservation.setEndTime(time);
                                                         bookedStartTimes.remove(time);
                                                         break;
@@ -702,8 +700,8 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                             }
                                             //boolean to prevent bug where same room repeated
                                             boolean isNotSameAsLast = true;
-                                            if(reservations.size() > 1){
-                                                if(room.equals(reservations.get(reservations.size()-2).getName()[0])){
+                                            if (reservations.size() > 1) {
+                                                if (room.equals(reservations.get(reservations.size() - 2).getName()[0])) {
                                                     isNotSameAsLast = false;
                                                 }
                                             }
@@ -722,9 +720,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                                 Reservation fillerReservation2 = new Reservation();
                                                 fillerReservation2.setStartTime(targetTime3);
                                                 //add end time if there's a booking close to time (needed for recyclerview)
-                                                if(bookedStartTimes.size() > 0){
-                                                    for (String time: bookedStartTimes) {
-                                                        if(isFirstTimeEarlier(targetTime4, time)){
+                                                if (bookedStartTimes.size() > 0) {
+                                                    for (String time : bookedStartTimes) {
+                                                        if (isFirstTimeEarlier(targetTime4, time)) {
                                                             fillerReservation.setEndTime(time);
                                                             bookedStartTimes.remove(time);
                                                             break;
@@ -743,11 +741,11 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                         }
                                     }
                                 }
-                                if(reservations.size() >= reservationsSizeCap){
+                                if (reservations.size() >= reservationsSizeCap) {
                                     System.out.println("Breaking mainloop... dayShedule size: " + daySchedule.size());
-                                    showMoreAmount = t+1;
+                                    showMoreAmount = t + 1;
                                     //if all times have been looped
-                                    if(showMoreAmount >= daySchedule.size()-4){
+                                    if (showMoreAmount >= daySchedule.size() - 4) {
                                         adjustTimeStamp(daySchedule.get(showMoreAmount));
                                         showMoreAmount = 0;
                                         dayCount++;
@@ -757,13 +755,13 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
                                 }
                             }
                             //if all times in schedule has been checked, then set new day
-                            if(showMoreAmount > 0 && showMoreAmount >= daySchedule.size()-2){
+                            if (showMoreAmount > 0 && showMoreAmount >= daySchedule.size() - 2) {
                                 adjustTimeStamp(daySchedule.get(showMoreAmount));
                                 showMoreAmount = 0;
                                 dayCount++;
                                 dayCountWasAdded = true;
                             }
-                            if(showMoreAmount > 0 && targetTime4.equals(daySchedule.get(daySchedule.size()-2))){
+                            if (showMoreAmount > 0 && targetTime4.equals(daySchedule.get(daySchedule.size() - 2))) {
                                 adjustTimeStamp(daySchedule.get(showMoreAmount));
                                 showMoreAmount = 0;
                                 dayCount++;

@@ -176,8 +176,9 @@ private String roomName;
                         }
 
                         //if time slot is available
-                        if (reservation.getStartTime().equals("free") && endTimeMin != 45) {
-                            //set button color to greenb
+                        //old bug fix replace below with: if (reservation.getStartTime().equals("free") && endTimeMin != 45) {
+                        if (reservation.getStartTime().equals("free")) {
+                            //set button color to green
                             if (positionCount == 0) {
                                 // old color #ff93e6b3
                                 // alternate1 (as of 2020-06-01) "#e5e5e5"
@@ -315,6 +316,7 @@ private String roomName;
                         //don't set text if block is a reservation
                         if (!isMiddleReservation && reservations.get(position).getStartTime().equals("free")) {
                             textHour.setText(getTimeByPosition(position));
+                            System.out.println("1 textHour set to: " + textHour.getText());
                             textHour.setGravity(Gravity.CENTER_VERTICAL);
                             textHour.bringToFront();
                         }
@@ -334,6 +336,7 @@ private String roomName;
 
                             //set new text and move up
                             textHour.setText(timeSplit[0] + "-" + newHour);
+                            System.out.println("2 textHour set to: " + textHour.getText());
                             textHour.setGravity(15);
                             textHour.bringToFront();
                         }
@@ -353,6 +356,7 @@ private String roomName;
                             //set new text and move down
                             if(doSetText) {
                                 textHour.setText(newHour + "-" + timeSplit[1]);
+                                System.out.println("3 textHour set to: " + textHour.getText());
                                 textHour.setGravity(80);
                                 textHour.bringToFront();
                             }

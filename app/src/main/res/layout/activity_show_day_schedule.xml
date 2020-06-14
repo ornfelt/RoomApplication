@@ -74,14 +74,12 @@
         android:id="@+id/my_recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewNotAvailable" />
 
     <TextView
         android:id="@+id/date"
@@ -155,6 +153,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="2dp"
         android:tint="#B2B2B2"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewNotAvailable"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@drawable/square" />
@@ -169,7 +168,6 @@
         android:text="@string/not_available"
         android:textColor="#111111"
         android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
         app:layout_constraintStart_toEndOf="@+id/imageView6"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 

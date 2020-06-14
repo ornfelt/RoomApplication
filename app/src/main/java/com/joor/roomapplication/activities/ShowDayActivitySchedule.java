@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,11 +18,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +35,6 @@ import com.joor.roomapplication.R;
 import com.joor.roomapplication.adapters.ReservationAdapter;
 import com.joor.roomapplication.controllers.AppController;
 import com.joor.roomapplication.models.Reservation;
-import com.joor.roomapplication.utility.LoadImage;
-import com.joor.roomapplication.utility.RoomData;
 import com.joor.roomapplication.utility.ShowAmountValues;
 import com.joor.roomapplication.utility.TempValues;
 
@@ -115,7 +109,8 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Set up the adapter
         setAdapter();
         // Gets the availability for a specific room
-        getAvailability(changableDate);
+        //getAvailability(changableDate);
+        getAvailabilityFromClass(changableDate);
 
         displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int dWidth = displayMetrics.widthPixels;
@@ -157,9 +152,9 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             todaysDate.setLayoutParams(textDateParams);
 
             //this seems to fix for dHeight <= 1200
-            //ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-            //recyclerParams.topMargin = 100;
-            //recyclerView.setLayoutParams(recyclerParams);
+            ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+            recyclerParams.topMargin = 25;
+            recyclerView.setLayoutParams(recyclerParams);
         }else if (dHeight >= 1900){
             System.out.println("dHeight >= 1900 ");
             ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
@@ -205,7 +200,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         roomName.setText(room_name);
         //setDateTextView();
         safetyString = new String[]{"Backsippan", "C11", "C13", "C15", "Flundran", "Heden", "Rauken", "Myren", "Änget"};
-
 
         //reset utility list used in adapter
         TempValues tempValues = TempValues.getInstance();
@@ -354,6 +348,26 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         });
     }
 
+    private void getAvailabilityFromClass(final Date date){
+
+        //spelling fix for low level API's
+        if(room_name.toLowerCase().equals("änget")){
+            room_name = "anget";
+        }
+        //new request url to get data from specific room
+        String requestUrl = url + "room/" + room_name;
+
+        //change back to correct room name after requestUrl is set
+        if(room_name.equals("anget")){
+            room_name = "Änget";
+        }
+
+        //final Date date, String room_name, String url, Activity activity
+        DayActivityRequest requestClass = new DayActivityRequest(date, room_name, requestUrl, this);
+        requestClass.startRequest();
+    }
+
+    //old getAvailability
     private void getAvailability(final Date date) {
         //create list containing all times for a day
         final ArrayList<String> daySchedule = timeList();

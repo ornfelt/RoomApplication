@@ -1,4 +1,4 @@
-package com.joor.roomapplication.utility;
+package com.joor.roomapplication.data;
 
 import android.content.res.Resources;
 

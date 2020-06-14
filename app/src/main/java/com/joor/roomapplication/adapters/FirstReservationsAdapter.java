@@ -109,7 +109,7 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                 try {
                     if (position % 2 == 0) {
 
-                        //loops two times to get two reservation object for a specific hour
+                        //loops two times to get two reservation objects for a specific hour
                         for (int positionCount = 0; positionCount < 2; positionCount++) {
                             final Reservation reservation;
 
@@ -117,146 +117,150 @@ public class FirstReservationsAdapter extends RecyclerView.Adapter<FirstReservat
                             if (positionCount == 1 && reservations.size() == position + positionCount) {
                                 break;
                             }
-                            if(displayHeight >= 1900){
+                            if (displayHeight >= 1900) {
                                 ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                                 layoutParams.height = 93;
                                 convertView.setLayoutParams(layoutParams);
-                            }
-                            else if(displayHeight > 1770 && displayHeight <= 1785){
+                            } else if (displayHeight > 1770 && displayHeight <= 1785) {
                                 ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
                                 layoutParams.height = 86;
                                 convertView.setLayoutParams(layoutParams);
+                            } else if (displayHeight > 1200) {
+                                ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
+                                layoutParams.height = 86;
+                                convertView.setLayoutParams(layoutParams);
+
+                            } else if (displayHeight < 1200) {
                             }
 
-                        else if(displayHeight > 1200){
-                            ViewGroup.LayoutParams layoutParams = convertView.getLayoutParams();
-                            layoutParams.height = 86;
-                            convertView.setLayoutParams(layoutParams);
-
-                        }
-                        else if(displayHeight < 1200){
-                        }
-
-                        //in case list limit is reached
-                        if (positionCount == 1 && reservations.size() == position + positionCount) {
-                            break;
-                        }
+                            //in case list limit is reached
+                            if (positionCount == 1 && reservations.size() == position + positionCount) {
+                                break;
+                            }
 
                             //get reservation object
                             reservation = reservations.get(position + positionCount);
+                            if (!reservation.getStartTime().equals("19:45")) {
 
-                            //set button color to green
-                            if (positionCount == 0) {
-                                buttonBook.setBackgroundColor(Color.parseColor("#e5e5e5"));
-                                ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
-                                buttonBookParams.width = displayWidth;
-                                buttonBook.setLayoutParams(buttonBookParams);
-                                if (position > 0 && !reservation.getName().equals(reservations.get(position - 1).getName()) &&
-                                        !lastRoomName.equals(reservation.getName()[0])) {
-                                    buttonBook.setText(reservation.getName()[0]);
-                                    buttonBook.bringToFront();
-                                    lastRoomName = reservation.getName()[0];
-                                } else if (position == 0) {
-                                    buttonBook.setText(reservation.getName()[0]);
-                                    buttonBook.bringToFront();
-                                }
-                            } else {
-                                buttonBook2.setBackgroundColor(Color.parseColor("#e5e5e5"));
-                                ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
-                                buttonBook2Params.width = displayWidth;
-                                buttonBook2.setLayoutParams(buttonBook2Params);
-                                //only set text for second block if it's not the same as first room name
-                                if (!buttonBook.getText().equals(reservation.getName()[0])) {
-                                    buttonBook2.setText(reservation.getName()[0]);
-                                    buttonBook2.bringToFront();
-                                    //also add border to separate
-                                    ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook2.getLayoutParams();
-                                    if(displayHeight <= 1200){
-                                        buttonMargin.topMargin = 1;
-                                    }else {
-                                        buttonMargin.topMargin = 2;
+                                //set button color
+                                if (positionCount == 0) {
+                                    buttonBook.setBackgroundColor(Color.parseColor("#e5e5e5"));
+                                    ViewGroup.LayoutParams buttonBookParams = buttonBook.getLayoutParams();
+                                    buttonBookParams.width = displayWidth;
+                                    buttonBook.setLayoutParams(buttonBookParams);
+                                    if (position > 0 && !reservation.getName().equals(reservations.get(position - 1).getName()) &&
+                                            !lastRoomName.equals(reservation.getName()[0])) {
+                                        buttonBook.setText(reservation.getName()[0]);
+                                        buttonBook.bringToFront();
+                                        lastRoomName = reservation.getName()[0];
+                                    } else if (position == 0) {
+                                        buttonBook.setText(reservation.getName()[0]);
+                                        buttonBook.bringToFront();
                                     }
-                                    buttonBook2.setLayoutParams(buttonMargin);
-                                    //set text for next block
+                                } else {
+                                    buttonBook2.setBackgroundColor(Color.parseColor("#e5e5e5"));
+                                    ViewGroup.LayoutParams buttonBook2Params = buttonBook2.getLayoutParams();
+                                    buttonBook2Params.width = displayWidth;
+                                    buttonBook2.setLayoutParams(buttonBook2Params);
+                                    //only set text for second block if it's not the same as first room name
+                                    if (!buttonBook.getText().equals(reservation.getName()[0])) {
+                                        buttonBook2.setText(reservation.getName()[0]);
+                                        buttonBook2.bringToFront();
+                                        //also add border to separate
+                                        ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook2.getLayoutParams();
+                                        if (displayHeight <= 1200) {
+                                            buttonMargin.topMargin = 1;
+                                        } else {
+                                            buttonMargin.topMargin = 2;
+                                        }
+                                        buttonBook2.setLayoutParams(buttonMargin);
+                                        //set text for next block
+                                        if (position + 1 != reservations.size()) {
+                                            if (reservations.get(position + 1).getEndTime() != null) {
+                                                if (isFirstTimeEarlier(getTimePlusOneHour(reservations.get(position + 1).getStartTime()),
+                                                        reservations.get(position + 1).getEndTime())) {
+                                                    textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
+                                                            getTimePlusOneHour(reservations.get(position + 1).getStartTime()));
+                                                } else {
+                                                    textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
+                                                            reservations.get(position + 1).getEndTime());
+                                                }
+                                                textHourBooking.bringToFront();
+                                                textHourBooking.setGravity(Gravity.BOTTOM);
+                                            } else {
+                                                textHourBooking.setText(reservations.get(position - 1).getStartTime()
+                                                        + "-" + getTimePlusOneHour(reservations.get(position - 1).getStartTime()));
+                                                textHourBooking.bringToFront();
+                                                textHourBooking.setGravity(Gravity.BOTTOM);
+                                            }
+                                        }
+                                    }
+                                }
+                                if (position > 0 && positionCount == 0 && reservations.get(position - 1).getName()[0].equals(reservation.getName()[0])) {
+                                    //if last reservation is same room as current, then remove margin from top
+                                    ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook.getLayoutParams();
+                                    buttonMargin.topMargin = 0;
+                                    buttonBook.setLayoutParams(buttonMargin);
+                                }
+                                //if reservation object and next is the same room, then the room is available for an entire hour
+                                if (positionCount == 0 && position + 1 != reservations.size() &&
+                                        reservation.getName()[0].equals(reservations.get(position + 1).getName()[0])) {
+
+                                    //check that last reservation object does NOT have the same room as current reservation
+                                    if (position > 0 && !reservations.get(position - 1).getName()[0].equals(reservation.getName()[0])) {
+                                        //set text to show that room is available for an hour
+                                        textHour.setText(reservation.getStartTime() + "-" + getTimePlusOneHour(reservation.getStartTime()));
+                                        textHour.bringToFront();
+                                        //remove second textview
+                                    } else if (position == 0) {
+                                        textHour.setText(reservation.getStartTime() + "-" + getTimePlusOneHour(reservation.getStartTime()));
+                                        textHour.bringToFront();
+                                        //remove second textview
+                                    }
+                                }
+
+                                //else means two texts should be set
+                                else if (positionCount == 0) {
+                                    if (reservation.getEndTime() != null) {
+                                        textHour.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
+                                        textHour.bringToFront();
+                                    }
                                     if (position + 1 != reservations.size()) {
                                         if (reservations.get(position + 1).getEndTime() != null) {
-                                            if(isFirstTimeEarlier(getTimePlusOneHour(reservations.get(position + 1).getStartTime()),
-                                                    reservations.get(position + 1).getEndTime())){
+                                            if (isFirstTimeEarlier(getTimePlusOneHour(reservations.get(position + 1).getStartTime()),
+                                                    reservations.get(position + 1).getEndTime())) {
                                                 textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
                                                         getTimePlusOneHour(reservations.get(position + 1).getStartTime()));
-                                            }else {
+                                            } else {
                                                 textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
                                                         reservations.get(position + 1).getEndTime());
                                             }
                                             textHourBooking.bringToFront();
                                             textHourBooking.setGravity(Gravity.BOTTOM);
-                                        } else {
-                                            textHourBooking.setText(reservations.get(position - 1).getStartTime()
-                                                    + "-" + getTimePlusOneHour(reservations.get(position - 1).getStartTime()));
-                                            textHourBooking.bringToFront();
-                                            textHourBooking.setGravity(Gravity.BOTTOM);
                                         }
                                     }
-                                }
-                            }
-                            if (position > 0 && positionCount == 0 && reservations.get(position - 1).getName()[0].equals(reservation.getName()[0])) {
-                                //if last reservation is same room as current, then remove margin from top
-                                ViewGroup.MarginLayoutParams buttonMargin = (ViewGroup.MarginLayoutParams) buttonBook.getLayoutParams();
-                                buttonMargin.topMargin = 0;
-                                buttonBook.setLayoutParams(buttonMargin);
-                            }
-                            //if reservation object and next is the same room, then the room is available for an entire hour
-                            if (positionCount == 0 && position + 1 != reservations.size() &&
-                                    reservation.getName()[0].equals(reservations.get(position + 1).getName()[0])) {
-
-                                //check that last reservation object does NOT have the same room as current reservation
-                                if (position > 0 && !reservations.get(position - 1).getName()[0].equals(reservation.getName()[0])) {
-                                    //set text to show that room is available for an hour
-                                    textHour.setText(reservation.getStartTime() + "-" + getTimePlusOneHour(reservation.getStartTime()));
-                                    textHour.bringToFront();
-                                    //remove second textview
-                                } else if (position == 0) {
-                                    textHour.setText(reservation.getStartTime() + "-" + getTimePlusOneHour(reservation.getStartTime()));
-                                    textHour.bringToFront();
-                                    //remove second textview
-                                }
-                            }
-
-                            //else means two texts should be set
-                            else if (positionCount == 0) {
-                                if (reservation.getEndTime() != null) {
-                                    textHour.setText(reservation.getStartTime() + "-" + reservation.getEndTime());
-                                    textHour.bringToFront();
-                                }
-                                if (position + 1 != reservations.size()) {
-                                    if (reservations.get(position + 1).getEndTime() != null) {
-                                        if(isFirstTimeEarlier(getTimePlusOneHour(reservations.get(position + 1).getStartTime()),
-                                                reservations.get(position + 1).getEndTime())){
-                                            textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
-                                                    getTimePlusOneHour(reservations.get(position + 1).getStartTime()));
-                                        }else {
-                                            textHourBooking.setText(reservations.get(position + 1).getStartTime() + "-" +
-                                                    reservations.get(position + 1).getEndTime());
-                                        }
+                                    //fix for cases where no text is set
+                                    if (position > 0 && textHour.getText().equals("") && textHourBooking.getText().equals("")) {
+                                        textHourBooking.setText(reservations.get(position - 1).getStartTime()
+                                                + "-" + getTimePlusOneHour(reservations.get(position - 1).getStartTime()));
+                                        textHourBooking.bringToFront();
+                                        textHourBooking.setGravity(Gravity.BOTTOM);
+                                    } else if (position > 0 && textHour.getText().equals(null) && textHourBooking.getText().equals(null)) {
+                                        textHourBooking.setText(reservations.get(position - 1).getStartTime()
+                                                + "-" + getTimePlusOneHour(reservations.get(position - 1).getStartTime()));
                                         textHourBooking.bringToFront();
                                         textHourBooking.setGravity(Gravity.BOTTOM);
                                     }
                                 }
-                                //fix for cases where no text is set
-                                if (position > 0 && textHour.getText().equals("") && textHourBooking.getText().equals("")) {
-                                    textHourBooking.setText(reservations.get(position - 1).getStartTime()
-                                            + "-" + getTimePlusOneHour(reservations.get(position - 1).getStartTime()));
-                                    textHourBooking.bringToFront();
-                                    textHourBooking.setGravity(Gravity.BOTTOM);
-                                } else if (position > 0 && textHour.getText().equals(null) && textHourBooking.getText().equals(null)) {
-                                    textHourBooking.setText(reservations.get(position - 1).getStartTime()
-                                            + "-" + getTimePlusOneHour(reservations.get(position - 1).getStartTime()));
-                                    textHourBooking.bringToFront();
-                                    textHourBooking.setGravity(Gravity.BOTTOM);
-                                }
+                            }else{
+                                ViewGroup layout = (ViewGroup) textHour.getParent();
+                                layout.removeView(textHour);
+                                layout.removeView(buttonBook);
+                                layout.removeView(buttonBook2);
+                                ViewGroup layout2 = (ViewGroup) textHourBooking.getParent();
+                                layout2.removeView(textHourBooking);
                             }
                         }
-
                     } else {
                         //if position is an odd number, remove view elements
                         ViewGroup layout = (ViewGroup) textHour.getParent();

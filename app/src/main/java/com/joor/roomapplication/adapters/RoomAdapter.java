@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.joor.roomapplication.R;
 import com.joor.roomapplication.interfaces.RecyclerClickInterface;
 import com.joor.roomapplication.utility.LoadImage;
-import com.joor.roomapplication.utility.RoomData;
+import com.joor.roomapplication.data.RoomData;
 
 import java.util.ArrayList;
 

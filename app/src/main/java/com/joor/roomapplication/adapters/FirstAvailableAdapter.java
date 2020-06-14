@@ -133,7 +133,6 @@ import java.util.List;
                                 layoutParams.height = 98;
                                 convertView.setLayoutParams(layoutParams);
                             }
-
                         }
                         //else means the reservation is booked
                         else {
