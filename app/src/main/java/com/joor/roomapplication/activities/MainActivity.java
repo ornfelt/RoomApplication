@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -189,16 +190,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
 
                             // In case some rooms has no reservation, the values need to be set accordingly to the safetyString
                             // However, if the API share's the roomnames without depending on reservations this if case can be removed.
-                           /*
+
                             if(!Arrays.asList(safetyString).equals(roomNames))
                             {
                                 roomNames.clear();
                                 roomNames.addAll(Arrays.asList(safetyString));
                             }
-                            */
+
                             Collections.sort(roomNames);
-                            // Spinner values is now fetched roomNames
-                           // setSpinner(roomNames);
 
                             fillList();
 

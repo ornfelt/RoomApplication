@@ -128,7 +128,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
-    private void scaleAccordingToResolution(){
+    private void scaleAccordingToResolution() {
 
         //get display width and height
         displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
@@ -142,7 +142,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         System.out.println("Usable width in this activity: " + screenWidthDp + ", usable height: " + screenHeightDp);
 
         //this should fix layout for devices with similar resolution as Galaxy Nexus (720p)
-        if(dHeight <= 1200) {
+        if (dHeight <= 1200) {
             System.out.println("dHeight <= 1200 ");
             ViewGroup.MarginLayoutParams textRoomParams = (ViewGroup.MarginLayoutParams) roomName.getLayoutParams();
             //textRoomParams.topMargin = 5;
@@ -156,6 +156,10 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             recyclerParams.topMargin = 25;
             recyclerView.setLayoutParams(recyclerParams);
         }else if (dHeight >= 1900){
+            //ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+            //recyclerParams.topMargin = 100;
+            //recyclerView.setLayoutParams(recyclerParams);
+        } else if (dHeight >= 1900) {
             System.out.println("dHeight >= 1900 ");
             ViewGroup.MarginLayoutParams recyclerParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
             recyclerParams.topMargin = 70;
@@ -199,7 +203,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         dayofweek = (TextView) findViewById(R.id.dayofweek);
         roomName.setText(room_name);
         //setDateTextView();
-        safetyString = new String[]{"Backsippan", "C11", "C13", "C15", "Flundran", "Heden", "Rauken", "Myren", "Änget"};
+        safetyString = new String[]{"Backsippan", "C11", "C13", "C15", "Flundran", "Heden", "Myren", "Rauken", "Änget"};
 
         //reset utility list used in adapter
         TempValues tempValues = TempValues.getInstance();
@@ -270,14 +274,14 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         datePicked = false;
 
         // Used to only be able to check availability for 252, i.e. 36 weeks
-        Calendar maxCalendar= constantCalendar;
+        Calendar maxCalendar = constantCalendar;
         maxCalendar.add(Calendar.DATE, 252);
         maxDate = maxCalendar.getTime();
     }
 
     private void setAdapter() {
         //creates RecycleAdapter and sets it
-        adapter = new ReservationAdapter(this, reservations,room_name);
+        adapter = new ReservationAdapter(this, reservations, room_name);
         recyclerView.setAdapter(adapter);
     }
 
@@ -315,15 +319,15 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
                 String svViewInfo =
                         "Swipe höger visar nästa dag" + "\n" + "\n" +
-                        "Swipe vänster visar förgående dag" + "\n" + "\n" +
-                        "Swipe upp/ner byter rum" + "\n" + "\n" +
-                                "Klick på datum öppnar kalendern " + "\n"+"\n"+
+                                "Swipe vänster visar förgående dag" + "\n" + "\n" +
+                                "Swipe upp/ner byter rum" + "\n" + "\n" +
+                                "Klick på datum öppnar kalendern " + "\n" + "\n" +
                                 "Klick på ledig tid öppnar inloggning till TimeEdit";
 
                 String engViewInfo = "Swipe right displays next day" + "\n" + "\n" +
                         "Swipe left displays previous day" + "\n" + "\n" +
                         "Swipe up/down changes room" + "\n" + "\n" +
-                        "Click on date opens the calendar " + "\n"+"\n"+
+                        "Click on date opens the calendar " + "\n" + "\n" +
                         "Click on available time opens TimeEdit login ";
 
                 String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
@@ -373,14 +377,14 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         final ArrayList<String> daySchedule = timeList();
 
         //spelling fix for low level API's
-        if(room_name.toLowerCase().equals("änget")){
+        if (room_name.toLowerCase().equals("änget")) {
             room_name = "anget";
         }
         //new request url to get data from specific room
         String requestUrl = url + "room/" + room_name;
 
         //change back to correct room name after requestUrl is set
-        if(room_name.equals("anget")){
+        if (room_name.equals("anget")) {
             room_name = "Änget";
         }
         System.out.println("requestUrl: " + requestUrl);
@@ -580,20 +584,20 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
 
         String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
         int dayNumber = changableCalendar.get(Calendar.DAY_OF_WEEK);
-        String[] swedishDays = new String[] { "Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag" };
-        String[] englishDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
-        String weekday ="";
-        if (language.equals("sv_SE")){
-            //weekday = swedishDays[dayNumber-1];
-            dayofweek.setText(swedishDays[dayNumber-1]);
+        String[] swedishDays = new String[]{"Söndag", "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag", "Lördag"};
+        String[] englishDays = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+        if (language.equals("sv_SE")) {
+            dayofweek.setText(swedishDays[dayNumber - 1]);
+        } else {
+            dayofweek.setText(englishDays[dayNumber - 1]);
         }
-        else{dayofweek.setText(englishDays[dayNumber-1]);}
 
         if (dateToday.equals(selectedDate)) {
             String today = getResources().getString(R.string.today);
             todaysDate.setText(today);
         } else if (selectedDate.equals(dateTomorrow)) {
-            String tomorrow= getResources().getString(R.string.tomorrow);
+            String tomorrow = getResources().getString(R.string.tomorrow);
             todaysDate.setText(tomorrow);
         } else
             todaysDate.setText(selectedDate);
@@ -611,7 +615,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         Bundle extras = new Bundle();
         System.out.println("UpdateView date is " + selectedDate);
         ShowAmountValues showAmountValues = ShowAmountValues.getInstance();
-        if(showAmountValues.showAmountList.size() == 0){
+        if (showAmountValues.showAmountList.size() == 0) {
             showAmountValues.showAmountList.add(0);
         }
 
@@ -622,8 +626,7 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         // Hides the transition between intents
         finish();
         startActivity(i);
-        overridePendingTransition(0,0);
-        //overridePendingTransition(0, 0);
+        overridePendingTransition(0, 0);
     }
 
     private void dateForward() {
@@ -637,11 +640,12 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
         } else {
             changableCalendar.add(Calendar.DATE, 1);
             clickedDate = changableCalendar.getTime();
-            if(clickedDate.after(maxDate)){
+            if (clickedDate.after(maxDate)) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Can't go further", Toast.LENGTH_SHORT);
                 toast.show();
                 clickedDate = maxDate;
-            }}
+            }
+        }
 
         selectedDate = formatter.format(clickedDate);
         updateView();
@@ -689,7 +693,6 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
             case MotionEvent.ACTION_DOWN:
                 x1 = event.getX();
                 y1 = event.getY();
-                //mSwiping = false;
                 break;
             case MotionEvent.ACTION_UP:
                 x2 = event.getX();
@@ -699,77 +702,75 @@ public class ShowDayActivitySchedule extends AppCompatActivity {
                 float valueY = y2 - y1;
 
                 if (Math.abs(valueX) > MIN_DISTANCE) {
-                    //detect left to right swipe
-                    if (x2 > x1) {
-                        //Toast.makeText(this, "Right is swiped", Toast.LENGTH_SHORT).show();
-                        String direction = "Right";
-                        Log.d(TAG, "Right Swipe");
-                        dateBackward();
-
-                        // After swipe is detected, consumes action
-                        // Which means in this case, the recycler won't be clicked after a swipe.
-                        return true;
-                    } else {// detect right to left swipe}
-                        //Toast.makeText(this, "Left is swiped", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Left Swipe");
-                        // After swipe is detected, consumes action
-                        // Which means in this case, the recycler won't be clicked after a swipe
-                        String direction = "Left";
-                        dateForward();
-
-                        return true;
-                    }
+                    // Detects swipes vertical movement and changes view/date according to movement
+                    checkHorizontal(x1, x2);
+                    // After swipe is detected, consumes action
+                    // Which means in this case, the recycler won't be clicked after a swipe
+                    return true;
                 }
 
                 if (Math.abs(valueY) > MIN_DISTANCE) {
-                    // detect top to bottom swipe
-                    if (y2 > y1) {
-                        Log.d(TAG, "Bottom Swipe");
-                        String direction = "down";
-                        // Changes Room/ & activity with down swipe
-                        for (int i = 0; i < safetyString.length; i++) {
-                            if (safetyString[i].equals(room_name)) {
-                                System.out.println("Matchning på " + room_name + " vid position " + i);
-                                // if match on last position -> go to first (since update is +1)
-                                if ((safetyString[safetyString.length - 1].equals(room_name))) {
-                                    updateViewName(safetyString[0]);
-
-                                    return true;
-                                }
-                                // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                updateViewName(safetyString[i + 1]);
-                                return true;
-                            }
-                        }
-                    }
-
-                    // detect bottom to to top swipe
-                    else {// detect right to left swipe}
-                        Log.d(TAG, "Top Swipe");
-                        String direction = "up";
-                        // Changes Room/ & activity with up swipe
-                        for (int i = 0; i < safetyString.length; i++) {
-                            if (safetyString[i].equals(room_name)) {
-                                System.out.println("Matchning på " + room_name + " vid position " + i);
-                                // if match on first position -> go to last position
-                                if (safetyString[0].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 1]);
-                                    return true;
-                                }
-                                // if match on last position -> go to second last position
-                                else if (safetyString[safetyString.length - 1].equals(room_name)) {
-                                    updateViewName(safetyString[safetyString.length - 2]);
-                                    return true;
-                                } else
-
-                                    // System.out.println("Nästa namn är"+ safetyString[i+1]);
-                                    updateViewName(safetyString[i - 1]);
-                                return true;
-                            }
-                        }
-                    }
+                    checkVertical(y1, y2);
+                    return true;
                 }
         }
         return super.dispatchTouchEvent(event);
+    }
+
+    private void checkHorizontal(float x1, float x2) {
+        if (x2 > x1) {
+            Log.d(TAG, "Right Swipe");
+            dateBackward();
+
+        } else {// detect right to left swipe}
+            Log.d(TAG, "Left Swipe");
+            dateForward();
+
+        }
+
+    }
+
+    private void checkVertical(float y1, float y2) {
+        // Detect top to bottom swipe
+        if (y2 > y1) {
+            Log.d(TAG, "Bottom Swipe");
+
+            // Changes Room/ & activity with down swipe
+            for (int i = 0; i < safetyString.length; i++) {
+                if (safetyString[i].equals(room_name)) {
+                    System.out.println("Matchning på " + room_name + " vid position " + i);
+                    // if match on last position -> go to first (since update is +1)
+                    if ((safetyString[safetyString.length - 1].equals(room_name))) {
+                        updateViewName(safetyString[0]);
+                        // Else just add position +1
+                    } else {
+                        updateViewName(safetyString[i + 1]);
+                    }
+                }
+            }
+        }
+
+        // Detect bottom to top swipe
+        else {
+            Log.d(TAG, "Top Swipe");
+            // Changes Room/ & activity with up swipe
+            for (int i = 0; i < safetyString.length; i++) {
+                if (safetyString[i].equals(room_name)) {
+                    System.out.println("Matchning på " + room_name + " vid position " + i);
+                    // if match on first position -> go to last position
+                    if (safetyString[0].equals(room_name)) {
+                        updateViewName(safetyString[safetyString.length - 1]);
+                    }
+                    // if match on last position -> go to second last position
+                    else if (safetyString[safetyString.length - 1].equals(room_name)) {
+                        updateViewName(safetyString[safetyString.length - 2]);
+
+                    } else
+                        updateViewName(safetyString[i - 1]);
+
+                }
+            }
+        }
+
     }
 }

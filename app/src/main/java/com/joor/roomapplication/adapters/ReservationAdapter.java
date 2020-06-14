@@ -49,12 +49,12 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
 
     private Activity activity;
     private LayoutInflater inflater;
-   // private GestureDetector gestureDetector;
+    // private GestureDetector gestureDetector;
     private List<Reservation> reservations;
     ImageLoader imageLoader = AppController.getmInstance().getmImageLoader();
     View convertView;
     DisplayMetrics displayMetrics;
-private String roomName;
+    private String roomName;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -453,7 +453,7 @@ private String roomName;
         return time;
     }
 
-    }
+}
 
 
 

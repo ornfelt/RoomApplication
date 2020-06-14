@@ -32,7 +32,8 @@
         android:textSize="15sp"
         android:paddingLeft="5dp"
         android:textColor="#393939"
-       android:background="#393939"/>
+       android:background="#393939"
+        />
 
 
     <TextView
