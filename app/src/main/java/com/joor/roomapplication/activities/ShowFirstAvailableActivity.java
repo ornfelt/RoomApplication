@@ -562,6 +562,9 @@ public class ShowFirstAvailableActivity extends AppCompatActivity {
             }
         }
 
+        //clear cache before request
+        AppController.getmInstance().getmRequestQueue().getCache().clear();
+
         //String requestUrl = url + "room/" + room;
         String requestUrl = url;
         System.out.println("requestUrl: " + requestUrl);

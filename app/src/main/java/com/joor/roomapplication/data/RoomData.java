@@ -62,27 +62,27 @@ public class RoomData {
 
         String language = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0).toString();
 
-if (language.equals("sv_SE")){
-        if (name.toLowerCase().equals("änget")) {
-            return name + " har " + roomSizeAnget + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("backsippan")) {
-            return name + " har " + roomSizeBacksippan + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("c11")) {
-            return name + " har " + roomSizeC11 + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("c13")) {
-            return name + " har " + roomSizeC13 + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("c15")) {
-            return name + " har " + roomSizeC15 + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("flundran")) {
-            return name + " har " + roomSizeFlundran + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("heden")) {
-            return name + " har " + roomSizeHeden + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("myren")) {
-            return name + " har " + roomSizeMyren + " platser. " + name + swedishTemplate;
-        } else if (name.toLowerCase().equals("rauken")) {
-            return name + " har " + roomSizeRauken + " platser. " + name + swedishTemplate;
-        }
-        return name;
+        if (language.equals("sv_SE")){
+            if (name.toLowerCase().equals("änget")) {
+                return name + " har " + roomSizeAnget + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("backsippan")) {
+                return name + " har " + roomSizeBacksippan + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("c11")) {
+                return name + " har " + roomSizeC11 + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("c13")) {
+                return name + " har " + roomSizeC13 + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("c15")) {
+                return name + " har " + roomSizeC15 + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("flundran")) {
+                return name + " har " + roomSizeFlundran + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("heden")) {
+                return name + " har " + roomSizeHeden + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("myren")) {
+                return name + " har " + roomSizeMyren + " platser. " + name + swedishTemplate;
+            } else if (name.toLowerCase().equals("rauken")) {
+                return name + " har " + roomSizeRauken + " platser. " + name + swedishTemplate;
+            }
+            return name;
     }
 else
 
@@ -108,4 +108,28 @@ if (name.toLowerCase().equals("änget")) {
         return name;
     }
 
+    public String getObjectNameByRoomName(String name){
+        String objectName = "";
+
+        if (name.toLowerCase().equals("änget")) {
+            objectName = "2547822.212";
+        } else if (name.toLowerCase().equals("backsippan")) {
+            objectName = "2547823.212";
+        } else if (name.toLowerCase().equals("c11")) {
+            objectName = "2547815.212";
+        } else if (name.toLowerCase().equals("c13")) {
+            objectName = "2547817.212";
+        } else if (name.toLowerCase().equals("c15")) {
+            objectName = "2547818.212";
+        } else if (name.toLowerCase().equals("flundran")) {
+            objectName = "2547820.212";
+        } else if (name.toLowerCase().equals("heden")) {
+            objectName = "3654145.212";
+        } else if (name.toLowerCase().equals("myren")) {
+            objectName = "3654146.212";
+        } else if (name.toLowerCase().equals("rauken")) {
+            objectName = "2547821.212";
+        }
+        return objectName;
+    }
 }

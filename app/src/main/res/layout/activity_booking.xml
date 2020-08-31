@@ -37,4 +37,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewCover"
+        android:layout_width="300dp"
+        android:layout_height="500dp"
+        android:elevation="1dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/web_view"
+        app:layout_constraintEnd_toEndOf="@+id/web_view"
+        app:layout_constraintStart_toStartOf="@+id/web_view"
+        app:layout_constraintTop_toTopOf="@+id/web_view"
+        app:srcCompat="@drawable/please"
+        android:translationZ="90dp"
+        tools:visibility="invisible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,6 +55,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
     View convertView;
     DisplayMetrics displayMetrics;
     private String roomName;
+    private String bookingDate;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -130,6 +131,7 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                 if(position > 2 && getTimeByPosition(position-2).equals("19:00-20:00")){
                     //remove elements
                     allElementsShown = true;
+                    doSetText = false;
                 }
 
                 if (position % 2 == 0 && !allElementsShown) {
@@ -279,8 +281,14 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             if (timeStepToStart == 0 && reservations.get(position + positionCount - timeStepToStart).getEndTime() != null) {
                                 //then set text
                                 textHourBooking.setEnabled(true);
-                                textHourBooking.setText(reservations.get(position + positionCount - timeStepToStart).getStartTime() +
-                                        "-" + reservations.get(position + positionCount - timeStepToStart).getEndTime());
+                                    textHourBooking.setText(reservations.get(position + positionCount - timeStepToStart).getStartTime() +
+                                            "-" + reservations.get(position + positionCount - timeStepToStart).getEndTime());
+
+                                //this if fixes a problem where the last block displayed text when it shouldnt have
+                                if(reservations.get(position + positionCount - timeStepToStart).getStartTime().equals("19:30") &&
+                                        reservations.get(position + positionCount - timeStepToStart).getEndTime().equals("20:00")) {
+                                    textHourBooking.setText("");
+                                }
                                 //save endtime value
                                 tempValues = TempValues.getInstance();
                                 //reset list if value already exists
@@ -383,6 +391,8 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                                     BookingActivity.class);
                             intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
                             intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, roomName);
+                            bookingDate = reservations.get(0).getStartDate();
+                            intent.putExtra(BookingActivity.RESERVATION_DATE, bookingDate);
                             activity.startActivity(intent);
 
                         }
@@ -395,8 +405,10 @@ public class ReservationAdapter extends RecyclerView.Adapter<ReservationAdapter.
                             //navigate to booking view
                             Intent intent = new Intent(activity,
                                     BookingActivity.class);
-                            intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText());
+                            intent.putExtra(BookingActivity.INTENT_MESSAGE_KEY, textHour.getText() + "30");
                             intent.putExtra(BookingActivity.RESERVATION_ROOM_NAME, roomName);
+                            bookingDate = reservations.get(0).getStartDate();
+                            intent.putExtra(BookingActivity.RESERVATION_DATE, bookingDate);
                             activity.startActivity(intent);
 
                         }
