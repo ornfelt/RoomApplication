@@ -108,14 +108,19 @@
         app:layout_constraintEnd_toEndOf="parent" />
         -->
 
-    <ImageButton
-        android:id="@+id/imageButton4"
+
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#E5E5E5"
+        android:layout_height="24dp"
+        android:alpha="0.8"
+        android:background="#FFFFFF"
+        android:drawableRight="@drawable/feedback"
+        android:drawablePadding="2dp"
         android:onClick="sendFeedback"
+        android:text="Feedback"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/titletTxtView"
-        app:srcCompat="@drawable/feedback" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
