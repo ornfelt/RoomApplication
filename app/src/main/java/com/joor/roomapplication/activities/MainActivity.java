@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -19,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -50,6 +52,7 @@ import static com.joor.roomapplication.activities.ShowFirstAvailableActivity.VAL
 
 public class MainActivity extends AppCompatActivity implements RecyclerClickInterface {
     private String dateToday;
+    String email;
     private Spinner roomNameText;
     private RecyclerView recyclerView;
     private ArrayList <String> roomNames;
@@ -75,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
         int actionBarHeight = getResources().getDimensionPixelSize(tv.resourceId);
         Button btn = findViewById(R.id.buttonShowFirst);
         btn.setHeight(actionBarHeight);
+        email = "devdajo@gmail.com";
     }
 
     private void setDate() {
@@ -236,5 +240,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerClickInte
     public void onItemClick(int position) {
         String roomName = roomNames.get(position);
         navigateToShowDayActivitySchedule(roomName);
+    }
+
+    public void sendFeedback(android.view.View View){
+        Intent intent = new Intent (Intent.ACTION_SENDTO);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+        intent.setData(Uri.parse("mailto:"));
+
+        if(intent.resolveActivity(getPackageManager()) !=null){
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(MainActivity.this, "There is no application that supports this action", Toast.LENGTH_SHORT).show();
+        }
     }
 }

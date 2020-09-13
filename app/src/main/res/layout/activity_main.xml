@@ -95,4 +95,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top" />
+
+    <Button
+        android:id="@+id/buttonFeedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendFeedback"
+        android:text="Feedback"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
