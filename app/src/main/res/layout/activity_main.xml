@@ -95,13 +95,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top" />
-
+<!--
     <Button
         android:id="@+id/buttonFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="#EEEEEE"
         android:onClick="sendFeedback"
         android:text="Feedback"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/new_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent" />
+        -->
+
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#E5E5E5"
+        android:onClick="sendFeedback"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/titletTxtView"
+        app:srcCompat="@drawable/feedback" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
